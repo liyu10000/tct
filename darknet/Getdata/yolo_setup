@@ -1,0 +1,19 @@
+# download and compile
+git clone https://github.com/pjreddie/darknet
+cd darknet
+(修改examples/darknet.c, 440行，将coco.data替换成minitest.data)
+make
+
+# configuration files
+将minitest.data和yolov3-minitest-infer.cfg放到cfg文件夹
+将minitest.names放到data文件夹
+新建backup文件夹，将yolov3-minitest.backup放入
+
+# sample images preparation
+将testdata放到当前目录(darknet)下
+
+# predict single image
+./darknet detect cfg/yolov3-minitest-infer.cfg backup/yolov3-minitest.backup testdata/xxx.jpg
+或者
+./darknet detector test cfg/minitest.names cfg/yolov3-minitest-infer.cfg backup/yolov3-minitest.backup testdata/xxx.jpg
+(训练结果会自动保存到predictions.png)

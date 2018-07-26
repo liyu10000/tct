@@ -1,0 +1,72 @@
+copy first N files from a directory to another
+    find "src_dir" -maxdepth 1 -type f | head -N | xargs cp -t "des_dir"
+    
+list first N lines in a file
+    head -N xxx.xxx
+    
+count number of lines in a file
+    wc -l xxx.xxx
+    
+list first N files in a directory
+    ls dir | head -N
+
+get the size of a file
+    du -h file
+
+get the size of a directory
+    du -sh file_path
+    
+get the free space in the disk
+    df -h
+    
+mount and unmount a disk
+    sudo fdisk -l   
+    mount -o rw src/ des/
+    umount src/
+
+search for occurance in a file
+	grep [options] pattern [file]
+	[options] -n: show line numbers
+			  -c: show number of lines containing the matching pattern
+
+zip and unzip data
+	zip -r des_zip src_dir/
+	unzip des_zip
+
+tar data
+	archive: tar -cvf des.tar src_dir/
+	extract: tar -xvf des.tar
+	extract .tgz file: tar -zxvf des.tgz
+
+install samba (ubuntu&windows)
+step1:
+    sudo apt install samba
+    sudo apt install smbclient
+step2:
+    sudo vi /etc/samba/smb.conf
+    (add to the end of file, xxx means the user of shared folder)
+    [xxx]
+    comment = Share Folder require password
+    browseable = yes
+    path = /home/xxx
+    create mask = 0777
+    directory mask = 0777
+    valid users = xxx
+    force user = nobody
+    force group = nogroup
+    public = yes
+    writable = yes
+    available = yes
+step3:
+    sudo /etc/init.d/samba restart
+step4:
+    (under /home directory)
+    sudo mkdir xxx
+    sudo chmod 777 xxx
+step5:
+    (add account)
+    sudo groupadd share -g 6000
+    sudo useradd share -g 6000 -s /shin/nologin -d /dev/null
+step6:
+    (now go to windows: add a network location)
+    \\ip_address\xxx

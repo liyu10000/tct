@@ -1,0 +1,9 @@
+setup virtual environment
+	#https://packaging.python.org/guides/installing-using-pip-and-virtualenv/
+	python3 -m pip install --user --upgrade pip
+	python3 -m pip install --user virtualenv
+	# got to project's directory
+	python3 -m virtualenv env
+	source env/bin/activate
+	which python
+	deactivate

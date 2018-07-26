@@ -1,0 +1,106 @@
+深入理解YOLO
+
+优点
+	1 快速,pipline简单
+	2 背景误检率低
+	3 通用性强。YOLO对于艺术类作品中的物体检测同样适用。它对非自然图像物体的检测率远远高于DPM和RCNN系列检测方法
+
+缺点
+	1 识别物体位置精准性差
+	2 召回率低
+
+
+目标检测模型的性能评估
+https://blog.csdn.net/katherine_hsr/article/details/79266880
+https://www.cnblogs.com/sddai/p/5696870.html
+
+设计思想和迭代，参考
+https://www.cnblogs.com/makefile/p/YOLOv3.html
+
+################################################################################
+演进
+################################################################################
+V1
+	总体思想
+		分图片为S*S个格子，物体中心落入哪个格子，哪个格子负责检测
+		每个格子预测B个 bounding box 及其置信度（B*5）,以及C个类别概率
+
+	网络结构
+		特征提取借鉴googLeNet
+		使用全连接输出，S×S×(B×5+C) 
+
+	损失函数
+		loss=∑(i=0 s2) coordErr+iouErr+clsErr
+		使用均方和误差：坐标误差，IOU误差，分类误差
+
+	训练
+		使用ImageNet 1000训练前20个卷积层+1个average pooling+1个FC，resize 224 224
+		加载权重，使用VOC 20类标注数据进行yolo模型训练，输入图像resize 448*448
+
+	tips
+		全连接层，固定尺寸输入
+		每个格子预测B个bounding box，但只取IOU最高的结果输出，即每个格子只能预测一个，格子若包含多个物体则只能预测出一个
+
+
+V2
+	总体思想
+		使用了Anchor Boxes（k-means算出先验框）
+
+	网络结构
+		移除了全连接层，使用全卷积
+		使用darknet19
+		浅层特征融合（提升细粒度表现）
+
+	训练
+		使用了更高分辨率（从320 320到608 608）
+
+V3
+	网络结构
+		使用darknet53
+		分类器改进
+		V2用了5个anchor，V3用了9个anchor，提高了IOU
+		V2只有一个detection，V3设置有3个
+
+	损失函数
+		Softmax loss变成Logistic loss
+
+
+################################################################################
+细节
+################################################################################
+
+论文（中文翻译）
+https://zhuanlan.zhihu.com/p/34945787
+
+论文（原文）
+https://pjreddie.com/media/files/papers/YOLOv3.pdf
+
+代码
+https://github.com/pjreddie/darknet
+
+官网
+https://pjreddie.com/darknet/yolo
+
+实践
+https://blog.csdn.net/lilai619/article/details/79695109
+
+实现
+https://github.com/qqwweee/keras-yolo3
+https://github.com/raytroop/YOLOv3_tf
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

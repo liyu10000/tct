@@ -1,0 +1,141 @@
+参考
+	https://blog.csdn.net/lilai619/article/details/79695109
+	https://blog.csdn.net/qq_34484472/article/details/73135354
+
+
+#数据集制作#
+	1 标注工具
+		labelimg
+
+	2 转换工具
+		voc_label.py
+
+#makefile修改#
+
+	https://blog.csdn.net/dcrmg/article/details/78565350
+
+
+#训练#
+	
+	1 转换和安排数据
+
+		新建自己的 data/own目录（~）
+		将数据集放入 		~/Image 文件夹下
+		将标注数据放入		~/xml 文件夹下
+
+		执行 traindata.py，切分数据集和标注文件
+		执行 trans.py，转换xml到txt，生成图片地址文本
+
+		生成的图像路径
+			~/trainImagePath.txt
+			~/validateImagePath.txt
+
+		生成的标注放在
+			~/trainImageLabelTxt
+			~/validateImageLabelTxt
+
+		将图像标注都移动到图像存放地点
+			~/trainImage
+			~/validateImage
+
+		ps
+			1 xml的字段问题
+			2 文件组织问题
+
+	2 修改配置
+
+		cfg/my.data
+	 		classes= 1
+  			train  = ~/trainImagePath.txt
+  			valid  = ~/validateImagePath.txt
+  			names = data/my.names
+  			backup = backup
+
+  		data/my.names
+  			cell
+
+  		cfg/my.cfg
+  			https://blog.csdn.net/lilai619/article/details/79695109
+
+  			random最好为0，否则gpu训练容易报错
+
+  	3 训练
+  		
+  		下载darknet权重
+  			wget https://pjreddie.com/media/files/darknet53.conv.74
+
+  		训练
+  			./darknet detector train cfg/my.data cfg/my.cfg darknet53.conv.74 -gpus 0,1
+
+  		权重保存
+  			back 文件夹下
+
+  	4 预测
+
+  		单个预测
+  			./darknet detect cfg/my.cfg backup/my_600.weights ../../minitest.jpg -thresh 0.3
+
+  		多个预测：
+  			
+
+  		PS：
+  			如果需要标签正确，需要修改 data/coco.names 的name （预测的时候没有带自己的name文件，可能默认引用coco的）
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+论文（中文翻译）
+https://zhuanlan.zhihu.com/p/34945787
+
+论文（原文）
+https://pjreddie.com/media/files/papers/YOLOv3.pdf
+
+代码
+https://github.com/pjreddie/darknet
+
+官网
+https://pjreddie.com/darknet/yolo
+
+实践
+https://blog.csdn.net/lilai619/article/details/79695109
+
+实现
+https://github.com/qqwweee/keras-yolo3
+https://github.com/raytroop/YOLOv3_tf

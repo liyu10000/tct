@@ -1,0 +1,1 @@
+/usr/bin/cc  -ldl -g   CMakeFiles/untitled3.dir/main.c.o  -o Debug/untitled3 -rdynamic 

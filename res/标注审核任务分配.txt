@@ -1,0 +1,19 @@
+﻿1-标注	2-审核
+
+登录名			密码				权限（1，2或1+2）		权重（1-10）
+liangxinro		lxr201801666	1+2					10	
+liutengfei		ltf201802666	1					6
+luyanxia		lyx201803666	1					6
+qilu			ql201804666		1					4
+xubihong		xbh201805666	1+2					8
+yangminhui		ymh201806666	1					6
+yulina			yln201807666	1					6
+zhongwenlo		zwl201808666	1+2					10
+zhuxiaohui		zxh201809666	1+2					10
+laijianlon		ljl201810666	1+2					10
+mailijiao		mlj201811666	1					6
+chenlijie		clj201812666	1					8
+zhenglin		zl201813666		1					6
+zhuxh2			zxh201814666	1					6
+zhuxh3			zxh201815666	1					6
+zhuxh4			zxh201816666	1					6

@@ -1,0 +1,59 @@
+
+# 修改训练批次和样本
+
+这里是64/8 = 8
+推论的时候修改为 1，1
+
+line 1
+
+[net]
+# Testing
+# batch=1
+# subdivisions=1
+# Training
+ batch=64
+
+ subdivisions=8
+
+ 
+ # 修改filter数量
+
+最后一层的filter的数量要修改，因为和预测类别有关
+3*（class + 5）
+
+ line 601
+
+ [convolutional]
+size=1
+stride=1
+pad=1
+#filters=75
+filters=18
+activation=linear
+
+line 686
+
+[convolutional]
+size=1
+stride=1
+pad=1
+#filters=75
+filters=21
+activation=linear
+
+line 771
+
+[convolutional]
+size=1
+stride=1
+pad=1
+#filters=75
+filters=21
+activation=linear
+
+# class和random
+
+	class 所有的修改为所需要的class
+
+	random =1时自适应尺度，random=0时固定尺度训练
+

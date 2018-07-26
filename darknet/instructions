@@ -1,0 +1,32 @@
+1. files to be modified
+        cfg/mytest.data (mytest.data is compiled in darknet, try modify examples/darknet.c to change file and recompile)
+        cfg/xxx.cfg
+        data/xxx.names
+
+        cfg/mytest.data: change classes/train/valid
+        cfg/xxx.cfg: switch Testing/Training, modify filters: 3*(classes+5), anchors, and classes
+        data/xxx.names: the name of classes, in order
+
+2. run a test, result will be saved in predictions.png automatically
+        ./darknet detect cfg/yolov3.cfg yolov3.weights data/dog.jpg [-thresh 0.2]
+        ./darknet detector test cfg/mytest.data cfg/xxx.cfg xxx.weights data/dog.jpg [-thresh 0.2]
+        
+3. run multiple tests
+        ./darknet detector valid cfg/mytest.data cfg/xxx.cfg xxx.weights
+        
+4. train the model
+        ./darknet detector train cfg/mytest.data cfg/xxx.cfg darknet53.conv.74 [-gpus 0,1]
+
+5. train a model from a checkpoint
+        ./darknet detector train cfg/mytest.data cfg/xxx.cfg backup/xxx.backup [-gpus 0,1]
+
+6. data preparation
+        put preparation.py into the data folder, it will generate train.txt & validate.txt, and train & validate folder
+
+7. run with nohup
+	nohup command_line & (stdout is automatically redirected and saved in nohup.out)
+	tail -f nohup.out (see the output)
+
+8. stop nohup process
+        ps -ef | grep [process like: darknet]
+        kill -9 [pid]
