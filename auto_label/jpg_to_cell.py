@@ -41,6 +41,11 @@ def resize_img(img, size):
     return img_resized
 
 def get_cells(files_list, classes, size):
+    """
+    return:
+        numpy array
+        cell_numpy_index: {index:(x_y_i, class_i)}
+    """
     cell_list = []
     cell_numpy_index = {}
     index = 0

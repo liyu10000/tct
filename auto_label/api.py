@@ -9,6 +9,7 @@ from prediction_convert import prediction_convert
 from jpg_to_cell import get_cells
 from Xception_classify import xception_init, xception_predict
 from Xception_convert import xception_convert
+from confusion_matrix import confusion_matrix, generate_xlsx
 from utils import scan_files, scan_subdirs, copy_files, remove_files
 
 # cut tif file to 608x608 images. For each tif, it will generate a folder to put 608 images ###########################
@@ -114,3 +115,9 @@ for tif_name in tif_names:
     for xml in xmls:
         jpg = os.path.join(image_path, os.path.basename(os.path.splitext(xml)[0])+".jpg")
         shutil.copy(jpg, classify_xml_path)
+
+    # generate confusion matrix #######################################################################################
+    print("[INFO] generate confusion matrix")
+    matrix = confusion_matrix(classes_all, cell_numpy_index, predictions)
+    xlsx = os.path.join(output_tif_608s, tif_name+".xlsx")
+    generate_xlsx(classes_all, matrix, xlsx)
