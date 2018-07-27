@@ -1,16 +1,8 @@
 import os
 import xml.dom.minidom
 import xml.etree.ElementTree as ET
-from prediction_evaluate import *
 
-# result_dir = "/home/sakulaki/code/yolo-pre-trained/darknet/results"
-# classes = ["ASCUS", "LSIL", "ASCH", "HSIL", "SCC"]
-# dict_pic_info = get_predictions_result(result_dir, classes)
-
-# img_size = 608
-# save_path = "/home/sakulaki/dataset/realtest/608/XB1800118"
-
-def prediction_convert(dict_pic_info, classes, img_size, save_path, det):
+def xception_convert(dict_pic_info, classes, img_size, save_path, det):
     os.makedirs(save_path, exist_ok=True)
     for jpg, labels in dict_pic_info.items():
         root = ET.Element("annotation")
@@ -31,18 +23,18 @@ def prediction_convert(dict_pic_info, classes, img_size, save_path, det):
         contains = False
         for label in labels:
             label_tokens = label.split()
-            if float(label_tokens[1]) > det:
+            if float(label_tokens[3]) > det:
                 contains = True
                 object = ET.SubElement(root, "object")
-                ET.SubElement(object, "name").text = classes[int(label_tokens[0])]
+                ET.SubElement(object, "name").text = classes[int(label_tokens[2])]
                 ET.SubElement(object, "pose").text = "Unspecified"
                 ET.SubElement(object, "truncated").text = "0"
                 ET.SubElement(object, "difficult").text = "0"
                 bndbox = ET.SubElement(object, "bndbox")
-                ET.SubElement(bndbox, "xmin").text = str(int(float(label_tokens[2])))
-                ET.SubElement(bndbox, "ymin").text = str(int(float(label_tokens[3])))
-                ET.SubElement(bndbox, "xmax").text = str(int(float(label_tokens[4])))
-                ET.SubElement(bndbox, "ymax").text = str(int(float(label_tokens[5])))
+                ET.SubElement(bndbox, "xmin").text = str(int(float(label_tokens[4])))
+                ET.SubElement(bndbox, "ymin").text = str(int(float(label_tokens[5])))
+                ET.SubElement(bndbox, "xmax").text = str(int(float(label_tokens[6])))
+                ET.SubElement(bndbox, "ymax").text = str(int(float(label_tokens[7])))
 
         if contains:
             raw_string = ET.tostring(root, "utf-8")
@@ -50,12 +42,3 @@ def prediction_convert(dict_pic_info, classes, img_size, save_path, det):
             file = open(os.path.join(save_path, jpg + ".xml"), "w")
             file.write(reparsed.toprettyxml(indent="\t"))
             file.close()
-
-if __name__ == "__main__":
-    result_dir = "/home/sakulaki/code/yolo-pre-trained/darknet/results"
-    classes_list = ["ASCUS", "LSIL", "ASCH", "HSIL", "SCC"]
-    dict_pic_info = get_predictions_result(result_dir, classes_list)
-    img_size = 608
-    save_path = "/home/sakulaki/dataset/realtest/608/XB1800118"
-    det = 0.3
-    prediction_convert(dict_pic_info, classes_list, img_size, save_path, det)

@@ -38,9 +38,6 @@ def segment(darknet_path, image_path):
     #                  os.path.join(darknet_path, "cfg/minitest.data"),
     #                  os.path.join(darknet_path, "cfg/yolov3-minitest-infer.cfg"),
     #                  os.path.join(darknet_path, "backup/yolov3-minitest.backup")))
-    os.system("./darknet detector valid cfg/minitest.data cfg/yolov3-minitest-infer.cfg backup/yolov3-minitest.backup >> run.log")
+    os.system("./darknet detector valid cfg/minitest.data cfg/yolov3-minitest-infer.cfg backup/yolov3-minitest_70000.weights -gpus 0,1")
     os.chdir(current_path)
     
-
-if __name__ == "__main__":
-    pass

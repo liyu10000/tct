@@ -65,8 +65,8 @@ step4:
     sudo chmod 777 xxx
 step5:
     (add account)
-    sudo groupadd share -g 6000
-    sudo useradd share -g 6000 -s /shin/nologin -d /dev/null
+    sudo groupadd xxx -g 6000
+    sudo useradd xxx -g 6000 -s /shin/nologin -d /dev/null
 step6:
     (now go to windows: add a network location)
     \\ip_address\xxx
