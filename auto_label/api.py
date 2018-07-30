@@ -2,6 +2,7 @@
 import os
 import shutil
 import numpy as np
+import colorama
 from asap_to_jpg import asap_to_image
 from segment import gen_txt_for_dir, segment
 from prediction_evaluate import get_predictions_result
@@ -12,30 +13,36 @@ from Xception_convert import xception_convert
 from confusion_matrix import confusion_matrix, generate_xlsx
 from utils import scan_files, scan_subdirs, copy_files, remove_files
 
+colorama.init()
+
 # cut tif file to 608x608 images. For each tif, it will generate a folder to put 608 images ###########################
-input_tif_files = "/home/sakulaki/yolo-yuli/one_stop_test/tif"
-output_tif_608s = "/home/sakulaki/yolo-yuli/one_stop_test/608"
-#asap_to_image(input_tif_files, output_tif_608s)
+input_tif_files = "/home/tsimage/Documents/one_stop_test/2018-03-15-ascus"
+output_tif_608s = "/home/tsimage/Documents/one_stop_test/2018-03-15-ascus-608"
+
+print(colorama.Fore.GREEN + "[INFO] cut 608 images from tif file" + colorama.Fore.WHITE)
+asap_to_image(input_tif_files, output_tif_608s)
 
 # for each tif, run segmentation and classification, generate jpg/xml for labelme #####################################
 tif_names = scan_subdirs(output_tif_608s)
 for tif_name in tif_names:
+    if tif_name.endswith("_segment") or tif_name.endswith("_classify"):
+        continue
     image_path = os.path.join(output_tif_608s, tif_name)
     
     # get the list of 608 image full pathnames ########################################################################
     images = scan_files(image_path)
 
     # generate txt file for current tif ###############################################################################
-    print("[INFO] generate txt for " + tif_name)
+    print(colorama.Fore.GREEN + "[INFO] generate txt for " + tif_name + colorama.Fore.WHITE)
     gen_txt_for_dir(images, output_tif_608s, tif_name)
 
     # run darknet test ################################################################################################
-    darknet_path = "/home/sakulaki/yolo-yuli/darknet"
+    darknet_path = "/home/tsimage/Documents/darknet"
     segment(darknet_path, image_path)
     os.remove(image_path+".txt")
 
     # evaluate predictions and convert coordinates to xmls ############################################################
-    print("[INFO] evaluate predictions and write coordinates into xmls")
+    print(colorama.Fore.GREEN + "[INFO] evaluate predictions and write coordinates into xmls" + colorama.Fore.WHITE)
     result_dir = os.path.join(darknet_path, "results")
     classes_list = ["ASCUS", "LSIL", "ASCH", "HSIL", "SCC"]
     dict_pic_info = get_predictions_result(result_dir, classes_list)
@@ -45,23 +52,23 @@ for tif_name in tif_names:
     prediction_convert(dict_pic_info, classes_list, img_size, segment_xml_path, det)
 
     # copy xmls from segment folder to jpg folder, for purpose of cropping images #####################################
-    print("[INFO] copy xmls from segment folder to jpg folder")
+    print(colorama.Fore.GREEN + "[INFO] copy xmls from segment folder to jpg folder" + colorama.Fore.WHITE)
     xmls = scan_files(segment_xml_path, postfix=".xml")
     for xml in xmls:
         shutil.copy(xml, image_path)
     # copy_files(segment_xml_path, image_path, postfix=".xml")
 
     # crop cells out of 608 jpgs and save into numpy array, based on predicted xmls ###################################
-    print("[INFO] crop cells out of 608 jpgs and save into numpy array, based on xmls")
+    print(colorama.Fore.GREEN + "[INFO] crop cells out of 608 jpgs and save into numpy array, based on xmls" + colorama.Fore.WHITE)
     classes_dict = {"HSIL":0, "ASCH":0, "LSIL":0, "ASCUS":0, "SCC":0}
     files_list = scan_files(image_path, postfix=".xml")
     size = 299
     cell_numpy, cell_numpy_index = get_cells(files_list, classes_dict, size)
     print(cell_numpy.shape)
-    print("segmentation result: ", sorted(classes_dict.items()))
+    print(colorama.Fore.BLUE + "segmentation result: ", sorted(classes_dict.items()) + colorama.Fore.WHITE)
 
     # delete xmls_segment from jpg folder and copy jpgs to segment folder #############################################
-    print("[INFO] delete xmls_segment from jpg folder and copy jpgs to segment folder")
+    print(colorama.Fore.GREEN + "[INFO] delete xmls_segment from jpg folder and copy jpgs to segment folder" + colorama.Fore.WHITE)
     xmls = scan_files(image_path, postfix=".xml")
     for xml in xmls:
         os.remove(xml)
@@ -70,13 +77,13 @@ for tif_name in tif_names:
     #remove_files(image_path, postfix=".xml")
     
     # run classification ##############################################################################################
-    print("[INFO] run classification")   
+    print(colorama.Fore.GREEN + "[INFO] run classification" + colorama.Fore.WHITE)   
     model = xception_init("Xception_finetune.h5")
     predictions = xception_predict(cell_numpy, batch_size=20, model=model)
     print(predictions.shape)
 
     # generate new dict_pic_info mapping ##############################################################################
-    print("[INFO] generate new dict_pic_info mapping")
+    print(colorama.Fore.GREEN + "[INFO] generate new dict_pic_info mapping" + colorama.Fore.WHITE)
     classes_all = ("ACTINO", "ADC", "AGC1", "AGC2", "ASCH", "ASCUS", "CC", "EC", "FUNGI", "GEC", "HSIL", "LSIL", 
                    "MC", "RC", "SC", "SCC", "TRI", "VIRUS")
     # segment_in_classify: {class_i:[segment, classify]}
@@ -100,24 +107,24 @@ for tif_name in tif_names:
             else:
                 dict_pic_info_all[x_y].append(cell_info)
         index += 1
-    print("segment_in_classify: ", sorted(segment_in_classify.items()))
+    print(colorama.Fore.BLUE + "segment_in_classify: ", sorted(segment_in_classify.items()) + colorama.Fore.WHITE)
 
     # generate xmls, based on classification results ##################################################################
-    print("[INFO] generate xmls based on classification")
+    print(colorama.Fore.GREEN + "[INFO] generate xmls based on classification" + colorama.Fore.WHITE)
     img_size = 608
     classify_xml_path = os.path.join(output_tif_608s, tif_name+"_classify")
     det = 0.1
     xception_convert(dict_pic_info_all, classes_all, img_size, classify_xml_path, det)
 
     # copy jpgs from jpg folder to xmls_classify folder ###############################################################
-    print("[INFO] copy jpgs from jpg folder to xmls_classify folder")
+    print(colorama.Fore.GREEN + "[INFO] copy jpgs from jpg folder to xmls_classify folder" + colorama.Fore.WHITE)
     xmls = scan_files(classify_xml_path, postfix=".xml")
     for xml in xmls:
         jpg = os.path.join(image_path, os.path.basename(os.path.splitext(xml)[0])+".jpg")
         shutil.copy(jpg, classify_xml_path)
 
     # generate confusion matrix #######################################################################################
-    print("[INFO] generate confusion matrix")
+    print(colorama.Fore.GREEN + "[INFO] generate confusion matrix" + colorama.Fore.WHITE)
     matrix = confusion_matrix(classes_all, cell_numpy_index, predictions)
     xlsx = os.path.join(output_tif_608s, tif_name+".xlsx")
     generate_xlsx(classes_all, matrix, xlsx)

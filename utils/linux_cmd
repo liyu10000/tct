@@ -66,7 +66,10 @@ step4:
 step5:
     (add account)
     sudo groupadd xxx -g 6000
-    sudo useradd xxx -g 6000 -s /shin/nologin -d /dev/null
+    sudo useradd xxx -g 6000  -d /home/xxx
+    sudo passwd xxx
+    sudo usermod -aG users xxx
+    sudo smbpasswd -a xxx
 step6:
     (now go to windows: add a network location)
     \\ip_address\xxx

@@ -15,16 +15,15 @@ def scan_files(directory, prefix=None, postfix=None):
 
     return files_list
 
-path = os.path.join(os.getcwd(), "train")
-# path = "D:/data"
-filenames = scan_files(path)
+path = os.getcwd()
+filenames = scan_files(path, postfix=".tif")
 print("total of " + str(len(filenames)) + " filenames found")
 
 # use with caution: it doesn't work with the case that folder name has blank spaces
 for filename in filenames:
     # replace blank spaces with "_"
     if " " in filename:
-        #os.rename(filename, filename.replace(" ", "-"))
+        os.rename(filename, filename.replace(" ", "-"))
         print(filename + " has blank space")
     # try:
         # os.rename(filename, filename.replace(" ", "-"))
