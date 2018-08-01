@@ -55,37 +55,37 @@ def get_cells(files_list, classes, size):
         filetype = ".jpg"
         # open .jpg file
         jpg_file = filename + filetype
-        try:
-            image = Image.open(jpg_file)
-            # open .xml file
-            DOMTree = xml.dom.minidom.parse(xml_file)
-            collection = DOMTree.documentElement
-            width = collection.getElementsByTagName("width")[0].firstChild.nodeValue
-            height = collection.getElementsByTagName("height")[0].firstChild.nodeValue
-            objects = collection.getElementsByTagName("object")
-            i = 0
-            for object_i in objects:
-                name = object_i.getElementsByTagName("name")[0].firstChild.nodeValue
-                xmin = int(object_i.getElementsByTagName("xmin")[0].firstChild.nodeValue)
-                ymin = int(object_i.getElementsByTagName("ymin")[0].firstChild.nodeValue)
-                xmax = int(object_i.getElementsByTagName("xmax")[0].firstChild.nodeValue)
-                ymax = int(object_i.getElementsByTagName("ymax")[0].firstChild.nodeValue)
-                if name in classes:
-                    classes[name] += 1
-                    # cell_path = os.path.join(save_path, name)
-                    # if not os.path.exists(cell_path):
-                    #     os.makedirs(cell_path)
-                    #cell_name = os.path.join(cell_path, os.path.basename(filename)+"_"+str(i)+".jpg")
-                    cell_name = os.path.basename(filename)+"_"+str(i)
-                    cell_numpy_index[index] = (cell_name, name)
-                    index += 1
-                    #print(name, xmin, ymin, xmax, ymax)
-                    #image.crop((xmin, ymin, xmax, ymax)).save(cell_name)
-                    cell_list.append(np.array(resize_img(image.crop((xmin, ymin, xmax, ymax)), size)))
-                i += 1
-            image.close()
-        except:
-            print(filename + " cannot be processed")
+        # try:
+        image = Image.open(jpg_file)
+        # open .xml file
+        DOMTree = xml.dom.minidom.parse(xml_file)
+        collection = DOMTree.documentElement
+        width = collection.getElementsByTagName("width")[0].firstChild.nodeValue
+        height = collection.getElementsByTagName("height")[0].firstChild.nodeValue
+        objects = collection.getElementsByTagName("object")
+        i = 0
+        for object_i in objects:
+            name = object_i.getElementsByTagName("name")[0].firstChild.nodeValue
+            xmin = int(object_i.getElementsByTagName("xmin")[0].firstChild.nodeValue)
+            ymin = int(object_i.getElementsByTagName("ymin")[0].firstChild.nodeValue)
+            xmax = int(object_i.getElementsByTagName("xmax")[0].firstChild.nodeValue)
+            ymax = int(object_i.getElementsByTagName("ymax")[0].firstChild.nodeValue)
+            if name in classes:
+                classes[name] += 1
+                # cell_path = os.path.join(save_path, name)
+                # if not os.path.exists(cell_path):
+                #     os.makedirs(cell_path)
+                #cell_name = os.path.join(cell_path, os.path.basename(filename)+"_"+str(i)+".jpg")
+                cell_name = os.path.basename(filename)+"_"+str(i)
+                cell_numpy_index[index] = (cell_name, name)
+                index += 1
+                #print(name, xmin, ymin, xmax, ymax)
+                #image.crop((xmin, ymin, xmax, ymax)).save(cell_name)
+                cell_list.append(np.array(resize_img(image.crop((xmin, ymin, xmax, ymax)), size)))
+            i += 1
+        image.close()
+        # except:
+        #     print(filename + " cannot be processed")
         
     return np.asarray(cell_list), cell_numpy_index
 

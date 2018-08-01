@@ -9,7 +9,7 @@ from time import sleep
 import cv2
 import numpy as np
 import openslide
-from asap_to_jpg_config import PATCH_SIZE, DELTA, AVAILABLE_PATCH_START_RATIO, AVAILABLE_PATCH_END_RATIO, get_patch_num, \
+from config import PATCH_SIZE, DELTA, AVAILABLE_PATCH_START_RATIO, AVAILABLE_PATCH_END_RATIO, get_patch_num, \
     get_random_string
 
 from tslide.tslide import TSlide
@@ -119,7 +119,7 @@ def patch_worker(input_image_path, start_x, start_y, height, patch_save_path, in
     img_data.close()
 
 
-def asap_to_image(input_file_path, output_file_path):
+def main(input_file_path, output_file_path):
     files = []
     if os.path.isfile(input_file_path):
         files.append(input_file_path)
@@ -140,4 +140,4 @@ if __name__ == '__main__':
     input_file_path = "/home/sakulaki/yolo-yuli/one_stop_test/yantian_tif"
     output_file_path = "/home/sakulaki/yolo-yuli/one_stop_test/yantian_kfb/jpg"
 
-    asap_to_image(input_file_path, output_file_path)
+    main(input_file_path, output_file_path)
