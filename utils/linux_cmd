@@ -52,8 +52,6 @@ step2:
     create mask = 0777
     directory mask = 0777
     valid users = xxx
-    force user = nobody
-    force group = nogroup
     public = yes
     writable = yes
     available = yes
@@ -73,3 +71,7 @@ step5:
 step6:
     (now go to windows: add a network location)
     \\ip_address\xxx
+
+shutdown os at set time
+    sudo shutdown -h 22:00
+
