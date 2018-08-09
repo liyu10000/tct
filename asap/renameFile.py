@@ -17,7 +17,7 @@ def scan_files(directory, prefix=None, postfix=None):
 
 # path = os.getcwd()
 path = "E:/data-yantian"
-filenames = scan_files(path, postfix=".kfb")
+filenames = scan_files(path, postfix=".tif")
 print("total of " + str(len(filenames)) + " filenames found")
 
 # use with caution: it doesn't work with the case that folder name has blank spaces
