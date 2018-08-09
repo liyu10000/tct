@@ -11,6 +11,7 @@ from jpg_to_cell import get_cells
 from Xception_classify import xception_init, xception_predict
 from Xception_convert import xception_convert
 from confusion_matrix import confusion_matrix, generate_xlsx
+from xml_to_asap import gen_asap_xml
 from utils import scan_files, scan_subdirs, copy_files, remove_files
 
 colorama.init()
@@ -142,6 +143,13 @@ for tif_name in tif_names:
     xlsx = os.path.join(output_tif_608s, tif_name+".xlsx")
     generate_xlsx(classes_all, matrix, xlsx)
 
+    # generate asap_xml from labelimg_xmls
+    print(colorama.Fore.GREEN + "[INFO] generate asap xml from labelimg xmls" + colorama.Fore.WHITE)
+    xml_asap_segment = os.path.join(output_tif_608s, tif_name+"_segment.xml")
+    gen_asap_xml(xml_asap_segment, segment_xml_path, output_tif_608s)
+    xml_asap_classify = os.path.join(output_tif_608s, tif_name+"_classify.xml")
+    gen_asap_xml(xml_asap_classify, classify_xml_path, output_tif_608s)
+
     # move current directories upwards ################################################################################
     print(colorama.Fore.GREEN + "[INFO] move current directories upwards" + colorama.Fore.WHITE)
     os.makedirs(save_path, exist_ok=True)
@@ -149,3 +157,5 @@ for tif_name in tif_names:
     os.system("mv {} {}".format(segment_xml_path, save_path))
     os.system("mv {} {}".format(classify_xml_path, save_path))
     os.system("mv {} {}".format(xlsx, save_path))
+    os.system("mv {} {}".format(xml_asap_segment, save_path))
+    os.system("mv {} {}".format(xml_asap_classify, save_path))
