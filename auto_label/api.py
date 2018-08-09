@@ -9,7 +9,7 @@ from prediction_evaluate import get_predictions_result
 from prediction_convert import prediction_convert
 from jpg_to_cell import get_cells
 from Xception_classify import xception_init, xception_predict
-from Xception_convert import xception_convert
+from Xception_convert import xception_convert, dict_to_csv
 from confusion_matrix import confusion_matrix, generate_xlsx
 from xml_to_asap import gen_asap_xml
 from utils import scan_files, scan_subdirs, copy_files, remove_files
@@ -137,6 +137,11 @@ for tif_name in tif_names:
         jpg = os.path.join(image_path, os.path.basename(os.path.splitext(xml)[0])+".jpg")
         shutil.copy(jpg, classify_xml_path)
 
+    # write auto_labeling info into csv ###############################################################################
+    print(colorama.Fore.GREEN + "[INFO] write auto_labeling info into csv" + colorama.Fore.WHITE)
+    csv_file = os.path.join(output_tif_608s, tif_name+".csv")
+    dict_to_csv(dict_pic_info_all, classes_list, classes_all, csv_file)
+
     # generate confusion matrix #######################################################################################
     print(colorama.Fore.GREEN + "[INFO] generate confusion matrix" + colorama.Fore.WHITE)
     matrix = confusion_matrix(classes_all, cell_numpy_index, predictions)
@@ -146,9 +151,9 @@ for tif_name in tif_names:
     # generate asap_xml from labelimg_xmls
     print(colorama.Fore.GREEN + "[INFO] generate asap xml from labelimg xmls" + colorama.Fore.WHITE)
     xml_asap_segment = os.path.join(output_tif_608s, tif_name+"_segment.xml")
-    gen_asap_xml(xml_asap_segment, segment_xml_path, output_tif_608s)
+    gen_asap_xml(xml_asap_segment, segment_xml_path)
     xml_asap_classify = os.path.join(output_tif_608s, tif_name+"_classify.xml")
-    gen_asap_xml(xml_asap_classify, classify_xml_path, output_tif_608s)
+    gen_asap_xml(xml_asap_classify, classify_xml_path)
 
     # move current directories upwards ################################################################################
     print(colorama.Fore.GREEN + "[INFO] move current directories upwards" + colorama.Fore.WHITE)
@@ -156,6 +161,7 @@ for tif_name in tif_names:
     os.system("mv {} {}".format(image_path, save_path))
     os.system("mv {} {}".format(segment_xml_path, save_path))
     os.system("mv {} {}".format(classify_xml_path, save_path))
+    os.system("mv {} {}".format(csv_file, save_path))
     os.system("mv {} {}".format(xlsx, save_path))
     os.system("mv {} {}".format(xml_asap_segment, save_path))
     os.system("mv {} {}".format(xml_asap_classify, save_path))

@@ -27,6 +27,6 @@ if __name__ == '__main__':
     path_label = sys.argv[2]
     train(path_data, path_label)
 
-# X_test = np.loadtxt(path_data)
-# for i in range(np.shape(X_test)[0]):
-#     print(predict(X_test[i:i + 1]))
+    # X_test = np.loadtxt(path_data)
+    # for i in range(np.shape(X_test)[0]):
+    #     print(predict(X_test[i:i + 1]))
