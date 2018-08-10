@@ -129,7 +129,12 @@ def worker(input_image_path, start_x, start_y, height, output_path):
         patch = img_data.read_region((start_x, start_y), 0, (PATCH_SIZE, PATCH_SIZE))
         # 图像格式转换
         patch = cv2.cvtColor(np.asarray(patch), cv2.COLOR_RGBA2BGR)
-        if  np.mean(patch) > MIN_RECOLLECTION_PIXEL and np.mean(patch) < MAX_RECOLLECTION_PIXEL:
+
+
+        #if  np.mean(patch) > MIN_RECOLLECTION_PIXEL and np.mean(patch) < MAX_RECOLLECTION_PIXEL:
+        patch_gray = cv2.cvtColor(patch, cv2.COLOR_BGR2GRAY)
+        if cv2.Laplacian(patch_gray, cv2.CV_64F).var() > 10.0:
+
             cv2.imwrite(os.path.join(output_path, "%s_%s.jpg" % (start_x, start_y)), patch)
             index += 1
         start_y += STEP_DELTA

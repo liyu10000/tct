@@ -1,5 +1,6 @@
 #this will be one-stop service: from tif to classified images for inspection
 import os
+import sys
 import shutil
 import numpy as np
 import colorama
@@ -27,7 +28,8 @@ save_path = "/home/sakulaki/yolo-yuli/one_stop_test/yantian_jpg"
 # cut tif file to 608x608 images. For each tif, it will generate a folder to put 608 images ###########################
 print(colorama.Fore.GREEN + "[INFO] cut 608 images from tif file" + colorama.Fore.WHITE)
 os.makedirs(output_tif_608s, exist_ok=True)
-asap_to_image(input_tif_files, output_tif_608s)
+if len(sys.argv) > 1 and sys.argv[1] == "yeah":
+    asap_to_image(input_tif_files, output_tif_608s)
 
 # for each tif, run segmentation and classification, generate jpg/xml for labelme #####################################
 tif_names = scan_subdirs(output_tif_608s)

@@ -84,7 +84,7 @@ tsimage-x/sakulaki/dataset/test4_images: 单个标记的抠图，大小随标记
 十四分类训练 (90%:10%随机分配，使用整理过的asap_608的数据) 001:/home/sakulaki/yolo-yuli/tct_data608_0716_14classes_rotated
 nohup ./darknet detector train cfg/
 
+
 算法：模型诊断
 1. 对每一张片子进行分割/分类算法预测，获取坐标数据
 数据分配：王悦 2017-10-11-lsil 19items
-         熊鑫 2018-03-15-ascus 24items

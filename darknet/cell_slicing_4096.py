@@ -99,16 +99,16 @@ def cellSampling(files_list, save_path, size):
         new_xmls = Xml(os.path.basename(filename), save_path, points_xy, labels, size)
         new_xmls.gen_xml()
 
+if __name__ == "__main__":
+    file_path = os.path.join(os.getcwd(), "4096")
+    files_list = scan_files(file_path, postfix=".txt")
 
-file_path = os.path.join(os.getcwd(), "4096")
-files_list = scan_files(file_path, postfix=".txt")
-
-save_path = os.path.join(os.getcwd(), "test3")
-if not os.path.exists(save_path):
-    os.makedirs(save_path)
-cellSampling(files_list, save_path, 608)
-print()
-print(colors)
+    save_path = os.path.join(os.getcwd(), "test3")
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
+    cellSampling(files_list, save_path, 608)
+    print()
+    print(colors)
 
 
 
