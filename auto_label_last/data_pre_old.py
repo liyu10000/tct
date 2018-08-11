@@ -1,5 +1,6 @@
 import os
 import csv
+import pandas
 
 def gen_dict(slides_path, class_i):
 	"""

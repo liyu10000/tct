@@ -16,8 +16,8 @@ def scan_files(directory, prefix=None, postfix=None):
     return files_list
 
 # path = os.getcwd()
-path = "E:/data-yantian"
-filenames = scan_files(path, postfix=".tif")
+path = "/home/tsimage/data/stage1"
+filenames = scan_files(path, postfix=".jpg")
 print("total of " + str(len(filenames)) + " filenames found")
 
 # use with caution: it doesn't work with the case that folder name has blank spaces

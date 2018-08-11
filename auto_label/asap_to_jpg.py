@@ -105,13 +105,17 @@ def patch_worker(input_image_path, start_x, start_y, height, patch_save_path, in
 
         # 图像格式转换
         patch = cv2.cvtColor(np.asarray(patch), cv2.COLOR_RGBA2BGR)
-        in_queue.put(1)
 
-        # 生成文件名及保存路径
-        #name = get_random_string()
-        save_path = os.path.join(patch_save_path, "{}_{}.jpg".format(start_x,start_y))
-        # 文件写入
-        cv2.imwrite(save_path, patch)
+        # 检查图像是否可用
+        patch_gray = cv2.cvtColor(patch, cv2.COLOR_BGR2GRAY)
+        if cv2.Laplacian(patch_gray, cv2.CV_64F).var() > 10.0:
+            in_queue.put(1)
+
+            # 生成文件名及保存路径
+            #name = get_random_string()
+            save_path = os.path.join(patch_save_path, "{}_{}.jpg".format(start_x,start_y))
+            # 文件写入
+            cv2.imwrite(save_path, patch)
 
         start_y += DELTA
 
