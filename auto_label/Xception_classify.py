@@ -4,6 +4,8 @@ from keras.applications import *
 from keras.preprocessing.image import *
 import numpy as np
 
+weights_file = "Xception_finetune.h5"
+
 def xception_init(weights_file):
     input_tensor = Input((299, 299, 3))
     x = Lambda(xception.preprocess_input)(input_tensor)

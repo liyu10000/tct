@@ -44,7 +44,7 @@ def xception_convert(dict_pic_info, classes, img_size, save_path, det):
             file.write(reparsed.toprettyxml(indent="\t"))
             file.close()
 
-def dict_to_csv(dict_pic_info, classes_list, classes_all, csv_file):
+def predictions_to_csv(dict_pic_info, classes_list, classes_all, csv_file):
     with open(csv_file, "w") as file:
         writer = csv.writer(file)
         writer.writerow(["x_y", "segment", "det", "classify", "det", "xmin", "ymin", "xmax", "ymax"])

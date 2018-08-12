@@ -87,4 +87,9 @@ nohup ./darknet detector train cfg/
 
 算法：模型诊断
 1. 对每一张片子进行分割/分类算法预测，获取坐标数据
-数据分配：王悦 2017-10-11-lsil 19items
+已标记数据分配：  
+    熊鑫: 02_LSIL(前半部分)
+    001: 01_ASCUS
+    王悦: 04_HSIL
+    200: 03_ASCH(已完成，接着做02_LSIL后半部分)
+    000: 05_SCC

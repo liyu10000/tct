@@ -40,4 +40,4 @@ def segment(darknet_path, image_path):
     #                  os.path.join(darknet_path, "backup/yolov3-minitest.backup")))
     os.system("./darknet detector valid cfg/minitest.data cfg/yolov3-minitest-infer.cfg backup/yolov3-minitest_70000.weights -gpus 0,1")
     os.chdir(current_path)
-    
+    os.remove(image_path+".txt")
