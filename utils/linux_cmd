@@ -77,3 +77,10 @@ shutdown os at set time
 
 find specific file by name or extension
     find /dir/path -name "*.jpg"
+
+configure git lfs
+    1. install git lfs
+    2. set up: git lfs install
+    3. add big file extensions to track: git lfs track "*.h5"
+    4. make sure .gitattributes is tracked: git add .gitattributes
+    5. use git as usual
