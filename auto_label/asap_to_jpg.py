@@ -16,7 +16,6 @@ from tslide.tslide import TSlide
 
 def worker(input_file_path, start_x, start_y, height, patch_save_path):
     """
-
     :param input_file_path: 输入文件路径
     :param start_x:
     :param start_y:
@@ -37,8 +36,8 @@ def worker(input_file_path, start_x, start_y, height, patch_save_path):
         # 图像格式转换
         patch = cv2.cvtColor(np.asarray(patch), cv2.COLOR_RGBA2BGR)
         # 生成文件名及保存路径
-        name = get_random_string()
-        save_path = os.path.join(patch_save_path, "%s.jpg" % name)
+        #name = get_random_string()
+        save_path = os.path.join(patch_save_path, "{}_{}.jpg".format(start_x,start_y))
         # 文件写入
         cv2.imwrite(save_path, patch)
 

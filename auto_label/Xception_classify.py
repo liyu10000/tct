@@ -6,7 +6,7 @@ import numpy as np
 
 weights_file = "Xception_finetune.h5"
 
-def xception_init(weights_file):
+def xception_init():
     input_tensor = Input((299, 299, 3))
     x = Lambda(xception.preprocess_input)(input_tensor)
 

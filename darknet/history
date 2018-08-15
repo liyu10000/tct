@@ -86,10 +86,20 @@ nohup ./darknet detector train cfg/
 
 
 算法：模型诊断
-1. 对每一张片子进行分割/分类算法预测，获取坐标数据
+1. 对每一张片子进行分割(darknet)/分类(Xception)算法预测，获取坐标以及分类数据
 已标记数据分配：  
-    熊鑫: 02_LSIL(前半部分)
-    001: 01_ASCUS
-    王悦: 04_HSIL
-    200: 03_ASCH(已完成，接着做02_LSIL后半部分)
-    000: 05_SCC
+    x: 02_LSIL(前半部分，已完成)
+    001: 01_ASCUS(已完成)
+    w: 04_HSIL(已完成)
+    002: 03_ASCH(已完成，接着做02_LSIL后半部分，已完成)
+    w: 05_SCC(已完成)
+未标记数据分配：
+    w: AWS上的4类和normal
+    广州002： 2018-06-11-normal  75张
+
+2. 从分割算法得到中间数据开始，用inception进行预测
+    w： AWS上normal，共92张，现在跑normal，跑完64张，在Downloads/NORMAL_AWS
+    002: 有02_LSIL和03_ASCH，现在跑02_LSIL
+    w: 04_HSIL 有112张，在/home/tsimage-w/TCTData/04_HSIL
+    广州002： 已跑完normal，在/media/DATA/2018-06-11-normal
+              现在继续跑normal，在/media/DATA/2018-06-12-normal， 直接用inception跑全流程

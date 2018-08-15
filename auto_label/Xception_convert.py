@@ -3,6 +3,7 @@ import csv
 import xml.dom.minidom
 import xml.etree.ElementTree as ET
 
+
 def xception_convert(dict_pic_info, classes, img_size, save_path, det):
     os.makedirs(save_path, exist_ok=True)
     for jpg, labels in dict_pic_info.items():
@@ -44,7 +45,7 @@ def xception_convert(dict_pic_info, classes, img_size, save_path, det):
             file.write(reparsed.toprettyxml(indent="\t"))
             file.close()
 
-def predictions_to_csv(dict_pic_info, classes_list, classes_all, csv_file):
+def xception_to_csv(dict_pic_info, classes_list, classes_all, csv_file):
     with open(csv_file, "w") as file:
         writer = csv.writer(file)
         writer.writerow(["x_y", "segment", "det", "classify", "det", "xmin", "ymin", "xmax", "ymax"])
@@ -56,3 +57,5 @@ def predictions_to_csv(dict_pic_info, classes_list, classes_all, csv_file):
                                 classes_all[int(label_tokens[2])], label_tokens[3], 
                                 label_tokens[4], label_tokens[5], 
                                 label_tokens[6], label_tokens[7]])
+
+

@@ -10,26 +10,32 @@ from prediction_evaluate import get_predictions_result
 from prediction_convert import prediction_convert
 from jpg_to_cell import get_cells
 from Xception_classify import xception_init, xception_predict
-from Xception_convert import xception_convert, predictions_to_csv
+from Xception_convert import xception_convert, xception_to_csv
+from Inception_classify import inception_init, inception_predict
+from Inception_convert import inception_convert, inception_to_csv
 from confusion_matrix import confusion_matrix, generate_xlsx
 from xml_to_asap import gen_asap_xml
-from utils import scan_files, scan_subdirs, get_unrunned_tif, dict_to_csv, csv_to_dict
+from extract_feature import extract_feature
+from xgboost_predict import xgboost_predict
+from utils import scan_files, scan_subdirs, get_unrunned_tif, dict_to_csv, csv_to_dict, write_line_to_csv
 
 colorama.init()
 
 # configuration ###################################################################################################
-input_tif_files = "/mnt/c/tsimage/auto_label_test/one_step_test/tif"
-output_tif_608s = "/mnt/c/tsimage/auto_label_test/one_step_test/608"
-darknet_path = "/mnt/c/tsimage/auto_label_test/darknet"
+input_tif_files = "/media/DATA/2018-06-12-normal"
+output_tif_608s = "/media/DATA/2018-06-12-normal_608"
+darknet_path = "/home/tsimage/Documents/darknet"
 det_segment = 0.05
 det_classify = 0.1
-save_path = "/mnt/c/tsimage/auto_label_test/one_step_test/jpg"
+save_path = "/media/DATA/2018-06-12-normal_jpg"
+diagnosis = "NORMAL"
 ###################################################################################################################
 
 classes_darknet = ["ASCUS", "LSIL", "ASCH", "HSIL", "SCC"]
 classes_xception = ["ACTINO", "ADC", "AGC1", "AGC2", "ASCH", "ASCUS", "CC", "EC", "FUNGI", "GEC", "HSIL", "LSIL", 
                "MC", "RC", "SC", "SCC", "TRI", "VIRUS"]
-
+#classes_inception = ['LSIL', 'EC', 'MC', 'ASCH', 'ADC', 'HSIL', 'AGC1', 'RC', 'VIRUS', 'SC', 'ACTINO', 'SCC', 'FUNGI', 'ASCUS', 'AGC2', 'GEC', 'CC', 'TRI']
+classes_inception = ["ASCH", "ASCUS", "HSIL", "LSIL", "NORMAL", "SCC"]
 
 def tif_to_608():
     print(colorama.Fore.GREEN + "[INFO] cut 608 images from tif file" + colorama.Fore.WHITE)
@@ -75,11 +81,11 @@ def copy_xml_from_seg_to_608(tif_name):
     for xml in xmls:
         shutil.copy(xml, image_path)
 
-def gen_np_array(tif_name):
+def gen_np_array(image_path, classes_darknet):
     # crop cells out of 608 jpgs and save into numpy array, based on predicted xmls
     print(colorama.Fore.GREEN + "[INFO] crop cells out of 608 jpgs and save into numpy array, based on xmls" + colorama.Fore.WHITE)
     classes_dict = {key:0 for key in classes_darknet}
-    image_path = os.path.join(output_tif_608s, tif_name)
+    #image_path = os.path.join(output_tif_608s, tif_name)
     files_list = scan_files(image_path, postfix=".xml")
     img_size = 299
     cell_numpy, cell_numpy_index = get_cells(files_list, classes_dict, img_size)
@@ -106,7 +112,7 @@ def xception_run(cell_numpy):
     print(predictions.shape)
     return predictions
 
-def xception_analyze(dict_pic_info, cell_numpy_index, predictions):
+def xception_analyze(dict_pic_info, cell_numpy_index, predictions, classes_xception):
     # generate new dict_pic_info mapping
     print(colorama.Fore.GREEN + "[INFO] generate new dict_pic_info mapping" + colorama.Fore.WHITE)
     # classes_xception = ["ACTINO", "ADC", "AGC1", "AGC2", "ASCH", "ASCUS", "CC", "EC", "FUNGI", "GEC", "HSIL", "LSIL", 
@@ -133,12 +139,24 @@ def xception_analyze(dict_pic_info, cell_numpy_index, predictions):
     print(colorama.Fore.BLUE + "segment_in_classify: {}".format(sorted(segment_in_classify.items())) + colorama.Fore.WHITE)
     return dict_pic_info_all
 
-def xception_write(tif_name, dict_pic_info_all):
+def xception_write(tif_name, output_tif_608s, dict_pic_info_all, classes_xception, det_classify):
     # generate xmls, based on classification results
     print(colorama.Fore.GREEN + "[INFO] generate xmls based on classification" + colorama.Fore.WHITE)
     img_size = 608
     classify_xml_path = os.path.join(output_tif_608s, tif_name+"_classify")
     xception_convert(dict_pic_info_all, classes_xception, img_size, classify_xml_path, det_classify)
+
+def inception_run(cell_numpy):
+    # run classification
+    print(colorama.Fore.GREEN + "[INFO] run classification" + colorama.Fore.WHITE)   
+    model = inception_init()
+    predictions = inception_predict(cell_numpy, batch_size=20, model=model)
+    print(predictions.shape)
+    return predictions
+
+inception_analyze = xception_analyze
+
+inception_write = xception_write
 
 def copy_jpg_from_608_to_cla(tif_name):
     # copy jpgs from jpg folder to xmls_classify folder
@@ -156,7 +174,7 @@ def write_dict_pic_info(tif_name, dict_pic_info, dict_pic_info_all):
     csv_file_s = os.path.join(output_tif_608s, tif_name+"_s.csv")
     dict_to_csv(dict_pic_info, csv_file_s)
     csv_file_c = os.path.join(output_tif_608s, tif_name+"_c.csv")
-    predictions_to_csv(dict_pic_info_all, classes_darknet, classes_xception, csv_file_c)
+    xception_to_csv(dict_pic_info_all, classes_darknet, classes_xception, csv_file_c)
 
 def write_confusion_matrix(tif_name, cell_numpy_index, predictions):
     # generate confusion matrix
@@ -165,7 +183,7 @@ def write_confusion_matrix(tif_name, cell_numpy_index, predictions):
     xlsx = os.path.join(output_tif_608s, tif_name+".xlsx")
     generate_xlsx(classes_xception, matrix, xlsx)
 
-def gen_asap_xml(tif_name):
+def write_xmls(tif_name):
     # generate asap_xml from labelimg_xmls
     print(colorama.Fore.GREEN + "[INFO] generate asap xml from labelimg xmls" + colorama.Fore.WHITE)
     xml_asap_segment = os.path.join(output_tif_608s, tif_name+"_segment.xml")
@@ -180,23 +198,6 @@ def move_folders(tif_name):
     print(colorama.Fore.GREEN + "[INFO] move current directories to save path" + colorama.Fore.WHITE)
     save_path_i = os.path.join(save_path, tif_name)
     os.makedirs(save_path_i, exist_ok=True)
-    # image_path = os.path.join(output_tif_608s, tif_name)
-    # segment_xml_path = os.path.join(output_tif_608s, tif_name+"_segment")
-    # classify_xml_path = os.path.join(output_tif_608s, tif_name+"_classify")
-    # csv_file_s = os.path.join(output_tif_608s, tif_name+"_s.csv")
-    # csv_file_c = os.path.join(output_tif_608s, tif_name+"_c.csv")
-    # xlsx = os.path.join(output_tif_608s, tif_name+".xlsx")
-    # xml_asap_segment = os.path.join(output_tif_608s, tif_name+"_segment.xml")
-    # xml_asap_classify = os.path.join(output_tif_608s, tif_name+"_classify.xml")
-    # os.system("mv {} {}".format(image_path, save_path_i))
-    # os.system("mv {} {}".format(segment_xml_path, save_path_i))
-    # os.system("mv {} {}".format(classify_xml_path, save_path_i))
-    # os.system("mv {} {}".format(csv_file_s, save_path_i))
-    # os.system("mv {} {}".format(csv_file_c, save_path_i))
-    # os.system("mv {} {}".format(xlsx, save_path_i))
-    # os.system("mv {} {}".format(xml_asap_segment, save_path_i))
-    # os.system("mv {} {}".format(xml_asap_classify, save_path_i))
-
     related_folders = os.listdir(output_tif_608s)
     for f in related_folders:
         if f.startswith(tif_name):
@@ -204,22 +205,87 @@ def move_folders(tif_name):
 
 
 if __name__ == "__main__":
-    tif_name = tif_to_608()
 
+    # # run second stage inception program
+    # tif_names = os.listdir(save_path)
+    # for tif_name in tif_names:
+    #     print(colorama.Fore.RED + "[INFO] XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + colorama.Fore.WHITE)
+    #     tif_dir = os.path.join(save_path, tif_name)
+    #     csv_file_s = os.path.join(tif_dir, tif_name+"_s.csv")
+    #     dict_pic_info = csv_to_dict(csv_file_s)
+    #     cell_numpy, cell_numpy_index = gen_np_array(os.path.join(tif_dir, tif_name+"_segment"), classes_darknet)
+    #     predictions = inception_run(cell_numpy)
+    #     dict_pic_info_all = inception_analyze(dict_pic_info, cell_numpy_index, predictions, classes_inception)
+    #     inception_write(tif_name, tif_dir, dict_pic_info_all, classes_inception, det_classify)
+    #     csv_file_c2 = os.path.join(tif_dir, tif_name+"_c2.csv")
+    #     inception_to_csv(dict_pic_info_all, classes_darknet, classes_inception, csv_file_c2)
+    #     csv_file_f = extract_feature(csv_file_c2, diagnosis=diagnosis)
+    #     pred_class_i = xgboost_predict(csv_file_f)
+    #     print("{}: {}".format(tif_name, pred_class_i))
+
+    # # run second stage Xception program
+    # tif_names = os.listdir(save_path)
+    # for tif_name in tif_names:
+    #     tif_dir = os.path.join(save_path, tif_name)
+    #     csv_file_s = os.path.join(tif_dir, tif_name+"_s.csv")
+    #     dict_pic_info = csv_to_dict(csv_file_s)
+    #     cell_numpy, cell_numpy_index = gen_np_array(os.path.join(tif_dir, tif_name+"_segment"), classes_darknet)
+    #     predictions = xception_run(cell_numpy)
+    #     dict_pic_info_all = xception_analyze(dict_pic_info, cell_numpy_index, predictions, classes_xception)
+    #     xception_write(tif_name, tif_dir, dict_pic_info_all, classes_xception, det_classify)
+    #     csv_file_c2 = os.path.join(tif_dir, tif_name+"_c2.csv")
+    #     xception_to_csv(dict_pic_info_all, classes_darknet, classes_xception, csv_file_c2)
+    #     csv_file_f = extract_feature(csv_file_c2, diagnosis=diagnosis)
+    #     xgboost_predict(csv_file_f)
+
+
+    # # run a complete test [Xception]
+    # print(colorama.Fore.RED + "[INFO] XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + colorama.Fore.WHITE)
+    # tif_name = tif_to_608()
+    # darknet_run(tif_name)
+    # dict_pic_info = darknet_analyze()
+    # darknet_write(dict_pic_info, tif_name)
+    # copy_xml_from_seg_to_608(tif_name)
+    # cell_numpy, cell_numpy_index = gen_np_array(os.path.join(output_tif_608s, tif_name), classes_darknet)
+    # copy_jpg_from_608_to_seg(tif_name)
+    # predictions = xception_run(cell_numpy)
+    # dict_pic_info_all = xception_analyze(dict_pic_info, cell_numpy_index, predictions, classes_xception)
+    # xception_write(tif_name, output_tif_608s, dict_pic_info_all, classes_xception, det_classify)
+    # copy_jpg_from_608_to_cla(tif_name)
+    # write_dict_pic_info(tif_name, dict_pic_info, dict_pic_info_all)
+    # # write_confusion_matrix(tif_name, cell_numpy_index, predictions)
+    # # write_xmls(tif_name)
+    # move_folders(tif_name)
+    # tif_dir = os.path.join(save_path, tif_name)
+    # csv_file_c = os.path.join(tif_dir, tif_name+"_c.csv")
+    # csv_file_f = extract_feature(csv_file_c, diagnosis=diagnosis)
+    # pred_class_i = xgboost_predict(csv_file_f)
+    # print("{}: {}".format(tif_name, pred_class_i))
+    # result_csv = os.path.join(save_path, "result.csv")
+    # write_line_to_csv(result_csv, [tif_name, pred_class_i])
+
+
+    # run a complete test [inception]
+    print(colorama.Fore.RED + "[INFO] XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + colorama.Fore.WHITE)
+    tif_name = tif_to_608()
     darknet_run(tif_name)
     dict_pic_info = darknet_analyze()
     darknet_write(dict_pic_info, tif_name)
-
     copy_xml_from_seg_to_608(tif_name)
-    cell_numpy, cell_numpy_index = gen_np_array(tif_name)
+    cell_numpy, cell_numpy_index = gen_np_array(os.path.join(output_tif_608s, tif_name), classes_darknet)
     copy_jpg_from_608_to_seg(tif_name)
-
-    predictions = xception_run(cell_numpy)
-    dict_pic_info_all = xception_analyze(dict_pic_info, cell_numpy_index, predictions)
-    xception_write(tif_name, dict_pic_info_all)
+    predictions = inception_run(cell_numpy)
+    dict_pic_info_all = inception_analyze(dict_pic_info, cell_numpy_index, predictions, classes_xception)
+    inception_write(tif_name, output_tif_608s, dict_pic_info_all, classes_xception, det_classify)
     copy_jpg_from_608_to_cla(tif_name)
-
     write_dict_pic_info(tif_name, dict_pic_info, dict_pic_info_all)
-    write_confusion_matrix(tif_name, cell_numpy_index, predictions)
-    gen_asap_xml(tif_name)
+    # write_confusion_matrix(tif_name, cell_numpy_index, predictions)
+    # write_xmls(tif_name)
     move_folders(tif_name)
+    tif_dir = os.path.join(save_path, tif_name)
+    csv_file_c = os.path.join(tif_dir, tif_name+"_c.csv")
+    csv_file_f = extract_feature(csv_file_c, diagnosis=diagnosis)
+    pred_class_i = xgboost_predict(csv_file_f)
+    print("{}: {}".format(tif_name, pred_class_i))
+    result_csv = os.path.join(save_path, "result.csv")
+    write_line_to_csv(result_csv, [tif_name, pred_class_i])

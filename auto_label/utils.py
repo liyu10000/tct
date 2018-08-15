@@ -59,7 +59,19 @@ def csv_to_dict(csv_fullname):
         csv_fullname: full path name of output csv file
         return: {key:value}
     """
+    dict_ = {}
     with open(csv_fullname, "r") as csv_file:
         reader = csv.reader(csv_file)
-        dict_ = dict(reader)
+        for key,value in reader:
+            dict_[key] = [i.strip()[1:-1] for i in value[1:-1].split(',')]
     return dict_
+
+def write_line_to_csv(csv_fullname, line):
+    with open(csv_fullname, "a") as csv_file:
+        writer = csv.writer(csv_file)
+        writer.writerow(line)
+
+if __name__ == "__main__":
+    csv_fullname = "/home/tsimage-y/Development/data/liyu_test/test_jpg/2018-03-15-14_54_10/2018-03-15-14_54_10_s.csv"
+    dict_ = csv_to_dict(csv_fullname)
+    print(dict_)

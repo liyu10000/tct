@@ -2,6 +2,7 @@ import os
 import xml.dom.minidom
 import xml.etree.ElementTree as ET
 from prediction_evaluate import *
+from utils import csv_to_dict
 
 # result_dir = "/home/sakulaki/code/yolo-pre-trained/darknet/results"
 # classes = ["ASCUS", "LSIL", "ASCH", "HSIL", "SCC"]
@@ -52,10 +53,18 @@ def prediction_convert(dict_pic_info, classes, img_size, save_path, det):
             file.close()
 
 if __name__ == "__main__":
-    result_dir = "/home/sakulaki/code/yolo-pre-trained/darknet/results"
-    classes_list = ["ASCUS", "LSIL", "ASCH", "HSIL", "SCC"]
-    dict_pic_info = get_predictions_result(result_dir, classes_list)
+    # result_dir = "/home/sakulaki/code/yolo-pre-trained/darknet/results"
+    # classes_list = ["ASCUS", "LSIL", "ASCH", "HSIL", "SCC"]
+    # dict_pic_info = get_predictions_result(result_dir, classes_list)
+    # img_size = 608
+    # save_path = "/home/sakulaki/dataset/realtest/608/XB1800118"
+    # det = 0.3
+    # prediction_convert(dict_pic_info, classes_list, img_size, save_path, det)
+
+    csv_file = "D:/2018-08-13-test_jpg/2018-08-13-14_15_41/2018-08-13-14_15_41_s.csv"
+    dict_ = csv_to_dict(csv_file)
+    classes = ["ASCUS", "LSIL", "ASCH", "HSIL", "SCC"]
     img_size = 608
-    save_path = "/home/sakulaki/dataset/realtest/608/XB1800118"
-    det = 0.3
-    prediction_convert(dict_pic_info, classes_list, img_size, save_path, det)
+    save_path = "D:/2018-08-13-test_jpg/2018-08-13-14_15_41/xmls"
+    det = 0.9
+    prediction_convert(dict_, classes, img_size, save_path, det)

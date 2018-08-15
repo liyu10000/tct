@@ -75,3 +75,5 @@ step6:
 shutdown os at set time
     sudo shutdown -h 22:00
 
+find specific file by name or extension
+    find /dir/path -name "*.jpg"
