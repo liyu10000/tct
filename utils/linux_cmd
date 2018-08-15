@@ -84,3 +84,6 @@ configure git lfs
     3. add big file extensions to track: git lfs track "*.h5"
     4. make sure .gitattributes is tracked: git add .gitattributes
     5. use git as usual
+
+ubuntu: copy from one server to another:
+    scp [-r] src_file/src_dir <username>@<ip>:des/path/

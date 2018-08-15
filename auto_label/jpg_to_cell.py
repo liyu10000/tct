@@ -14,7 +14,6 @@ import xml.dom.minidom
 
 def scan_files(directory, prefix=None, postfix=None):
     files_list = []
-
     for root, sub_dirs, files in os.walk(directory):
         for special_file in files:
             if postfix:
@@ -25,7 +24,6 @@ def scan_files(directory, prefix=None, postfix=None):
                     files_list.append(os.path.join(root, special_file))
             else:
                 files_list.append(os.path.join(root, special_file))
-
     return files_list
 
 def resize_img(img, size):
@@ -50,7 +48,7 @@ def get_cells(files_list, classes, size):
     cell_numpy_index = {}
     index = 0
     for xml_file in files_list:
-        # from .xml filename, get .til filename
+        # from .xml filename, get .tif filename
         filename = os.path.splitext(xml_file)[0]
         filetype = ".jpg"
         # open .jpg file

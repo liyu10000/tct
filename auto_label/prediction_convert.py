@@ -4,12 +4,6 @@ import xml.etree.ElementTree as ET
 from prediction_evaluate import *
 from utils import csv_to_dict
 
-# result_dir = "/home/sakulaki/code/yolo-pre-trained/darknet/results"
-# classes = ["ASCUS", "LSIL", "ASCH", "HSIL", "SCC"]
-# dict_pic_info = get_predictions_result(result_dir, classes)
-
-# img_size = 608
-# save_path = "/home/sakulaki/dataset/realtest/608/XB1800118"
 
 def prediction_convert(dict_pic_info, classes, img_size, save_path, det):
     os.makedirs(save_path, exist_ok=True)
