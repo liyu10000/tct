@@ -42,9 +42,9 @@ def tif_to_608():
     os.makedirs(output_tif_608s, exist_ok=True)
     os.makedirs(save_path, exist_ok=True)
     tif_name_ext = get_unrunned_tif(input_tif_files, save_path)
-    if len(tif_name_ext) == 0:
+    if tif_name_ext == "":
         print(colorama.Fore.RED + "[INFO] data processing finished" + colorama.Fore.WHITE)
-        sys.exit()
+        sys.exit(1)
     asap_to_image(os.path.join(input_tif_files, tif_name_ext), output_tif_608s)
     tif_name = os.path.splitext(tif_name_ext)[0]
     return tif_name
