@@ -103,3 +103,36 @@ nohup ./darknet detector train cfg/
     w: 04_HSIL 有112张，在/home/tsimage-w/TCTData/04_HSIL
     广州002： 已跑完normal，在/media/DATA/2018-06-11-normal
               现在继续跑normal，在/media/DATA/2018-06-12-normal， 直接用inception跑全流程
+    002: 02_LSIL, 03_ASCH  拷到了tsimage-y tsimage-y: 192.168.1.37:/Documents  02_LSIL_jpg 03_ASCH_jpg
+
+    需要的数据文件夹一般以_jpg结尾，所需要的文件一般以_c.csv或者_c2.csv结尾，_c2.csv是第二次跑第二阶段生成的数据，比如第一次用xception，会生成_c.csv；第二次换成inception，会生成_c2.csv.
+    查看一个文件夹中是否存在某类文件，可以用find指令：
+        find /dir/path/ -name "*_c.csv"
+    对文件计数：
+        find /dir/path/ -name "*_c.csv" | wc -l
+
+    001: 192.168.1.180
+        /home/sakulaki/sakulaki/yolo-yuli/last_step:
+            01_ASCUS_jpg  505 这个文件已经跑了inception共219个
+            ASCH_jpg  140
+            HSIL_jpg  34
+            LSIL_jpg  75
+    002: 192.168.1.11
+        /home/tsimage/Documents
+            02_LSIL_jpg  135
+            03_ASCH_jpg  55
+    w: 192.168.1.192
+        /home/tsimage-w/TCTData
+            04_HSIL_jpg  112
+            05_SCC_jpg   40
+        /home/tsimage-w/Downloads/NORMAL-AWS
+            NORMAL_AWS_jpg  92
+    x: 192.168.1.123
+        /home/sakulaki/algo-final
+            02_LSIL_jpg  172
+    广州002: 192.168.0.149
+        2018-06-11-normal
+        2018-06-12-normal
+
+
+    
