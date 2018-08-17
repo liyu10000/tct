@@ -32,4 +32,4 @@
         kill -9 [pid]
 
 9. using tslide
-        sudo cp -r tslide.so /usr/lib
+        sudo cp -r tslide/*.so /usr/lib

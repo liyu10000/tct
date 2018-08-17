@@ -113,17 +113,17 @@ nohup ./darknet detector train cfg/
 
     001: 192.168.1.180
         /home/sakulaki/sakulaki/yolo-yuli/last_step:
-            01_ASCUS_jpg  505 这个文件已经跑了inception共219个
+            01_ASCUS_jpg  505 这个文件已经跑了inception共219个，正在跑
             ASCH_jpg  140
             HSIL_jpg  34
             LSIL_jpg  75
-    002: 192.168.1.11
+    002: 192.168.1.11 这台服务器产品在用，需要拷出来
         /home/tsimage/Documents
-            02_LSIL_jpg  135
+            02_LSIL_jpg  135 
             03_ASCH_jpg  55
     w: 192.168.1.192
         /home/tsimage-w/TCTData
-            04_HSIL_jpg  112
+            04_HSIL_jpg  112 已经跑了88个，正在跑
             05_SCC_jpg   40
         /home/tsimage-w/Downloads/NORMAL-AWS
             NORMAL_AWS_jpg  92
