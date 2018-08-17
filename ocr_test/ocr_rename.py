@@ -19,7 +19,7 @@ label_output += ".txt"
 with open(label_list, "r") as list_f:
 	#print(list_f.readlines())
 	label_names_old = list_f.readlines()
-label_names_old = [os.path.basename(i.strip()) for i in label_names_old]
+label_names_old = [os.path.basename(i.strip())[:19] for i in label_names_old]
 
 # search for label
 with open(label_output, "r") as output_f:
@@ -41,4 +41,4 @@ df.to_csv(csv_file)
 # check and correct results.csv, i will use it to rename files
 df2 = pd.read_csv(csv_file)
 for row in df.iterrows():
-	os.rename(os.path.join(label_dir, row['old'][:19]+".kfb"), os.path.join(label_dir, row['new']+".kfb"))
+	os.rename(os.path.join(label_dir, row['old']+".kfb"), os.path.join(label_dir, row['new']+".kfb"))

@@ -25,25 +25,15 @@ def scan_files(directory, prefix=None, postfix=None):
     return files_list
 
 
-colors = {"#000000": 0,
-               "#aa0000": 0,
-               "#aa007f": 0,
-               "#aa00ff": 0,
-               "#ff0000": 0,
-               "#005500": 0,
-               "#00557f": 0,
-               "#0055ff": 0,
-               "#aa5500": 0,
-               "#aa557f": 0,
-               "#aa55ff": 0,
-               "#ff5500": 0,
-               "#iff557f": 0,
-               "#ff55ff": 0,
-               "#00aa00": 0,
-               "#00aa7f": 0,
-               "#00aaff": 0,
-               "#55aa00": 0,
-               "#55aa7f": 0}
+# colors = {"#000000": 0, "#aa0000": 0, "#aa007f": 0, "#aa00ff": 0,
+#           "#ff0000": 0, "#005500": 0, "#00557f": 0, "#0055ff": 0,
+#           "#aa5500": 0, "#aa557f": 0, "#aa55ff": 0, "#ff5500": 0,
+#           "#ff557f": 0, "#ff55ff": 0, "#00aa00": 0, "#00aa7f": 0,
+#           "#00aaff": 0, "#55aa00": 0, "#55aa7f": 0}
+colors = {"#aa0000": "HSIL", "#aa007f": "ASCH", "#005500": "LSIL", "#00557f": "ASCUS", 
+          "#0055ff": "SCC", "#aa557f": "ADC", "#aa55ff": "EC", "#ff5500": "AGC1", 
+          "#ff557f": "AGC2", "#ff55ff": "AGC3", "#00aa00": "FUNGI", "#00aa7f": "TRI", 
+          "#00aaff": "CC", "#55aa00": "ACTINO", "#55aa7f": "VIRUS"}
 
 
 def choose_xy(x_coords, y_coords, size):
@@ -86,9 +76,11 @@ def cellSampling(files_list, save_path, size):
                         y_coords.append(float(coordinate.getAttribute("Y")))
                     # get the (x, y) coordinates for read_region()
                     point_xy = choose_xy(x_coords, y_coords, size)
-                    cell = slide.read_region((int(point_xy[0]), int(point_xy[1])), 0, (size, size))
-                    cell = cell.convert("RGB")
-                    scipy.misc.imsave(save_path + "/" + annotation.getAttribute("Color") + "/" + str(right).zfill(6) + "_data7" + ".jpg", cell)
+                    x, y = int(point_xy[0]), int(point_xy[1])
+                    cell = slide.read_region((x, y), 0, (size, size)).convert("RGB")
+                    save_path_i = os.path.join(save_path, colors[annotation.getAttribute("Color")])
+                    os.makedirs(save_path_i, exist_ok=True)
+                    scipy.misc.imsave(os.path.join(save_path_i, "{}_{}_{}.jpg".format(os.path.basename(filename), x, y)), cell)
                     right += 1
                 else:
                     wrong += 1
@@ -99,11 +91,9 @@ def cellSampling(files_list, save_path, size):
     print("# wrong color: " + str(wrong))
 
 
-file_path = "D:\\data7"
-# file_path = "/media/tsimage/Elements/data6"
+file_path = "/media/tsimage001/Elements/data/asap_all"
 files_list = scan_files(file_path, postfix=".xml")
 
-save_path = "D:\\0502-data7-size224-jpg"
-# save_path = "/media/tsimage/Elements/0430-data1-6-size512"
-cellSampling(files_list, save_path, 224)
+save_path = "/home/sakulaki/yolo-yuli/asap_2048"
+cellSampling(files_list, save_path, 2048)
 
