@@ -60,7 +60,7 @@ def cut(tif_dir, positions, size, save_path):
 		try:
 	        slide = openslide.OpenSlide(os.path.join(tif_dir, tif+".tif"))
 	    except:
-	        slide = TSlide(os.path.join(tif_dir, tif+".tif"))
+	        slide = TSlide(os.path.join(tif_dir, tif+".kfb"))
 		for box in boxes:
 			save_path_i = os.path.join(save_path, box[0])
 			os.makedirs(save_path_i, exist_ok=True)
