@@ -47,7 +47,7 @@ def xgboost_predict(csv_file):
         print('Model name:', model.__class__.__name__)
         print(model.__class__.__name__+' confusion_matrix:')
         print(cm)
-        print(model.__class__.__name__+' classification_report')
+        print(model.__class__.__name__+' classification_report:')
         print(cr)
         print(model.__class__.__name__+' classification_report: predict {}, accuracy {}'.format(classes[y_pred[0]], acc))
         return classes[y_pred[0]]

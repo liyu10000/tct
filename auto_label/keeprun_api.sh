@@ -4,9 +4,9 @@ do
     status=$?
     if test $status -eq 0
     then
-        echo "program exit normally"
+        echo "finished one round."
     else
-        echo "no files found"
+        echo "exit bash shell."
         exit 1
     fi
 done
