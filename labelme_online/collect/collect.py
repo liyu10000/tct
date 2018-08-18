@@ -2,7 +2,7 @@ import requests
 import json
 import xlsxwriter
 from datetime import datetime
-from info import url, all_headers
+from collect_headers import url, all_headers
 
 def get_table(url, header):
 	res = requests.get(url, headers=header)

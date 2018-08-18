@@ -1,6 +1,7 @@
 import os
 import openslide
 import scipy.misc
+from tslide.tslide import TSlide
 
 classes = ['VIRUS', 'CC', 'HSIL', 'FUNGI', 'AGC1', 'AGC3', 'EC', 'LSIL', 'ASCH', 'AGC2', 'ACTINO', 'ASCUS', 'SCC', 'ADC', 'TRI']
 
@@ -22,7 +23,7 @@ def get_position(src_txt_dir, des_tif_dir):
 	des_tifs = os.listdir(des_tif_dir)
 	positions = {}
 	for src_tif in src_tifs:
-		if (not src_tif.startswith("2017")) or (not tif_in(src_tif, des_tifs)):
+		if (not src_tif.startswith("2018")) or (not tif_in(src_tif, des_tifs)):
 			continue
 		positions[src_tif] = []
 		src_tif_txts = os.listdir(os.path.join(src_txt_dir, src_tif))
@@ -55,7 +56,11 @@ def cut(tif_dir, positions, size, save_path):
 		return (x, y)
 
 	for tif,boxes in positions.items():
-		slide = openslide.OpenSlide(os.path.join(tif_dir, tif+".tif"))
+		#slide = openslide.OpenSlide(os.path.join(tif_dir, tif+".tif"))
+		try:
+	        slide = openslide.OpenSlide(os.path.join(tif_dir, tif+".tif"))
+	    except:
+	        slide = TSlide(os.path.join(tif_dir, tif+".tif"))
 		for box in boxes:
 			save_path_i = os.path.join(save_path, box[0])
 			os.makedirs(save_path_i, exist_ok=True)
@@ -66,10 +71,10 @@ def cut(tif_dir, positions, size, save_path):
 		print("processed: {}".format(tif))
 
 if __name__ == "__main__":
-	src_txt_dir = "/home/sakulaki/yolo-yuli/xxx/data_unchecked_20180818"
-	des_tif_dir = "/home/sakulaki/yolo-yuli/last_step/LSIL"	
+	src_txt_dir = "/home/sakulaki/yolo-yuli/xxx/data_unchecked_20180818/batch1"
+	des_tif_dir = "/home/sakulaki/yolo-yuli/xxx/data_unchecked_20180818/batch1_kfb/all"	
 	positions = get_position(src_txt_dir, des_tif_dir)
 
 	size = 2048
-	save_path = "/home/sakulaki/yolo-yuli/xxx/online_2048_center"
+	save_path = "/home/sakulaki/yolo-yuli/xxx/online_2048_center_part2"
 	cut(des_tif_dir, positions, size, save_path)

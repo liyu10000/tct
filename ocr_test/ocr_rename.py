@@ -35,7 +35,7 @@ label_names_new += [''] * (len(label_names_old) - len(label_names_new))
 
 # since ocr is not always correct, we need to check it manually
 csv_file = "results.csv"
-df = pd.DataFrame({"old": label_names_old, "new":label_names_new})
+df = pd.DataFrame({"old":label_names_old, "new":label_names_new})
 df.to_csv(csv_file)
 
 # check and correct results.csv, i will use it to rename files
