@@ -70,6 +70,7 @@ def cut(tif_dir, positions, size, save_path):
 		slide.close()
 		print("processed: {}".format(tif))
 
+
 if __name__ == "__main__":
 	src_txt_dir = "/home/sakulaki/yolo-yuli/xxx/data_unchecked_20180818/batch1"
 	des_tif_dir = "/home/sakulaki/yolo-yuli/xxx/data_unchecked_20180818/batch1_kfb/all"	
