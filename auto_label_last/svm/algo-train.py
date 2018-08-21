@@ -24,7 +24,7 @@ def predict(X):
 if __name__ == '__main__':
     # path_data = 'train.txt'
     # path_label = 'label.txt'
-    # train(path_data, path_label)X_test
+    # train(path_data, path_label)
 
     path_data = "C:/tsimage/tct/auto_label_last/svm/train_test.txt"
     with open(path_data) as f:
