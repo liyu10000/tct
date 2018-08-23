@@ -1,3 +1,7 @@
+"""
+This script processes single images, pad it up to designated size, or if it is too big, 
+split it into four pieces and pad from corresponding directions.
+"""
 import os
 import cv2
 from random import shuffle
