@@ -95,3 +95,6 @@ jupyter: run from a remote server
         ssh -N -f -L localhost:8888:localhost:8889 username@<ip>
     run on local browser:
         localhost:8888
+
+linux: live watch gpu usage, every 1 second
+    watch -n 1 nvidia-smi
