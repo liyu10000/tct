@@ -3,7 +3,9 @@ import openslide
 import scipy.misc
 from tslide.tslide import TSlide
 
-classes = ['VIRUS', 'CC', 'HSIL', 'FUNGI', 'AGC1', 'AGC3', 'EC', 'LSIL', 'ASCH', 'AGC2', 'ACTINO', 'ASCUS', 'SCC', 'ADC', 'TRI']
+classes = ['VIRUS', 'CC', 'HSIL', 'FUNGI', 'AGC1', 'AGC3', 
+		   'EC', 'LSIL', 'ASCH', 'AGC2', 'ACTINO', 'ASCUS', 'SCC', 'ADC', 'TRI',
+		   'MC', 'SC', 'RC', 'GEC', 'NORMAL']
 
 def get_position(src_txt_dir, des_tif_dir):
 	"""
@@ -23,7 +25,7 @@ def get_position(src_txt_dir, des_tif_dir):
 	des_tifs = os.listdir(des_tif_dir)
 	positions = {}
 	for src_tif in src_tifs:
-		if (not src_tif.startswith("2018")) or (not tif_in(src_tif, des_tifs)):
+		if (not src_tif.startswith("2017")) or (not tif_in(src_tif, des_tifs)):
 			continue
 		positions[src_tif] = []
 		src_tif_txts = os.listdir(os.path.join(src_txt_dir, src_tif))
@@ -41,7 +43,7 @@ def get_position(src_txt_dir, des_tif_dir):
 					positions[src_tif].append((class_i,x,y,w,h))
 	return positions
 
-def cut(tif_dir, positions, size, save_path):
+def cut_fixed_size(tif_dir, positions, size, save_path):
 	"""
 		tif_dir: tif folder
 		positions: {tif: [(class_i, x, y, w, h),]}
@@ -70,12 +72,39 @@ def cut(tif_dir, positions, size, save_path):
 		slide.close()
 		print("processed: {}".format(tif))
 
+def cut_same_size(tif_dir, positions, save_path):
+	"""
+		tif_dir: tif folder
+		positions: {tif: [(class_i, x, y, w, h),]}
+		save_path: target save path, image naming: tif_x_y_w_h.jpg
+	"""
+	for tif,boxes in positions.items():
+		#slide = openslide.OpenSlide(os.path.join(tif_dir, tif+".tif"))
+		try:
+	        slide = openslide.OpenSlide(os.path.join(tif_dir, tif+".tif"))
+	    except:
+	        slide = TSlide(os.path.join(tif_dir, tif+".kfb"))
+		for box in boxes:
+			save_path_i = os.path.join(save_path, box[0])
+			os.makedirs(save_path_i, exist_ok=True)
+			x, y = box[1], box[2]
+			w, h = box[3], box[4]
+			cell = slide.read_region((x, y), 0, (w, h)).convert("RGB")
+			cell.save(os.path.join(save_path_i, "{}_x{}_y{}_w{}_h{}.jpg".format(tif, x, y, w, h)))
+		slide.close()
+		print("processed: {}".format(tif))
+
 
 if __name__ == "__main__":
-	src_txt_dir = "/home/sakulaki/yolo-yuli/xxx/data_unchecked_20180818/batch1"
-	des_tif_dir = "/home/sakulaki/yolo-yuli/xxx/data_unchecked_20180818/batch1_kfb/all"	
+	src_txt_dir = "/home/sakulaki/yolo-yuli/xxx/data_unchecked_20180818/batch0"
+	des_tif_dir = "/home/sakulaki/yolo-yuli/last_step/LSIL"	
 	positions = get_position(src_txt_dir, des_tif_dir)
 
-	size = 2048
-	save_path = "/home/sakulaki/yolo-yuli/xxx/online_2048_center_part2"
-	cut(des_tif_dir, positions, size, save_path)
+	# # cut a fixed sized image around the label box
+	# size = 2048
+	# save_path = "/home/sakulaki/yolo-yuli/xxx/online_2048_center_part2"
+	# cut_fixed_size(des_tif_dir, positions, size, save_path)
+
+	# cut out the label box, as it is
+	save_path = "/home/sakulaki/yolo-yuli/xxx/online_samesize_0825_part1"
+	cut_same_size(des_tif_dir, positions, save_path)
