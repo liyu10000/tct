@@ -11,7 +11,8 @@ def rm_excess(save_path):
 		clas_dir = os.path.join(subdir, tif_name+"_classify")
 		if os.path.exists(clas_dir):
 			shutil.rmtree(clas_dir)
+		print("processed ", tif_name)
 
 if __name__ == "__main__":
-	save_path = os.path.join(os.getcwd(), "")
+	save_path = "/home/sakulaki/yolo-yuli/last_step/01_ASCUS_jpg"
 	rm_excess(save_path)
