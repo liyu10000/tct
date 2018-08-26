@@ -25,7 +25,7 @@ def get_position(src_txt_dir, des_tif_dir):
     des_tifs = os.listdir(des_tif_dir)
     positions = {}
     for src_tif in src_tifs:
-        if (not src_tif.startswith("2017")) or (not tif_in(src_tif, des_tifs)):
+        if (not src_tif.startswith("2018")) or (not tif_in(src_tif, des_tifs)):
             continue
         positions[src_tif] = []
         src_tif_txts = os.listdir(os.path.join(src_txt_dir, src_tif))
@@ -96,8 +96,8 @@ def cut_same_size(tif_dir, positions, save_path):
 
 
 if __name__ == "__main__":
-    src_txt_dir = "/home/sakulaki/yolo-yuli/xxx/data_unchecked_20180818/batch0"
-    des_tif_dir = "/home/sakulaki/yolo-yuli/last_step/LSIL" 
+    src_txt_dir = "/home/sakulaki/yolo-yuli/xxx/data_unchecked_20180818/batch1"
+    des_tif_dir = "/home/sakulaki/yolo-yuli/xxx/data_unchecked_20180818/batch1_kfb/all" 
     positions = get_position(src_txt_dir, des_tif_dir)
 
     # # cut a fixed sized image around the label box
@@ -106,5 +106,5 @@ if __name__ == "__main__":
     # cut_fixed_size(des_tif_dir, positions, size, save_path)
 
     # cut out the label box, as it is
-    save_path = "/home/sakulaki/yolo-yuli/xxx/online_samesize_0825_part1"
+    save_path = "/home/sakulaki/yolo-yuli/xxx/online_samesize_0825_part2"
     cut_same_size(des_tif_dir, positions, save_path)
