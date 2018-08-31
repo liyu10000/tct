@@ -98,3 +98,12 @@ jupyter: run from a remote server
 
 linux: live watch gpu usage, every 1 second
     watch -n 1 nvidia-smi
+
+find and copy files from src_dir to des_dir
+    find src_dir/ -type f -name "*.txt" | xargs cp -t des_dir/
+    find src_dir/ -type f -name "*.txt" | xargs -0 -I file cp file des_dir/
+    find src_dir/ -type f -name "*.txt" | xargs -0 -I {} cp {} des_dir/
+
+grep: find certain str in a file/files
+    grep --color -n pattern file
+    grep --color -n -r pattern files
