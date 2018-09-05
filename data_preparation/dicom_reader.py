@@ -23,8 +23,8 @@ def scan_files(directory, prefix=None, postfix=None):
     return files_list
 
 
-dcms = scan_files("/media/tsimage001/TSIMAGE/CT/CT_a784d07a2d539b8a6d9448a3892a5d01/118ba86eedb66f8d2b0b30c83d3762d3", postfix=".dcm")
-save_path = "/media/tsimage001/TSIMAGE/CT-png/CT_a784d07a2d539b8a6d9448a3892a5d01/118ba86eedb66f8d2b0b30c83d3762d3"
+dcms = scan_files("/media/tsimage001/TSIMAGE/CT/CT_84f77ab75fa682fca51a91e0b06ee818/0c61072af1a30e4b14ea57511b678aaa", postfix=".dcm")
+save_path = "/media/tsimage001/TSIMAGE/CT-png/CT_84f77ab75fa682fca51a91e0b06ee818/0c61072af1a30e4b14ea57511b678aaa"
 if not os.path.exists(save_path):
     os.makedirs(save_path)
 
@@ -50,9 +50,9 @@ for dcm in dcms:
     #     plt.show()
     #     count += 1
 
-    # brightness = 30
-    # contrast = 10
-    # img = img * (contrast/127+1) - contrast + brightness
+    brightness = 0
+    contrast = 30
+    img = img * (contrast/127+1) - contrast + brightness
     img = (img-img.min())/(img.max()-img.min())*255.0
     # img = np.clip(img, 0, 255)
     img = np.uint8(img)

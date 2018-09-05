@@ -49,7 +49,7 @@ def get_xy(box, size, position):
     return (int(x), int(y))
 
 
-def cut_cells(xml_file, save_path, size):
+def cut_cells(xml_file, save_path, size, position):
     # get basename, without extension
     basename = os.path.splitext(os.path.basename(xml_file))[0]
     # open .tif file
@@ -69,7 +69,7 @@ def cut_cells(xml_file, save_path, size):
             if len(x_coords) < 3:
                 continue
             # get the (x, y) coordinates for read_region()
-            x, y = get_xy((min(x_coords), min(y_coords), max(x_coords), max(y_coords)), size, (0.5, 0.5))
+            x, y = get_xy((min(x_coords), min(y_coords), max(x_coords), max(y_coords)), size, position)
             if x == -1:
                 continue
             save_path_i = os.path.join(save_path, basename, colors[annotation.getAttribute("Color")])
@@ -81,14 +81,14 @@ def cut_cells(xml_file, save_path, size):
     print(basename + ": number of cells " + str(count))
 
 
-def batch_process(path_in, path_out, size):
+def batch_process(path_in, path_out, size, position):
     files_list = scan_files(path_in, postfix=".xml")
     for f in files_list:
-        cut_cells(f, path_out, size)
+        cut_cells(f, path_out, size, position)
 
 
 if __name__ == "__main__":
     path_in = "/home/sakulaki/yolo-yuli/one_stop_test/tif_xml"
     path_out = "/home/sakulaki/yolo-yuli/one_stop_test/tif_xml_cells"
-    batch_process(path_in, path_out, 512)    
+    batch_process(path_in, path_out, 512, (0.5, 0.5))    
 

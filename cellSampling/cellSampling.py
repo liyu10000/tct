@@ -14,7 +14,6 @@ colors = {"#000000": "MC", "#aa0000": "HSIL", "#aa007f": "ASCH", "#aa00ff": "SC"
 
 def scan_files(directory, prefix=None, postfix=None):
     files_list = []
-
     for root, sub_dirs, files in os.walk(directory):
         for special_file in files:
             if postfix:
@@ -25,65 +24,52 @@ def scan_files(directory, prefix=None, postfix=None):
                     files_list.append(os.path.join(root, special_file))
             else:
                 files_list.append(os.path.join(root, special_file))
-
     return files_list
 
 def cellSampling(files_list, save_path):
     for xml_file in files_list:
         # from .xml filename, get .til filename
         filename = os.path.splitext(xml_file)[0]
-        filetype = ".tif"
-
         # open .tif file
-        tif_file = filename + filetype
+        tif_file = filename + ".tif"
         try:
             slide = openslide.OpenSlide(tif_file)
-
             # open .xml file
             DOMTree = xml.dom.minidom.parse(xml_file)
             collection = DOMTree.documentElement
             annotations = collection.getElementsByTagName("Annotation")
-
-            i = 0
             for annotation in annotations:
                 coordinates = annotation.getElementsByTagName("Coordinate")
-
                 # read (x, y) coordinates
-                x_coords = []
-                y_coords = []
-                for coordinate in coordinates:
-                    x_coords.append(float(coordinate.getAttribute("X")))
-                    y_coords.append(float(coordinate.getAttribute("Y")))
-
+                x_coords = [float(coordinate.getAttribute("X")) for coordinate in coordinates]
+                y_coords = [float(coordinate.getAttribute("Y")) for coordinate in coordinates]
                 # get mininum-area-bounding-rectangle
                 x_min = min(x_coords)
                 x_max = max(x_coords)
                 y_min = min(y_coords)
                 y_max = max(y_coords)
-
-                # # 2 times the size of marked region
-                # x = int(1.5 * x_min - 0.5 * x_max)
-                # y = int(1.5 * y_min - 0.5 * y_max)
-                # x_size = int(2 * (x_max - x_min))
-                # y_size = int(2 * (y_max - y_min))
-
-                # take out the size as it is
-                x = int(x_min)
-                y = int(y_min)
-                x_size = int(x_max - x_min)
-                y_size = int(y_max - y_min)
-
+                # 2 times the size of marked region
+                x = int(1.5 * x_min - 0.5 * x_max)
+                y = int(1.5 * y_min - 0.5 * y_max)
+                x_size = int(2 * (x_max - x_min))
+                y_size = int(2 * (y_max - y_min))
+                # # take out the size as it is
+                # x = int(x_min)
+                # y = int(y_min)
+                # x_size = int(x_max - x_min)
+                # y_size = int(y_max - y_min)
                 if annotation.getAttribute("Color") in colors:
-                    cell = slide.read_region((x, y), 0, (x_size, y_size)).convert("RGB")
                     cell_path = os.path.join(save_path, colors[annotation.getAttribute("Color")])
-                    if not os.path.exists(cell_path):
-                        os.makedirs(cell_path)
-                    cell_name = os.path.join(cell_path, os.path.basename(filename)+"_"+str(i)+".jpg")
-                    scipy.misc.imsave(cell_name, cell)
-                i += 1
-
+                    os.makedirs(cell_path, exist_ok=True)
+                    cell_name = "{}_x{}_y{}_w{}_h{}.jpg".format(os.path.basename(filename), 
+                                                                int(x_min), 
+                                                                int(y_min), 
+                                                                int(x_max-x_min),
+                                                                int(y_max-y_min))
+                    cell_path_name = os.path.join(cell_path, cell_name)
+                    cell = slide.read_region((x, y), 0, (x_size, y_size)).convert("RGB")
+                    cell.save(cell_path_name)
             slide.close()
-
         except:
             print(filename + " cannot be processed")
 
