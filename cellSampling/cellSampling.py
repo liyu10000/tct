@@ -74,15 +74,14 @@ def cut_cells(xml_file, save_path):
 def main(path_in, path_out):
     sub_dirs = os.listdir(path_in)
     for d in sub_dirs:
-        if not os.path.isdir(d):
+        if not os.path.isdir(os.path.join(path_in, d)):
             continue
-        xmls = os.path.join(path_in, d)
+        xmls = scan_files(os.path.join(path_in, d), postfix=".xml")
         path_out_d = os.path.join(path_out, d)
         for x in xmls:
-            cut_cells(os.path.join(path_in, d, x), path_out_d)
+            cut_cells(x, path_out_d)
             print("processed", x)
         print("finished", d)
-
 
 
 if __name__ == "__main__":
