@@ -107,3 +107,49 @@ find and copy files from src_dir to des_dir
 grep: find certain str in a file/files
     grep --color -n pattern file
     grep --color -n -r pattern files
+
+configure shadowsocks on ubuntu (use as client)
+    #https://www.linuxbabe.com/desktop-linux/how-to-install-and-use-shadowsocks-command-line-client
+    pip install shadowsocks
+    #locate sslocal, results should be /usr/local/bin/sslcoal
+        whereis sslocal
+    #create a configuration file
+        sudo vim /etc/shadowsocks.json
+    #input the following into shadowsocks.json
+    {
+        "server":"server-ip",
+        "server_port":8000,
+        "local_address": "127.0.0.1",
+        "local_port":1080,
+        "password":"your-password",
+        "timeout":600,
+        "method":"aes-256-cfb"
+    }
+    #start the client
+        sslocal -c /etc/shadowsocks.json
+    #run in the background
+        sudo sslocal -c /etc/shadowsocks.json -d start
+    #stop it
+        sudo sslocal -c /etc/shadowsocks.json -d stop
+    #we can also auto start the client on system boot
+    #edit /etc/rc.local file
+        sudo vim /etc/rc.local
+    #put the following line above the "exit 0" line
+        sudo sslocal -c /etc/shadowsocks.json -d start
+    #check if it works, after rebooting the computer
+        sudo systemctl status rc-local.service
+    #if sslocal command works, then should get some output like this
+        ● rc-local.service - /etc/rc.local Compatibility
+           Loaded: loaded (/lib/systemd/system/rc-local.service; static; vendor preset: enabled)
+          Drop-In: /lib/systemd/system/rc-local.service.d
+                   └─debian.conf
+           Active: active (running) since 三 2018-09-05 21:47:15 CST; 1min 9s ago
+          Process: 3528 ExecStart=/etc/rc.local start (code=exited, status=0/SUCCESS)
+         Main PID: 3772 (sslocal)
+            Tasks: 1
+           Memory: 22.0M
+              CPU: 100ms
+           CGroup: /system.slice/rc-local.service
+                   └─3772 /usr/bin/python /usr/local/bin/sslocal -c /etc/shadowsocks.json -d start
+    #run this to test the client setup
+        http_proxy=socks5://127.0.0.1:1080 curl myip.ipip.net
