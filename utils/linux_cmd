@@ -153,3 +153,13 @@ configure shadowsocks on ubuntu (use as client)
                    └─3772 /usr/bin/python /usr/local/bin/sslocal -c /etc/shadowsocks.json -d start
     #run this to test the client setup
         http_proxy=socks5://127.0.0.1:1080 curl myip.ipip.net
+
+configure vim settings on ubuntu
+    sudo vim ~/.vimrc
+    #input the following to the file
+        set tabstop=4
+        set shiftwidth=4
+        set expandtab
+        set number
+        set mouse=nicr
+        set autoindent
