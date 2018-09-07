@@ -3,8 +3,6 @@
 
 import os
 import openslide
-import scipy.misc
-from xml.dom.minidom import parse
 import xml.dom.minidom
 
 
@@ -52,14 +50,19 @@ def get_xy(box, size, position):
 def cut_cells(xml_file, save_path, size, position):
     # get basename, without extension
     basename = os.path.splitext(os.path.basename(xml_file))[0]
-    # open .tif file
-    tif_file = os.path.join(os.path.dirname(xml_file), basename+".tif")
-    count = 0
-    slide = openslide.OpenSlide(tif_file)
+    wsi_name = os.path.splitext(xml_file)[0]
+    if (not os.path.isfile(wsi_name+".tif")) and (not os.path.isfile(wsi_name+".kfb")):
+        print(wsi_name + " doesn't exist")
+        return
+    try:
+        slide = openslide.OpenSlide(wsi_name+".tif")
+    except:
+        slide = TSlide(wsi_name+".kfb")
     # open .xml file
     DOMTree = xml.dom.minidom.parse(xml_file)
     collection = DOMTree.documentElement
     annotations = collection.getElementsByTagName("Annotation")
+    count = 0
     for annotation in annotations:
         if annotation.getAttribute("Color") in colors:
             coordinates = annotation.getElementsByTagName("Coordinate")
