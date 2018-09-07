@@ -24,6 +24,9 @@ mount and unmount a disk
     mount -o rw src/ des/
     umount src/
 
+make a softlink to file/folder
+    ln -s /path/to/fileorfolder /path/to/symlink
+
 search for occurance in a file
 	grep [options] pattern [file]
 	[options] -n: show line numbers
