@@ -24,7 +24,6 @@ public class OCRGui {
 	static JLabel image;
 	static JTextField prefixText;
 	static JTextField numberText;
-	static JButton next;
 
 	public OCRGui() {
 		frame = new JFrame("OCR");
@@ -121,7 +120,19 @@ public class OCRGui {
 		panel.add(numberText, c);
 
 		// set layout for next button
-		next = new JButton("save and next");
+		JButton prev = new JButton("previous");
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.anchor = GridBagConstraints.CENTER;
+		c.insets = new Insets(15,0,15,0);
+		c.weightx = 0.5;
+		c.gridwidth = 2;
+		c.gridheight = 1;
+		c.gridx = 5;
+		c.gridy = 3;
+		panel.add(prev, c);
+
+		// set layout for next button
+		JButton next = new JButton("save and next");
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.CENTER;
 		c.insets = new Insets(15,0,15,0);
@@ -179,6 +190,8 @@ public class OCRGui {
 					}
 					break;
 				case "open dir":
+					break;
+				case "previous":
 					break;
 				case "save and next":
 					break;
