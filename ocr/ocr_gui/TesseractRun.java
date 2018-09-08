@@ -3,6 +3,7 @@ import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.ITesseract;
 
 public class TesseractRun {
+	TesseractRun() {}
 	ITesseract instance = new Tesseract();
 
 	public String ocr_filename(String filename) throws Exception {
