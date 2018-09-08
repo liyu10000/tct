@@ -84,7 +84,7 @@ public class OCRGui {
 
 		// set layout for prefix input area
 		prefixText = new JTextField();
-		prefixText.setText("wsi prefix");
+		prefixText.setText("TC");
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.CENTER;
 		c.insets = new Insets(15,0,15,0);
@@ -109,7 +109,7 @@ public class OCRGui {
 
 		// set layout for number area
 		numberText = new JTextField();
-		numberText.setText("wsi number");
+		numberText.setText("12345678");
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.CENTER;
 		c.insets = new Insets(15,0,15,0);
@@ -121,7 +121,7 @@ public class OCRGui {
 		panel.add(numberText, c);
 
 		// set layout for next button
-		next = new JButton("next");
+		next = new JButton("save and next");
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.CENTER;
 		c.insets = new Insets(15,0,15,0);
@@ -177,6 +177,10 @@ public class OCRGui {
 					} else {
 						System.out.println("open operation cancelled");
 					}
+					break;
+				case "open dir":
+					break;
+				case "save and next":
 					break;
 			}
 		}
