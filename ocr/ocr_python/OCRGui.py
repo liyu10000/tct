@@ -1,10 +1,18 @@
+import os
 import tkinter as tk
+from tkinter import filedialog, messagebox
 from PIL import ImageTk, Image
+
+from LabelReader import LabelReader
+from Tesseract import Tesseract
 
 class OCRGui:
     def __init__(self):
-        self.images = {}
+        self.gui_setup()
+        self.index = None
+        self.database = []
 
+    def gui_setup(self):
         self.root = tk.Tk()
         self.root.title("OCR")
         self.w1 = 512  # image width
@@ -20,46 +28,135 @@ class OCRGui:
         self.panelFrame.grid(row=0, column=1)
 
         #create a button widget for open file
-        self.open_f = tk.Button(self.panelFrame, text="open file", command=self.on_click)
+        self.open_f = tk.Button(self.panelFrame, text="open file", command=self.load_file)
         self.open_f.grid(row=0, column=0, columnspan=2, sticky=tk.EW, ipady=5, padx=5, pady=20)
 
         #create a button widget for open dir
-        self.open_d = tk.Button(self.panelFrame, text="open dir", command=self.on_click)
+        self.open_d = tk.Button(self.panelFrame, text="open dir", command=self.load_files)
         self.open_d.grid(row=0, column=2, columnspan=2, sticky=tk.EW, ipady=5, padx=5, pady=20)
+
+        #create a label widget for wsi name
+        self.wsi = tk.Label(self.panelFrame, text="filename:")
+        self.wsi.grid(row=1, column=1, columnspan=1, sticky=tk.E, ipady=5, padx=5, pady=10)
+
+        #create a label widget for wsi name
+        self.wsiText = tk.Label(self.panelFrame, text="xxxxxxxx.kfb")
+        self.wsiText.grid(row=1, column=2, columnspan=2, sticky=tk.W, ipady=5, padx=5, pady=10)
 
         #create a label widget for label prefix
         self.prefix = tk.Label(self.panelFrame, text="prefix:")
-        self.prefix.grid(row=1, column=1, columnspan=1, sticky=tk.E, ipady=5, padx=5, pady=10)
+        self.prefix.grid(row=2, column=1, columnspan=1, sticky=tk.E, ipady=5, padx=5, pady=10)
 
         #create a text entry widget for label prefix text
         self.prefixText = tk.Entry(self.panelFrame)
-        self.prefixText.grid(row=1, column=2, columnspan=2, sticky=tk.EW, ipady=5, padx=5, pady=10)
+        self.prefixText.insert(0, "TC")
+        self.prefixText.grid(row=2, column=2, columnspan=2, sticky=tk.EW, ipady=5, padx=5, pady=10)
 
         #create a label widget for label number
         self.number = tk.Label(self.panelFrame, text="number:")
-        self.number.grid(row=2, column=1, columnspan=1, sticky=tk.E, ipady=5, padx=5, pady=10)
+        self.number.grid(row=3, column=1, columnspan=1, sticky=tk.E, ipady=5, padx=5, pady=10)
 
         #create a text entry widget for label number text
         self.numberText = tk.Entry(self.panelFrame)
-        self.numberText.grid(row=2, column=2, columnspan=2, sticky=tk.EW, ipady=5, padx=5, pady=10)
+        self.numberText.insert(0, "12345678")
+        self.numberText.grid(row=3, column=2, columnspan=2, sticky=tk.EW, ipady=5, padx=5, pady=10)
 
         #create a button widget for previous
-        self.previous = tk.Button(self.panelFrame, text="previous", command=self.on_click)
-        self.previous.grid(row=3, column=0, columnspan=2, sticky=tk.EW, ipady=5, padx=5, pady=20)
+        self.previous = tk.Button(self.panelFrame, text="previous", command=lambda: self.update(step=-1))
+        self.previous.grid(row=4, column=0, columnspan=2, sticky=tk.EW, ipady=5, padx=5, pady=20)
 
-        #create a button widget for save and next
-        self.next = tk.Button(self.panelFrame, text="save and next", command=self.on_click)
-        self.next.grid(row=3, column=2, columnspan=2, sticky=tk.EW, ipady=5, padx=5, pady=20)
+        #create a button widget for next
+        self.next = tk.Button(self.panelFrame, text="next", command=lambda: self.update(step=1))
+        self.next.grid(row=4, column=2, columnspan=2, sticky=tk.EW, ipady=5, padx=5, pady=20)
+
+        #create a button widget for rename
+        self.rename = tk.Button(self.panelFrame, text="rename", command=lambda: self.update(step=0,rename=True))
+        self.rename.grid(row=5, column=0, columnspan=2, sticky=tk.EW, ipady=5, padx=5)
+
+        #create a button widget for rename and next
+        self.proceed = tk.Button(self.panelFrame, text="rename and next", command=lambda: self.update(step=1,rename=True))
+        self.proceed.grid(row=5, column=2, columnspan=2, sticky=tk.EW, ipady=5, padx=5)
 
 
-    def load_image(self, image_name):
-        image = ImageTk.PhotoImage(Image.open(image_name).resize((self.w1, self.h)))
+    def load_file(self):
+        fname = filedialog.askopenfilename(filetypes=(("wsi files", "*.kfb"), ("label jpgs", "*.jpg")))
+        if not fname:
+            messagebox.showinfo("warning", "no file choosed")
+        else:
+            self.index = 0
+            del self.database
+            self.database = []
+            self.database.append({"old_name":fname, "prefix":"", "number":"", "label_image":None})
+            self.update()
+
+    def load_files(self):
+        file_dir = filedialog.askdirectory()
+        if not file_dir:
+            messagebox.showinfo("warning", "no directory choosed")
+        else:
+            self.index = None
+            del self.database
+            self.database = []
+            for fname in os.listdir(file_dir):
+                if fname.endswith(".kfb"):
+                    self.database.append({"old_name":os.path.join(file_dir, fname), "prefix":"", "number":"", "label_image":None})
+            if not self.database:
+                messagebox.showinfo("warning", "no kfb file exists")
+            else:
+                self.index = 0
+                self.update()
+
+
+    def update(self, step=0, rename=False):
+        if self.index == None:
+            messagebox.showinfo("error", "three is no kfb file loaded")
+            return
+        if rename:
+            self.rename_label()
+        if step == -1:
+            self.load_image(self.index-1)
+        elif step == 0:
+            self.load_image(self.index)
+        elif step == 1:
+            self.load_image(self.index+1)
+        self.show_label()
+
+    def load_image(self, i):
+        if i > len(self.database)-1 or i < 0:
+            messagebox.showinfo("warning", "already the end")
+            return
+        if self.database[i]["label_image"]:
+            image = self.database[i]["label_image"]
+        else:
+            image = LabelReader().read_label(wsi_name=self.database[i]["old_name"])
+            w, h = image.size
+            prefix, number = Tesseract().detect(image.crop((0, 0, w, h//2)))
+            self.database[i]["prefix"] = prefix
+            self.database[i]["number"] = number
+            image = ImageTk.PhotoImage(image.resize((self.w1, self.h)))
+            self.database[i]["label_image"] = image
         self.imageCanvas.create_image(self.w1//2, self.h//2, image=image)
-        self.images[image_name] = image
+        self.index = i
 
-    def on_click(self):
-        print("button clicked")
-        self.load_image("./label.jpg")
+    def rename_label(self):
+        self.database[self.index]["prefix"] = self.prefixText.get()
+        self.database[self.index]["number"] = self.numberText.get()
+        # replace file name here
+        directory = os.path.dirname(self.database[self.index]["old_name"])
+        basename = self.database[self.index]["prefix"] + self.database[self.index]["number"] + ".kfb"
+        new_name = os.path.join(directory, basename)
+        os.rename(self.database[self.index]["old_name"], new_name)
+        print("renamed {} to {}".format(self.database[self.index]["old_name"], new_name))
+        self.database[self.index]["old_name"] = new_name
+
+    def show_label(self):
+        self.prefixText.delete(0, tk.END)
+        self.prefixText.insert(0, self.database[self.index]["prefix"])
+        self.numberText.delete(0, tk.END)
+        self.numberText.insert(0, self.database[self.index]["number"])
+        self.wsi.config(text="{} / {}:".format(self.index+1, len(self.database)))
+        self.wsiText.config(text=os.path.basename(self.database[self.index]["old_name"]))
+    
 
     def run(self):
         self.root.mainloop()

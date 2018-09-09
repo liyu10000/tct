@@ -23,7 +23,7 @@ label_names_old = [os.path.basename(i.strip())[:19] for i in label_names_old]
 
 # search for label
 with open(label_output, "r") as output_f:
-	pattern = re.compile("1\d{5}")
+	pattern = re.compile("1\d{5,}")
 	label_names_new = []
 	for line in output_f:
 		m = pattern.search(line)
