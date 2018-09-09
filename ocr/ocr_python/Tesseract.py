@@ -37,14 +37,16 @@ class Tesseract:
             else:
                 api.SetImage(image)
             text = api.GetUTF8Text()
+            return self.find_label(text)
+            
 
-            pattern = re.compile("[a-zA-Z]*[0-9]{5,}")
-            m = pattern.search(text)
-            if m:
-                return re.compile("[a-zA-Z]*").search(m.group(0)).group(0), \
-                       re.compile("[0-9]{5,}").search(m.group(0)).group(0)
-            else:
-                return "", ""
+    def find_label(self, text):
+        pattern = re.compile("[a-zA-Z]*[0-9]{5,}")
+        m = pattern.search(text)
+        if m:
+            return m.group(0)
+        else:
+            return ""
 
 
 if __name__ == "__main__":

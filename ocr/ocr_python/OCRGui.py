@@ -6,6 +6,7 @@ from PIL import ImageTk, Image
 from LabelReader import LabelReader
 from Tesseract import Tesseract
 
+
 class OCRGui:
     def __init__(self):
         self.gui_setup()
@@ -16,7 +17,7 @@ class OCRGui:
         self.root = tk.Tk()
         self.root.title("OCR")
         self.w1 = 512  # image width
-        self.w2 = 256  # panel width
+        self.w2 = 270  # panel width
         self.h = 512   # image height
         self.root.geometry("{}x{}".format(self.w1+self.w2, self.h))
         self.root.resizable(width=False, height=False)  # cannot change window size
@@ -29,53 +30,39 @@ class OCRGui:
 
         #create a button widget for open file
         self.open_f = tk.Button(self.panelFrame, text="open file", command=self.load_file)
-        self.open_f.grid(row=0, column=0, columnspan=2, sticky=tk.EW, ipady=5, padx=5, pady=20)
-
+        self.open_f.grid(row=0, column=0, columnspan=2, sticky=tk.EW, ipady=5, padx=5, pady=10)
         #create a button widget for open dir
         self.open_d = tk.Button(self.panelFrame, text="open dir", command=self.load_files)
-        self.open_d.grid(row=0, column=2, columnspan=2, sticky=tk.EW, ipady=5, padx=5, pady=20)
+        self.open_d.grid(row=0, column=2, columnspan=2, sticky=tk.EW, ipady=5, padx=5, pady=10)
 
         #create a label widget for wsi name
         self.wsi = tk.Label(self.panelFrame, text="filename:")
         self.wsi.grid(row=1, column=1, columnspan=1, sticky=tk.E, ipady=5, padx=5, pady=10)
-
-        #create a label widget for wsi name
-        self.wsiText = tk.Label(self.panelFrame, text="xxxxxxxx.kfb")
+        #create a label widget for wsi name text
+        self.wsiText = tk.Label(self.panelFrame, text="XXXXXXXX.kfb")
         self.wsiText.grid(row=1, column=2, columnspan=2, sticky=tk.W, ipady=5, padx=5, pady=10)
 
-        #create a label widget for label prefix
-        self.prefix = tk.Label(self.panelFrame, text="prefix:")
-        self.prefix.grid(row=2, column=1, columnspan=1, sticky=tk.E, ipady=5, padx=5, pady=10)
-
-        #create a text entry widget for label prefix text
-        self.prefixText = tk.Entry(self.panelFrame)
-        self.prefixText.insert(0, "TC")
-        self.prefixText.grid(row=2, column=2, columnspan=2, sticky=tk.EW, ipady=5, padx=5, pady=10)
-
-        #create a label widget for label number
-        self.number = tk.Label(self.panelFrame, text="number:")
-        self.number.grid(row=3, column=1, columnspan=1, sticky=tk.E, ipady=5, padx=5, pady=10)
-
-        #create a text entry widget for label number text
-        self.numberText = tk.Entry(self.panelFrame)
-        self.numberText.insert(0, "12345678")
-        self.numberText.grid(row=3, column=2, columnspan=2, sticky=tk.EW, ipady=5, padx=5, pady=10)
+        #create a label widget for label
+        self.label = tk.Label(self.panelFrame, text="label:")
+        self.label.grid(row=2, column=1, columnspan=1, sticky=tk.E, ipady=5, padx=5, pady=10)
+        #create a text entry widget for label text
+        self.labelText = tk.Entry(self.panelFrame)
+        self.labelText.insert(0, "XXXXXXXX")
+        self.labelText.grid(row=2, column=2, columnspan=2, sticky=tk.EW, ipady=5, padx=5, pady=10)
 
         #create a button widget for previous
         self.previous = tk.Button(self.panelFrame, text="previous", command=lambda: self.update(step=-1))
-        self.previous.grid(row=4, column=0, columnspan=2, sticky=tk.EW, ipady=5, padx=5, pady=20)
-
+        self.previous.grid(row=3, column=0, columnspan=2, sticky=tk.EW, ipady=5, padx=5, pady=10)
         #create a button widget for next
         self.next = tk.Button(self.panelFrame, text="next", command=lambda: self.update(step=1))
-        self.next.grid(row=4, column=2, columnspan=2, sticky=tk.EW, ipady=5, padx=5, pady=20)
+        self.next.grid(row=3, column=2, columnspan=2, sticky=tk.EW, ipady=5, padx=5, pady=10)
 
         #create a button widget for rename
         self.rename = tk.Button(self.panelFrame, text="rename", command=lambda: self.update(step=0,rename=True))
-        self.rename.grid(row=5, column=0, columnspan=2, sticky=tk.EW, ipady=5, padx=5)
-
+        self.rename.grid(row=4, column=0, columnspan=2, sticky=tk.EW, ipady=5, padx=5)
         #create a button widget for rename and next
         self.proceed = tk.Button(self.panelFrame, text="rename and next", command=lambda: self.update(step=1,rename=True))
-        self.proceed.grid(row=5, column=2, columnspan=2, sticky=tk.EW, ipady=5, padx=5)
+        self.proceed.grid(row=4, column=2, columnspan=2, sticky=tk.EW, ipady=5, padx=5)
 
 
     def load_file(self):
@@ -86,7 +73,7 @@ class OCRGui:
             self.index = 0
             del self.database
             self.database = []
-            self.database.append({"old_name":fname, "prefix":"", "number":"", "label_image":None})
+            self.database.append({"old_name":fname, "label":"", "label_image":None})
             self.update()
 
     def load_files(self):
@@ -99,7 +86,7 @@ class OCRGui:
             self.database = []
             for fname in os.listdir(file_dir):
                 if fname.endswith(".kfb"):
-                    self.database.append({"old_name":os.path.join(file_dir, fname), "prefix":"", "number":"", "label_image":None})
+                    self.database.append({"old_name":os.path.join(file_dir, fname), "label":"", "label_image":None})
             if not self.database:
                 messagebox.showinfo("warning", "no kfb file exists")
             else:
@@ -122,6 +109,12 @@ class OCRGui:
         self.show_label()
 
     def load_image(self, i):
+        def get_label(wsi_name, image):
+            label = Tesseract().find_label(os.path.basename(wsi_name))
+            if not label:
+                w, h = image.size
+                label = Tesseract().detect(image.crop((0, 0, w, h//3)))
+            return label
         if i > len(self.database)-1 or i < 0:
             messagebox.showinfo("warning", "already the end")
             return
@@ -129,31 +122,25 @@ class OCRGui:
             image = self.database[i]["label_image"]
         else:
             image = LabelReader().read_label(wsi_name=self.database[i]["old_name"])
-            w, h = image.size
-            prefix, number = Tesseract().detect(image.crop((0, 0, w, h//2)))
-            self.database[i]["prefix"] = prefix
-            self.database[i]["number"] = number
+            self.database[i]["label"] = get_label(self.database[i]["old_name"], image)
             image = ImageTk.PhotoImage(image.resize((self.w1, self.h)))
             self.database[i]["label_image"] = image
         self.imageCanvas.create_image(self.w1//2, self.h//2, image=image)
         self.index = i
 
     def rename_label(self):
-        self.database[self.index]["prefix"] = self.prefixText.get()
-        self.database[self.index]["number"] = self.numberText.get()
+        self.database[self.index]["label"] = self.labelText.get()
         # replace file name here
         directory = os.path.dirname(self.database[self.index]["old_name"])
-        basename = self.database[self.index]["prefix"] + self.database[self.index]["number"] + ".kfb"
+        basename = self.database[self.index]["label"] + ".kfb"
         new_name = os.path.join(directory, basename)
         os.rename(self.database[self.index]["old_name"], new_name)
         print("renamed {} to {}".format(self.database[self.index]["old_name"], new_name))
         self.database[self.index]["old_name"] = new_name
 
     def show_label(self):
-        self.prefixText.delete(0, tk.END)
-        self.prefixText.insert(0, self.database[self.index]["prefix"])
-        self.numberText.delete(0, tk.END)
-        self.numberText.insert(0, self.database[self.index]["number"])
+        self.labelText.delete(0, tk.END)
+        self.labelText.insert(0, self.database[self.index]["label"])
         self.wsi.config(text="{} / {}:".format(self.index+1, len(self.database)))
         self.wsiText.config(text=os.path.basename(self.database[self.index]["old_name"]))
     
