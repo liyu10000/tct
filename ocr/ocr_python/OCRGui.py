@@ -66,14 +66,14 @@ class OCRGui:
 
 
     def load_file(self):
-        fname = filedialog.askopenfilename(filetypes=(("wsi files", "*.kfb"), ("label jpgs", "*.jpg")))
+        fname = filedialog.askopenfilename(filetypes=(("wsi files", "*.kfb"),))
         if not fname:
             messagebox.showinfo("warning", "no file choosed")
         else:
             self.index = 0
             del self.database
             self.database = []
-            self.database.append({"old_name":fname, "label":"", "label_image":None})
+            self.database.append({"old_name":fname, "label":"", "image":None})
             self.update()
 
     def load_files(self):
@@ -86,7 +86,7 @@ class OCRGui:
             self.database = []
             for fname in os.listdir(file_dir):
                 if fname.endswith(".kfb"):
-                    self.database.append({"old_name":os.path.join(file_dir, fname), "label":"", "label_image":None})
+                    self.database.append({"old_name":os.path.join(file_dir, fname), "label":"", "image":None})
             if not self.database:
                 messagebox.showinfo("warning", "no kfb file exists")
             else:
@@ -118,13 +118,13 @@ class OCRGui:
         if i > len(self.database)-1 or i < 0:
             messagebox.showinfo("warning", "already the end")
             return
-        if self.database[i]["label_image"]:
-            image = self.database[i]["label_image"]
+        if self.database[i]["image"]:
+            image = self.database[i]["image"]
         else:
             image = LabelReader().read_label(wsi_name=self.database[i]["old_name"])
             self.database[i]["label"] = get_label(self.database[i]["old_name"], image)
             image = ImageTk.PhotoImage(image.resize((self.w1, self.h)))
-            self.database[i]["label_image"] = image
+            self.database[i]["image"] = image
         self.imageCanvas.create_image(self.w1//2, self.h//2, image=image)
         self.index = i
 

@@ -1,0 +1,1 @@
+pyinstaller OCRGui.py --hidden-import="PIL._tkinter_finder"
