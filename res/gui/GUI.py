@@ -117,5 +117,5 @@ class GUI:
 
 
 if __name__ == '__main__':
-    app = GUI("C:\\liyu\\files\\tiff\\large5.tif")
+    app = GUI("C:/tsimage/tct/ocr/ocr_python/label.jpg")
     app.start()

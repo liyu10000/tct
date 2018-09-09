@@ -107,7 +107,7 @@ def main(path_in, path_out):
             coords = collect_coords(os.path.join(path_in, sub_dir, tif))
             coords = convert_coords(coords)
             path_out_i = os.path.join(path_out, sub_dir)
-            os.makedirs(path_out_i, exists_ok=True)
+            os.makedirs(path_out_i, exist_ok=True)
             generate_xml(tif, coords, path_out_i)
             print("generated", os.path.join(path_out_i, tif+".xml"))
         print("finished", sub_dir)
