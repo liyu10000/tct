@@ -10,7 +10,7 @@ colors = {"#aa0000": "HSIL", "#aa007f": "ASCH", "#005500": "LSIL", "#00557f": "A
           "#0055ff": "SCC", "#aa557f": "ADC", "#aa55ff": "EC", "#ff5500": "AGC1", 
           "#ff557f": "AGC2", "#ff55ff": "AGC3", "#00aa00": "FUNGI", "#00aa7f": "TRI", 
           "#00aaff": "CC", "#55aa00": "ACTINO", "#55aa7f": "VIRUS",
-          "#000000": "MC", "#aa00ff": "SC", "#ff0000": "RC", "#aa5500": "GEC"}
+          "#000000": "MC", "#aa00ff": "SC", "#ff0000": "RC", "#aa5500": "GEC", "#ffffff": "NORMAL"}
 
 
 def scan_files(directory, prefix=None, postfix=None):
@@ -80,13 +80,13 @@ def cut_cells(xml_file, save_path, size, position):
             os.makedirs(save_path_i, exist_ok=True)
             cell = slide.read_region((x, y), 0, (size, size)).convert("RGB")
             cell.save(os.path.join(save_path_i, "{}_x{}_y{}_px{}_py{}.jpg".format(basename, 
-                                                                                  min(x_coords), 
-                                                                                  min(y_coords),
+                                                                                  int(min(x_coords)), 
+                                                                                  int(min(y_coords)),
                                                                                   position[0],
                                                                                   position[1])))
             count += 1
     slide.close()
-    print(basename + ": number of cells " + str(count))
+    print("{}: number of cells {}. image size {}, position {}".format(basename, count, size, position))
 
 
 def batch_process(path_in, path_out, size, position):
