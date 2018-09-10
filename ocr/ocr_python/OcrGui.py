@@ -127,7 +127,9 @@ class OcrGui:
             if image is not None:
                 self.database[i]["label"] = get_label(self.database[i]["old_name"], image)
                 image = ImageTk.PhotoImage(image.resize((self.w1, self.h)))
-                self.database[i]["image"] = image
+            else:
+                image = ImageTk.PhotoImage(Image.new("RGB", (self.w1, self.h)))
+            self.database[i]["image"] = image
         self.imageCanvas.create_image(self.w1//2, self.h//2, image=image)
         self.index = i
 

@@ -50,7 +50,7 @@ class LabelReader:
                     # Image.open(buf).save("./res/label_win.jpg")
                     return Image.open(buf)
         except:
-            print(wsi_name + "cannot be processed")
+            print(wsi_name + " cannot be processed")
         return None
 
 
