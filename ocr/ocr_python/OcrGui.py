@@ -84,7 +84,8 @@ class OcrGui:
             self.index = None
             del self.database
             self.database = []
-            fnames = os.listdir(file_dir).sort()
+            fnames = os.listdir(file_dir)
+            fnames.sort()
             for fname in fnames:
                 if fname.endswith(".kfb"):
                     self.database.append({"old_name":os.path.join(file_dir, fname), "label":"", "image":None})
@@ -123,7 +124,7 @@ class OcrGui:
             image = self.database[i]["image"]
         else:
             image = LabelReader().read_label(wsi_name=self.database[i]["old_name"])
-            if not image:
+            if image is not None:
                 self.database[i]["label"] = get_label(self.database[i]["old_name"], image)
                 image = ImageTk.PhotoImage(image.resize((self.w1, self.h)))
                 self.database[i]["image"] = image
