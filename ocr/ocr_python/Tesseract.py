@@ -7,13 +7,14 @@ install tesserocr:
 This program uses a python wrapper for the OCR engine tesseract: tesserocr
 GitHub repo: https://github.com/sirfz/tesserocr
 wheel download: https://github.com/simonflueckiger/tesserocr-windows_build/releases
+
+install pytesseract:
+pip3 install pytesseract
 """
 
 import sys
 import re
 from PIL import Image
-import tesserocr
-
 
 class Tesseract:
     def __init__(self):
@@ -29,20 +30,21 @@ class Tesseract:
             sys.exit(-1)
 
     def detect(self, image):
-        # print(type(image).__name__)
-        # if type(image).__name__ == "str":
-        #     text = tesserocr.file_to_text(image)
-        # else:
-        #     text = tesserocr.image_to_text(image)
-        # print(text)
-        # return text
-        with tesserocr.PyTessBaseAPI(path="/usr/share/tesseract-ocr/tessdata") as api:
+        try:
+            import tesserocr
+            with tesserocr.PyTessBaseAPI(path="/usr/share/tesseract-ocr/tessdata") as api:
+                if type(image).__name__ == "str":
+                    api.SetImageFile(image)
+                else:
+                    api.SetImage(image)
+                text = api.GetUTF8Text()
+        except:
+            import pytesseract
             if type(image).__name__ == "str":
-                api.SetImageFile(image)
+                text = pytesseract.image_to_string(Image.open(image))
             else:
-                api.SetImage(image)
-            text = api.GetUTF8Text()
-            return self.find_label(text)
+                text = pytesseract.image_to_string(image)
+        return self.find_label(text)
             
 
     def find_label(self, text):
@@ -56,4 +58,5 @@ class Tesseract:
 
 if __name__ == "__main__":
     image = "./res/label.jpg"
-    Tesseract().detect(Image.open(image))
+    label = Tesseract().detect(Image.open(image))
+    print(label)
