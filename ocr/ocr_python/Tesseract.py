@@ -31,29 +31,29 @@ class Tesseract:
 
     def detect(self, image):
         try:
-            import tesserocr
-            with tesserocr.PyTessBaseAPI(path="/usr/share/tesseract-ocr/tessdata") as api:
+            try:
+                import tesserocr
+                with tesserocr.PyTessBaseAPI(path="/usr/share/tesseract-ocr/tessdata") as api:
+                    if type(image).__name__ == "str":
+                        api.SetImageFile(image)
+                    else:
+                        api.SetImage(image)
+                    text = api.GetUTF8Text()
+            except:
+                import pytesseract
                 if type(image).__name__ == "str":
-                    api.SetImageFile(image)
+                    text = pytesseract.image_to_string(Image.open(image))
                 else:
-                    api.SetImage(image)
-                text = api.GetUTF8Text()
+                    text = pytesseract.image_to_string(image)
         except:
-            import pytesseract
-            if type(image).__name__ == "str":
-                text = pytesseract.image_to_string(Image.open(image))
-            else:
-                text = pytesseract.image_to_string(image)
+            print("tesseract not properly installed, program exits.")
+            sys.exit(-1)
         return self.find_label(text)
             
-
     def find_label(self, text):
         pattern = re.compile("[a-zA-Z]*[0-9]{5,}")
         m = pattern.search(text)
-        if m:
-            return m.group(0)
-        else:
-            return ""
+        return m.group(0) if m else ""
 
 
 if __name__ == "__main__":

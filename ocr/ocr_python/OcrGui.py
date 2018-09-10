@@ -135,7 +135,7 @@ class OcrGui:
         basename = self.database[self.index]["label"] + ".kfb"
         new_name = os.path.join(directory, basename)
         os.rename(self.database[self.index]["old_name"], new_name)
-        print("renamed {} to {}".format(self.database[self.index]["old_name"], new_name))
+        print("renamed {}\n     to {}".format(self.database[self.index]["old_name"], new_name))
         self.database[self.index]["old_name"] = new_name
 
     def show_label(self):
