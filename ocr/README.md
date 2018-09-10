@@ -4,9 +4,9 @@
 ### Install
 
 #### Linux
- - install tesseract: follow tesseract github, require leptonica installation   
+ - install tesseract: follow [tesseract](https://github.com/tesseract-ocr/tesseract) github, require leptonica installation   
  	note: need to add tesseract path to system path, usually in _/usr/share/tesseract-ocr_
- - install tesserocr: [Github repo](https://github.com/sirfz/tesserocr), [wheel download](https://github.com/simonflueckiger/tesserocr-windows_build/releases)
+ - install tesserocr: follow [tesserocr](https://github.com/sirfz/tesserocr) github, or [wheel download](https://github.com/simonflueckiger/tesserocr-windows_build/releases)
  - install pytesseract: _pip install pytesseract_ (add pytesseract module to python search path, if necessary)
 
 #### Windows
@@ -19,4 +19,4 @@
  - under ocr_python folder, run _python3 OcrGui.py_ (Linux), or _python OcrGui.py_ (Windows)
 
 #### pack ocr_python into executable   
- - pyinstaller OCRGui.py --hidden-import="PIL._tkinter_finder"
+ - (to be continued...) pyinstaller OCRGui.py --hidden-import="PIL._tkinter_finder"
