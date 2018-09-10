@@ -32,6 +32,12 @@ class Tesseract:
     def detect(self, image):
         try:
             try:
+                import pytesseract
+                if type(image).__name__ == "str":
+                    text = pytesseract.image_to_string(Image.open(image))
+                else:
+                    text = pytesseract.image_to_string(image)
+            except:
                 import tesserocr
                 with tesserocr.PyTessBaseAPI(path="/usr/share/tesseract-ocr/tessdata") as api:
                     if type(image).__name__ == "str":
@@ -39,12 +45,6 @@ class Tesseract:
                     else:
                         api.SetImage(image)
                     text = api.GetUTF8Text()
-            except:
-                import pytesseract
-                if type(image).__name__ == "str":
-                    text = pytesseract.image_to_string(Image.open(image))
-                else:
-                    text = pytesseract.image_to_string(image)
         except:
             print("tesseract not properly installed, program exits.")
             sys.exit(-1)
