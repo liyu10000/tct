@@ -30,20 +30,25 @@ def scan_files(directory, prefix=None, postfix=None):
 
 def get_xy(box, size, position):
     """
-    cut image out of label box.
+    cut image based on label box.
     note: label box should be within image
     :params box: (xmin, ymin, xmax, ymax)
     :params size: image size to cut out
     :params position: (x_percent, y_percent), the center of label box relative to image.
                       if need to put label box in center of image, set position to (0.5, 0.5)
-    :return: the upper-left coordinates (x, y) of image. if anything wrong happens, return (-1, -1)
+    :return: the upper-left coordinates (x, y) of image.
+             if label box falls out of image, shift image to just contain it
     """
     box_center_x = (box[0]+box[2])/2
     box_center_y = (box[1]+box[3])/2
     x = box_center_x - size*position[0]
     y = box_center_y - size*position[1]
-    if x > box[0] or y > box[1] or x+size < box[2] or y+size < box[3]:
-        return (-1, -1)
+    # if x > box[0] or y > box[1] or x+size < box[2] or y+size < box[3]:
+    #     label box falls out of image
+    x = min(x, box[0])
+    x = max(x, box[2]-size)
+    y = min(y, box[1])
+    y = max(y, box[3]-size)
     return (int(x), int(y))
 
 
@@ -69,16 +74,16 @@ def cut_cells(xml_file, save_path, size, position):
             # read (x, y) coordinates
             x_coords = [float(coordinate.getAttribute("X")) for coordinate in coordinates]
             y_coords = [float(coordinate.getAttribute("Y")) for coordinate in coordinates]
-            if len(x_coords) < 3:
-                continue
             # get the (x, y) coordinates for read_region()
             x, y = get_xy((min(x_coords), min(y_coords), max(x_coords), max(y_coords)), size, position)
-            if x == -1:
-                continue
             save_path_i = os.path.join(save_path, basename, colors[annotation.getAttribute("Color")])
             os.makedirs(save_path_i, exist_ok=True)
             cell = slide.read_region((x, y), 0, (size, size)).convert("RGB")
-            cell.save(os.path.join(save_path_i, "{}_{}_{}.jpg".format(basename, x, y)))
+            cell.save(os.path.join(save_path_i, "{}_x{}_y{}_px{}_py{}.jpg".format(basename, 
+                                                                                  min(x_coords), 
+                                                                                  min(y_coords),
+                                                                                  position[0],
+                                                                                  position[1])))
             count += 1
     slide.close()
     print(basename + ": number of cells " + str(count))
