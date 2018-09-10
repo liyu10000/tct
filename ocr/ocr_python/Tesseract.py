@@ -1,4 +1,9 @@
 """
+install tessract:
+Linux: follow github
+Windows: https://digi.bib.uni-mannheim.de/tesseract/
+
+install tesserocr:
 This program uses a python wrapper for the OCR engine tesseract: tesserocr
 GitHub repo: https://github.com/sirfz/tesserocr
 wheel download: https://github.com/simonflueckiger/tesserocr-windows_build/releases

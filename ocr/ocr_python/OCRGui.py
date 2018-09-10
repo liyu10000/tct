@@ -7,7 +7,7 @@ from LabelReader import LabelReader
 from Tesseract import Tesseract
 
 
-class OCRGui:
+class OcrGui:
     def __init__(self):
         self.gui_setup()
         self.index = None
@@ -101,11 +101,11 @@ class OCRGui:
         if rename:
             self.rename_label()
         if step == -1:
-            self.load_image(self.index-1)
+            self.load_image(self.index - 1)
         elif step == 0:
             self.load_image(self.index)
         elif step == 1:
-            self.load_image(self.index+1)
+            self.load_image(self.index + 1)
         self.show_label()
 
     def load_image(self, i):
@@ -150,4 +150,4 @@ class OCRGui:
 
 
 if __name__ == "__main__":
-    OCRGui().run()
+    OcrGui().run()
