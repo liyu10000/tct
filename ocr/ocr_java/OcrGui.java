@@ -19,13 +19,14 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.ImageIcon;
 
-public class OCRGui {
+public class OcrGui {
 	static JFrame frame;
 	static JLabel image;
-	static JTextField prefixText;
-	static JTextField numberText;
+	static JLabel wsi;
+	static JLabel wsiText;
+	static JTextField labelText;
 
-	public OCRGui() {
+	public OcrGui() {
 		frame = new JFrame("OCR");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -69,8 +70,8 @@ public class OCRGui {
 		c.gridy = 0;
 		panel.add(open_d, c);
 
-		// set layout for prefix
-		JLabel prefix = new JLabel("prefix:");
+		// set layout for wsi
+		wsi = new JLabel("filename:");
 		c.fill = GridBagConstraints.NONE;
 		c.anchor = GridBagConstraints.LINE_END;
 		c.insets = new Insets(15,0,15,20);
@@ -79,11 +80,10 @@ public class OCRGui {
 		c.gridheight = 1;
 		c.gridx = 6;
 		c.gridy = 1;
-		panel.add(prefix, c);
+		panel.add(wsi, c);
 
-		// set layout for prefix input area
-		prefixText = new JTextField();
-		prefixText.setText("TC");
+		// set layout for wsi text
+		wsiText = new JLabel("XXXXXXXX.kfb");
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.CENTER;
 		c.insets = new Insets(15,0,15,0);
@@ -92,10 +92,10 @@ public class OCRGui {
 		c.gridheight = 1;
 		c.gridx = 7;
 		c.gridy = 1;
-		panel.add(prefixText, c);
+		panel.add(wsiText, c);
 
-		// set layout for number
-		JLabel number = new JLabel("number:");
+		// set layout for label
+		JLabel label = new JLabel("label:");
 		c.fill = GridBagConstraints.NONE;
 		c.anchor = GridBagConstraints.LINE_END;
 		c.insets = new Insets(15,0,15,20);
@@ -104,11 +104,11 @@ public class OCRGui {
 		c.gridheight = 1;
 		c.gridx = 6;
 		c.gridy = 2;
-		panel.add(number, c);
+		panel.add(label, c);
 
-		// set layout for number area
-		numberText = new JTextField();
-		numberText.setText("12345678");
+		// set layout for label input area
+		labelText = new JTextField();
+		labelText.setText("XXXXXXXX");
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.CENTER;
 		c.insets = new Insets(15,0,15,0);
@@ -117,10 +117,10 @@ public class OCRGui {
 		c.gridheight = 1;
 		c.gridx = 7;
 		c.gridy = 2;
-		panel.add(numberText, c);
+		panel.add(labelText, c);
 
-		// set layout for next button
-		JButton prev = new JButton("previous");
+		// set layout for previous button
+		JButton prev = new MyButton("previous");
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.CENTER;
 		c.insets = new Insets(15,0,15,0);
@@ -132,7 +132,7 @@ public class OCRGui {
 		panel.add(prev, c);
 
 		// set layout for next button
-		JButton next = new JButton("save and next");
+		JButton next = new MyButton("next");
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.CENTER;
 		c.insets = new Insets(15,0,15,0);
@@ -143,9 +143,33 @@ public class OCRGui {
 		c.gridy = 3;
 		panel.add(next, c);
 
+		// set layout for rename button
+		JButton rename = new MyButton("rename");
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.anchor = GridBagConstraints.CENTER;
+		c.insets = new Insets(15,0,15,0);
+		c.weightx = 0.5;
+		c.gridwidth = 2;
+		c.gridheight = 1;
+		c.gridx = 5;
+		c.gridy = 4;
+		panel.add(rename, c);
+
+		// set layout for rename and next button
+		JButton proceed = new MyButton("rename and next");
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.anchor = GridBagConstraints.CENTER;
+		c.insets = new Insets(15,0,15,0);
+		c.weightx = 0.5;
+		c.gridwidth = 2;
+		c.gridheight = 1;
+		c.gridx = 7;
+		c.gridy = 4;
+		panel.add(proceed, c);
+
 		frame.add(panel);
 
-		frame.setSize(1000, 600);
+		frame.setSize(1000, 512);
 		frame.setResizable(false);
 		frame.setVisible(true);
 	}
@@ -168,7 +192,7 @@ public class OCRGui {
 
 
 	public static void main(String[] args) {
-		new OCRGui();
+		new OcrGui();
 	}
 
 	private class MyButton extends JButton implements ActionListener {
@@ -193,7 +217,11 @@ public class OCRGui {
 					break;
 				case "previous":
 					break;
-				case "save and next":
+				case "next":
+					break;
+				case "rename":
+					break;
+				case "rename and next":
 					break;
 			}
 		}
