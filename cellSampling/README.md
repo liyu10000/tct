@@ -10,31 +10,31 @@
     1. open cellSampling.py and slide to the end, there are two variables to change at every run
     2. path_in: full/path/to/path_in, is the path where kfb/tif files reside, the tree view of path_in should be like this:
     <pre>
-         path_in:
-             sub_dir1:
-                 xxxx.kfb
-                 xxxx.xml
-             sub_dir2:
-                 yyyy.kfb
-                 yyyy.xml
-             ....
+    path_in:
+        sub_dir1:
+            xxxx.kfb
+            xxxx.xml
+        sub_dir2:
+            yyyy.kfb
+            yyyy.xml
+            ....
     </pre>
     3. path_out is the path where jpgs will save into, the result tree view of path_out will be like this:
     <pre>
-         path_out:
-             sub_dir1:
-                 xxxx:
-                     ASCUS:
-                         xxxx_x_y_w_h.jpg
-                     LSIL:
-                         xxxx_x_y_w_h.jpg
-             sub_dir2:
-                 yyyy:
-                     ASCUS:
-                         yyyy_x_y_w_h.jpg
-                     MC:
-                         yyyy_x_y_w_h.jpg
-             ....
+    path_out:
+        sub_dir1:
+            xxxx:
+                ASCUS:
+                    xxxx_x_y_w_h.jpg
+                LSIL:
+                    xxxx_x_y_w_h.jpg
+        sub_dir2:
+            yyyy:
+                ASCUS:
+                    yyyy_x_y_w_h.jpg
+                MC:
+                    yyyy_x_y_w_h.jpg
+     ....
     </pre>
 
 ### cell_to_asap.py
@@ -43,29 +43,29 @@
     1. open cell_to_asap.py and slide to the end, there are two variables to change at every run
     2. path_in: should be the same to the path_out in cellSampling.py, the tree view of path_in should be like this (xxxx and yyyy represents kfb/tif filename):
     <pre>
-         path_in:
-             sub_dir1:
-                 xxxx:
-                     ASCUS:
-                         xxxx_x_y_w_h.jpg
-                     LSIL:
-                         xxxx_x_y_w_h.jpg
-             sub_dir2:
-                 yyyy:
-                     ASCUS:
-                         yyyy_x_y_w_h.jpg
-                     MC:
-                         yyyy_x_y_w_h.jpg
-             ....
+    path_in:
+        sub_dir1:
+            xxxx:
+                ASCUS:
+                    xxxx_x_y_w_h.jpg
+                LSIL:
+                    xxxx_x_y_w_h.jpg
+        sub_dir2:
+            yyyy:
+                ASCUS:
+                    yyyy_x_y_w_h.jpg
+                MC:
+                    yyyy_x_y_w_h.jpg
+        ....
     </pre>
     3. path_out: should be the same to the path_in in cellSampling.py. **note**: remember to make a copy of old xmls before writing new xmls.
     <pre>
-         path_out:
-             sub_dir1:
-                 xxxx.xml
-             sub_dir2:
-                 yyyy.xml
-             ....
+    path_out:
+        sub_dir1:
+            xxxx.xml
+        sub_dir2:
+            yyyy.xml
+        ....
     </pre>
 
 ### cellSamplingFixedSize6.py
@@ -76,16 +76,16 @@
     2. path_in: the file path that contains kfb/tif wsis and corresponding xmls, no special folder tree structure needed.
     3. path_out: the output jpgs
     <pre>
-         path_out:
-             xxxx:
-                 ASCUS:
-                     xxxx_x_y_px_py.jpg
-                 MC:
-                     xxxx_x_y_px_py.jpg
-             yyyy:
-                 MC:
-                     yyyy_x_y_px_py.jpg
-                 HSIL:
-                     yyyy_x_y_px_py.jpg
-             ....
+    path_out:
+        xxxx:
+            ASCUS:
+                xxxx_x_y_px_py.jpg
+            MC:
+                xxxx_x_y_px_py.jpg
+        yyyy:
+            MC:
+                yyyy_x_y_px_py.jpg
+            HSIL:
+                yyyy_x_y_px_py.jpg
+        ....
     </pre>
