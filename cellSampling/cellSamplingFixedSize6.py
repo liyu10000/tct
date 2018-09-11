@@ -94,6 +94,14 @@ def batch_process(path_in, path_out, size, position):
     for f in files_list:
         cut_cells(f, path_out, size, position)
 
+def batch_process_new(path_in, path_out, size):
+    files_list = scan_files(path_in, postfix=".xml")
+    for f in files_list:
+        cut_cells(f, path_out, size, (0.5, 0.5))
+        cut_cells(f, path_out, size, (0.25, 0.25))
+        cut_cells(f, path_out, size, (0.25, 0.75))
+        cut_cells(f, path_out, size, (0.75, 0.25))
+        cut_cells(f, path_out, size, (0.75, 0.75))
 
 if __name__ == "__main__":
     path_in = "/home/sakulaki/yolo-yuli/one_stop_test/tif_xml"
