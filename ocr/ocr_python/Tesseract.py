@@ -55,6 +55,12 @@ class Tesseract:
         m = pattern.search(text)
         return m.group(0) if m else ""
 
+    def get_label(self, wsi_name, image):
+        label = self.find_label(wsi_name)
+        if not label:
+            w, h = image.size
+            label = self.detect(image.crop((0, 0, w, h//3)))
+        return label
 
 if __name__ == "__main__":
     image = "./res/label.jpg"

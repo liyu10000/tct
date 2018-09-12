@@ -110,13 +110,7 @@ class OcrGui:
             self.load_image(self.index + 1)
         self.show_label()
 
-    def load_image(self, i):
-        def get_label(wsi_name, image):
-            label = Tesseract().find_label(os.path.basename(wsi_name))
-            if not label:
-                w, h = image.size
-                label = Tesseract().detect(image.crop((0, 0, w, h//3)))
-            return label
+    def load_image(self, i):  
         if i > len(self.database)-1 or i < 0:
             messagebox.showinfo("warning", "already the end")
             return
@@ -125,7 +119,7 @@ class OcrGui:
         else:
             image = LabelReader().read_label(wsi_name=self.database[i]["old_name"])
             if image is not None:
-                self.database[i]["label"] = get_label(self.database[i]["old_name"], image)
+                self.database[i]["label"] = Tesseract().get_label(os.path.basename(self.database[i]["old_name"]), image)
                 image = ImageTk.PhotoImage(image.resize((self.w1, self.h)))
             else:
                 image = ImageTk.PhotoImage(Image.new("RGB", (self.w1, self.h)))

@@ -1,53 +1,70 @@
-import org.bytedeco.javacpp.*;
-import static org.bytedeco.javacpp.lept.*;
-import static org.bytedeco.javacpp.tesseract.*;
+package ocr;
 
+import java.io.File;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import net.sourceforge.tess4j.Tesseract;
+import net.sourceforge.tess4j.TesseractException;
+
+import java.awt.image.BufferedImage;
+
+//import ocr.LabelReader;
 
 public class TesseractRun {
-    
-    public String detect() throws Exception {
-        BytePointer outText;
-
-        TessBaseAPI api = new TessBaseAPI();
-        // Initialize tesseract-ocr with English, without specifying tessdata path
-        if (api.Init(".", "ENG") != 0) {
-            System.err.println("Could not initialize tesseract.");
-            System.exit(1);
+    Tesseract instance;
+    TesseractRun() {
+        // System.out.println(System.getProperty("os.name"));
+        instance = new Tesseract();
+        // set tessdata path, could add to java library path or system path. 
+        // note: need to use the same version as tesseract
+        if (System.getProperty("os.name").equals("Linux")) {
+            instance.setDatapath("/usr/share/tesseract-ocr/");
+        } else {
+            instance.setDatapath("lib/tessdata");
         }
+    }
 
-        // Open input image with leptonica library
-        PIX image = pixRead("./res/label.jpg");
-        api.SetImage(image);
-        // Get OCR result
-        outText = api.GetUTF8Text();
-        String string = outText.getString();
-        System.out.println("OCR output:\n" + string);
+    public String detect(String filename) throws TesseractException {
+        File image = new File(filename);
+        String result = instance.doOCR(image);
+        return findLabel(result);
+    }
+    
+    public String detect(File image) throws TesseractException {
+        String result = instance.doOCR(image);
+        return findLabel(result);
+    }
+    
+    public String detect(BufferedImage image) throws TesseractException {
+        String result = instance.doOCR(image);
+        return findLabel(result);
+    }
+    
+    public String findLabel(String text) {
+        Pattern pattern = Pattern.compile("[a-zA-Z]*[0-9]{5,}");
+        Matcher matcher = pattern.matcher(text);
+        if (matcher.find()) {
+            return matcher.group(0);
+        } else {
+            return "";
+        }
+    }
+    
+    public String getLabel(File filename, BufferedImage labelImage) throws TesseractException {
+        String label = findLabel(filename.getName());
+        if (label.equals("")) {
+            label = detect(labelImage);
+        }
+        return label;
+    }
 
-        // Destroy used object and release memory
-        api.End();
-        outText.deallocate();
-        pixDestroy(image);
+    public static void main(String[] args) throws Exception {
+        TesseractRun tess = new TesseractRun();
+        String label = tess.detect("res/label.jpg");
+//      String label = tess.detect(new File("res/label.jpg"));
+//      String label = tess.detect(ImageIO.read(new File("res/label.jpg")));
+//      String label = tess.detect(LabelReader.read_label("C:/Users/liyud/eclipse-workspace/ocr/res/TC17042303.jpg"));
+        System.out.println(label);
+
     }
 }
-
-/*
-import java.io.File;
-import net.sourceforge.tess4j.Tesseract;
-import net.sourceforge.tess4j.ITesseract;
-
-public class TesseractRun {
-	TesseractRun() {}
-	ITesseract instance = new Tesseract();
-
-	public String ocr_filename(String filename) throws Exception {
-		File image = new File(filename);
-		String result = instance.doOCR(image);
-		System.out.println(result);
-		return result;
-	}
-
-	public static void main(String[] args) throws Exception {
-		(new TesseractRun()).ocr_filename("./label.jpg");
-	}
-}
-*/
