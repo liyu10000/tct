@@ -1,5 +1,7 @@
-## ocr_python
+# ocr_python
+<pre>
 	use tesseract as ocr engine, pytesseract/tesserocr as python wrapper
+</pre>
 
 ### Install
 
@@ -18,5 +20,14 @@
 ### Usage
  - under ocr_python folder, run _python3 OcrGui.py_ (Linux), or _python OcrGui.py_ (Windows)
 
-#### pack ocr_python into executable   
- - (to be continued...) pyinstaller OCRGui.py --hidden-import="PIL._tkinter_finder"
+#### pack ocr_python into executable
+<pre>
+	pyinstaller OCRGui.py --hidden-import="PIL._tkinter_finder" (to be continued...)
+</pre>
+
+# ocr_java
+ - use tesseract as ocr engine, [tess4j](https://github.com/nguyenq/tess4j) as java JNA wrapper
+ - project is developed in eclipse, with [maven support](http://www.vogella.com/tutorials/EclipseMaven/article.html)
+
+### Install
+
