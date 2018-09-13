@@ -70,6 +70,7 @@
 
 ### cellSamplingFixedSize6.py
  - **cut from kfb/tif wsis to fixed sized jpg images for training**
+ - cellSamplingFixedSize6MP.py is the multiprocessing version, ports are the same
  - info: the working function "cut_cells" will cut images at given size and place label box at given position. *note*: the position parameter can be randomized so that the image will have a randomly placed label box inside.
  - how to use:
     1. open cellSamplingFixedSize6.py and slide to the end, there are two variables to change at every run

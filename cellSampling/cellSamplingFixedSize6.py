@@ -4,6 +4,7 @@
 import os
 import openslide
 import xml.dom.minidom
+from tslide.tslide import TSlide
 
 
 colors = {"#aa0000": "HSIL", "#aa007f": "ASCH", "#005500": "LSIL", "#00557f": "ASCUS", 

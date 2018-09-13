@@ -4,8 +4,10 @@
 import os
 import openslide
 import xml.dom.minidom
-import thread
-import time
+import datetime
+from multiprocessing import cpu_count
+from concurrent.futures import ProcessPoolExecutor, as_completed
+from tslide.tslide import TSlide
 
 
 colors = {"#aa0000": "HSIL", "#aa007f": "ASCH", "#005500": "LSIL", "#00557f": "ASCUS", 
@@ -96,20 +98,30 @@ def batch_process(path_in, path_out, size, position):
     for f in files_list:
         cut_cells(f, path_out, size, position)
 
-def batch_process_new(path_in, path_out, size):
+def batch_process_new(path_in, path_out, size, positions):
     files_list = scan_files(path_in, postfix=".xml")
     for f in files_list:
-        thread.start_new_thread(cut_cells, (f, path_out, size, (0.5, 0.5),))
-        thread.start_new_thread(cut_cells, (f, path_out, size, (0.25, 0.25),))
-        thread.start_new_thread(cut_cells, (f, path_out, size, (0.25, 0.75),))
-        thread.start_new_thread(cut_cells, (f, path_out, size, (0.75, 0.25),))
-        thread.start_new_thread(cut_cells, (f, path_out, size, (0.75, 0.75),))
+        datetime1 = datetime.datetime.now()
+
+        executor = ProcessPoolExecutor(max_workers=cpu_count() - 6)
+        tasks = []
+        for position in positions:
+            tasks.append(executor.submit(cut_cells, f, path_out, size, position))
+        
+        job_count = len(tasks)
+        for future in as_completed(tasks):
+            # result = future.result()  # get the returning result from calling fuction
+            job_count -= 1
+            # print("One Job Done, last Job Count: %s" % (job_count))
+
+        datetime2 = datetime.datetime.now()
+        print("total time cost: {:.2f}s".format((datetime2 - datetime1).total_seconds()))
 
 if __name__ == "__main__":
     path_in = "/home/sakulaki/yolo-yuli/one_stop_test/tif_xml"
     path_out = "/home/sakulaki/yolo-yuli/one_stop_test/tif_xml_cells"
-    time1 = time.time()
-    batch_process(path_in, path_out, 512, (0.5, 0.5))
-    time2 = time.time()
-    print("total time cost: {:.2f}s".format(time2-time1))
+    
+    # batch_process(path_in, path_out, 512, (0.5, 0.5))
 
+    positions = [(0.5, 0.5), (0.25, 0.25), (0.25, 0.75), (0.75, 0.25), (0.75, 0.75)]
+    batch_process_new(path_in, path_out, 512, positions)
