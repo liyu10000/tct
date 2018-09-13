@@ -221,7 +221,7 @@ public class OcrGui {
 		if (labelItems.get(i).getLabelImage() != null) {
 			labelImage = labelItems.get(i).getLabelImage();
 		} else {
-			BufferedImage labelImageOrig = LabelReader.readLabelImage(labelItems.get(i).getOldName().getAbsolutePath());
+			BufferedImage labelImageOrig = LabelReader.readLabelImage(labelItems.get(i).getOldName());
 			labelImage = new BufferedImage(w1, h, 5); // 5 for jpg
 			if (labelImageOrig != null) { 
 				String label = tess.getLabel(labelItems.get(i).getOldName(), labelImageOrig);

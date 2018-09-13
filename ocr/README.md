@@ -50,7 +50,7 @@
 ### Install
 
 #### Windows
- - install eclipse and make the project to maven project
+ - install eclipse, convert the project to maven project, and add tess4j dependency
 
 #### Linux
- - haven't figured out yet
+ - install eclipse, convert the project to maven project, and add tess4j dependency
