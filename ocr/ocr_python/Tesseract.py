@@ -29,7 +29,7 @@ class Tesseract:
             print("operating system not supported")
             sys.exit(-1)
 
-    def detect(self, image):
+    def do_ocr(self, image):
         try:
             try:
                 import pytesseract
@@ -48,7 +48,7 @@ class Tesseract:
         except:
             print("tesseract not properly installed, program exits.")
             sys.exit(-1)
-        return self.find_label(text)
+        return text
             
     def find_label(self, text):
         pattern = re.compile("[a-zA-Z]*[0-9]{5,}")
@@ -59,10 +59,11 @@ class Tesseract:
         label = self.find_label(wsi_name)
         if not label:
             w, h = image.size
-            label = self.detect(image.crop((0, 0, w, h//3)))
+            text = self.do_ocr(image.crop((0, 0, w, h//3)))
+            label = self.find_label(text)
         return label
 
 if __name__ == "__main__":
     image = "./res/label.jpg"
-    label = Tesseract().detect(Image.open(image))
+    label = Tesseract().do_ocr(Image.open(image))
     print(label)
