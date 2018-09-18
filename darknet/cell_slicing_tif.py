@@ -138,7 +138,7 @@ def cell_sampling(xml_file, save_path, size):
     print("processed ", xml_file)
 
 
-def main(path_in, path_out, size):
+def cut_cells(path_in, path_out, size):
     sub_dirs = os.listdir(path_in)
     for sub_dir in sub_dirs:
         file_path_i = os.path.join(path_in, sub_dir)
@@ -162,12 +162,5 @@ def main(path_in, path_out, size):
 if __name__ == "__main__":
     file_path = "/media/tsimage/Elements/data"
     save_path = "/media/tsimage/Elements/data/tct_data608_0716"
-    main(file_path, save_path, 608)
+    cut_cells(file_path, save_path, 608)
 
-    # # single directory cell sampling
-    # file_path = "/media/tsimage/Elements/data/01_ASCUS"
-    # xml_files = scan_files(file_path, postfix=".xml")
-    # save_path = "/media/tsimage/Elements/data/tct_data608_0716"
-    # if not os.path.exists(save_path):
-    #     os.makedirs(save_path)
-    # cell_sampling(xml_files, save_path, 608)

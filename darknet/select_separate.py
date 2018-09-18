@@ -1,7 +1,7 @@
 import os
 import re
 import csv
-from random import shuffle
+from random import sample
 from shutil import move
 
 def scan_files(directory, prefix=None, postfix=None):
@@ -18,28 +18,6 @@ def scan_files(directory, prefix=None, postfix=None):
                 files_list.append(os.path.join(root, special_file))
     return files_list
 
-def select_same(files, factor, folder):
-    shuffle(files)
-    new_path = os.path.join(os.getcwd(), "valid/"+folder)
-    if not os.path.exists(new_path):
-        os.makedirs(new_path)
-    for i in range(int(len(files)*factor)):
-        move(files[i], new_path)
-
-def count(path, upper_dirs, lower_dirs, out_csv):
-    csv_file = open(out_csv, "w", newline='')
-    writer = csv.writer(csv_file)
-    writer.writerow([""]+lower_dirs)
-    for upper_dir in upper_dir:
-        upper_dir_count = [upper_dir,]
-        for lower_dir in lower_dirs:
-            path_i = os.path.join(path, upper_dir+"/"+lower_dir)
-            files = scan_files(path_i, postfix=".jpg")
-            upper_dir_count.append(len(files))
-        writer.writerow(upper_dir_count)
-    csv_file.close()
-
-
 def _split_test_from_train(path_train, factor, path_test):
     files = scan_files(path_train, postfix=".xml")
     tif_names = {}
@@ -52,18 +30,8 @@ def _split_test_from_train(path_train, factor, path_test):
         else:
             tif_names[tif_name] += 1
     names = list(tif_names.keys())
-    print(names)
-    shuffle(names)
-    if not os.path.exists(path_test):
-        os.makedirs(path_test)
-    selected = []
-    if len(names) < 5:
-        return
-    elif len(names) < 10:
-        selected.append(names[0])
-    else:
-        for i in range(int(len(names)*factor)):
-            selected.append(names[i])
+    os.makedirs(path_test, exist_ok=True)
+    selected = sample(names, int(len(files)*factor))
     for i in selected:
         for file in files:
             if i in file:
@@ -78,19 +46,19 @@ def split_test_from_train(path_train, factor=0.1):
 
 
 def _split_valid_from_train(path_train, factor, path_valid):
-    if not os.path.exists(path_valid):
-        os.makedirs(path_valid)
+    os.makedirs(path_valid, exist_ok=True)
     files = scan_files(path_train, postfix=".xml")
-    shuffle(files)
-    for i in range(int(len(files)*factor)):
-        move(files[i], path_valid)
-        move(os.path.splitext(files[i])[0]+".jpg", path_valid)
+    to_valid = sample(files, int(len(files)*factor))
+    for file in to_valid:
+        move(file, path_valid)
+        move(os.path.splitext(file)[0]+".jpg", path_valid)
 
 def split_valid_from_train(path_train, factor=0.1):
     path_valid = os.path.join(os.path.dirname(path_train), "valid")
     folders = os.listdir(path_train)
     for folder in folders:
         _split_valid_from_train(os.path.join(path_train, folder), factor, os.path.join(path_valid, folder))
+
 
 if __name__ == "__main__":
     path_train = "/home/tsimage/tct_data_for_darknet/train"

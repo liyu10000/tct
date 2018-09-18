@@ -109,7 +109,7 @@ def gen_xml(xml_name):
         DOMTree.writexml(newfile)
     
 
-def main(path):
+def do_rotate(path):
     xml_names = scan_files(path, postfix=".xml")
     executor = ProcessPoolExecutor(max_workers=cpu_count() - 4)
     tasks = []
@@ -124,4 +124,4 @@ def main(path):
     
 if __name__ == "__main__":
     path = ""
-    main(path)
+    do_rotate(path)
