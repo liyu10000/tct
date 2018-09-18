@@ -76,9 +76,9 @@ def get_windows(labels, size_x, size_y, size):
     while x + size <= size_x:
         while y + size <= size_y:
             for i, label in labels.items():
-                if (x <= label[0] and label[1] <= x+size and y <= label[2] and label[3] <= y+size) or 
-                   ((label[0] <= x and x+size <= label[1]) and (label[2] <= y and y+size <= label[3])) or 
-                   ((label[0] <= x and x+size <= label[1]) and (y <= label[2] and label[3] <= y+size)) or 
+                if (x <= label[0] and label[1] <= x+size and y <= label[2] and label[3] <= y+size) or \
+                   ((label[0] <= x and x+size <= label[1]) and (label[2] <= y and y+size <= label[3])) or \
+                   ((label[0] <= x and x+size <= label[1]) and (y <= label[2] and label[3] <= y+size)) or \
                    ((x <= label[0] and label[1] <= x+size) and (label[2] <= y and y+size <= label[3])):
                     if (x, y) in points_xy:
                         points_xy[(x, y)].append(i)

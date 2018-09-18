@@ -1,10 +1,11 @@
 import os
 from PIL import Image
 import xml.dom.minidom
+from multiprocessing import cpu_count
+from concurrent.futures import ProcessPoolExecutor, as_completed
 
 def scan_files(directory, prefix=None, postfix=None):
     files_list = []
-
     for root, sub_dirs, files in os.walk(directory):
         for special_file in files:
             if postfix:
@@ -15,7 +16,6 @@ def scan_files(directory, prefix=None, postfix=None):
                     files_list.append(os.path.join(root, special_file))
             else:
                 files_list.append(os.path.join(root, special_file))
-
     return files_list
     
 def rotate(xml_name):
@@ -108,14 +108,20 @@ def gen_xml(xml_name):
     with open(xml_name_new, 'w') as newfile:
         DOMTree.writexml(newfile)
     
+
 def main(path):
     xml_names = scan_files(path, postfix=".xml")
+    executor = ProcessPoolExecutor(max_workers=cpu_count() - 4)
+    tasks = []
     for xml_name in xml_names:
-        rotate(xml_name)
-        gen_xml(xml_name)
+        tasks.append(executor.submit(rotate, xml_name))
+        tasks.append(executor.submit(gen_xml, xml_name))
+
+    job_count = len(tasks)
+    for future in as_completed(tasks):
+        job_count -= 1
+        print("One Job Done, last Job Count: {}".format(job_count))
     
 if __name__ == "__main__":
-    #path = os.getcwd()
-    path = os.path.join(os.getcwd(), "train")
-    #path = "C:/Users/liyud/Documents/labelme/xml_copy/test608rotation"
+    path = ""
     main(path)

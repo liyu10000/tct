@@ -19,7 +19,6 @@ classes = {"ASCUS":0, "LSIL":1, "ASCH":2, "HSIL":3, "SCC":4, "AGC1":5, "AGC2":6,
 
 def scan_files(directory, prefix=None, postfix=None):
     files_list = []
-
     for root, sub_dirs, files in os.walk(directory):
         for special_file in files:
             if postfix:
@@ -30,7 +29,6 @@ def scan_files(directory, prefix=None, postfix=None):
                     files_list.append(os.path.join(root, special_file))
             else:
                 files_list.append(os.path.join(root, special_file))
-
     return files_list
     
 def gen_txt(xml_name, txt_path):
