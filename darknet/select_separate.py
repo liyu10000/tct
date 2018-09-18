@@ -78,19 +78,21 @@ def split_test_from_train(path_train, factor=0.1):
 
 
 def _split_valid_from_train(path_train, factor, path_valid):
+    if not os.path.exists(path_valid):
+        os.makedirs(path_valid)
     files = scan_files(path_train, postfix=".xml")
     shuffle(files)
-    for file in range(int(len(files)*factor)):
-        move(file, path_valid)
-        move(os.path.splitext(file)[0]+".jpg", path_valid)
+    for i in range(int(len(files)*factor)):
+        move(files[i], path_valid)
+        move(os.path.splitext(files[i])[0]+".jpg", path_valid)
 
 def split_valid_from_train(path_train, factor=0.1):
-    path_valid = os.path.join(os.path.dirname(path_train, "valid"))
+    path_valid = os.path.join(os.path.dirname(path_train), "valid")
     folders = os.listdir(path_train)
     for folder in folders:
         _split_valid_from_train(os.path.join(path_train, folder), factor, os.path.join(path_valid, folder))
 
 if __name__ == "__main__":
-    path_train = ""
+    path_train = "/home/tsimage/tct_data_for_darknet/train"
     # split_test_from_train(path_train)
     split_valid_from_train(path_train)
