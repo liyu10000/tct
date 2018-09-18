@@ -26,7 +26,7 @@ def select_same(files, factor, folder):
     for i in range(int(len(files)*factor)):
         move(files[i], new_path)
     
-def select_diff(files, factor, folder):
+def select_diff(files, factor, test_path):
     tif_names = {}
     for file in files:
         file = os.path.basename(file)
@@ -39,9 +39,8 @@ def select_diff(files, factor, folder):
     names = list(tif_names.keys())
     print(names)
     shuffle(names)
-    new_path = os.path.join(os.getcwd(), "test/"+folder)
-    if not os.path.exists(new_path):
-        os.makedirs(new_path)
+    if not os.path.exists(test_path):
+        os.makedirs(test_path)
     selected = []
     if len(names) < 5:
         return
@@ -53,15 +52,9 @@ def select_diff(files, factor, folder):
     for i in selected:
         for file in files:
             if i in file:
-                move(file, new_path)
-                #move(os.path.splitext(file)[0]+".jpg", new_path)
-    # train_path = os.path.join(os.getcwd(), "train")
-    # if not os.path.exists(train_path):
-        # os.makedirs(train_path)
-    # for file in files:
-        # if os.path.isfile(file):
-            # move(file, train_path)
-            # move(os.path.splitext(file)[0]+".jpg", train_path)
+                move(file, test_path)
+                #move(os.path.splitext(file)[0]+".jpg", test_path)
+
 
 def count(path, upper_dirs, lower_dirs, out_csv):
     csv_file = open(out_csv, "w", newline='')
@@ -76,14 +69,13 @@ def count(path, upper_dirs, lower_dirs, out_csv):
         writer.writerow(upper_dir_count)
     csv_file.close()
 
-if __name__ == "__main__":
-    folders = ["ACTINO", "ADC", "AGC1", "AGC2", "ASCH", "ASCUS", "CC", "EC", "FUNGI", "GEC", "HSIL", "LSIL", "MC", "RC", "SC", "SCC", "TRI", "VIRUS"]
+def split_test_from_train(path_train, factor=0.1):
+    path_test = os.path.join(os.path.dirname(path_train), "test")
+    folders = os.listdir(path_train)
     for folder in folders:
-        path = os.path.join(os.getcwd(), "train/"+folder)
-        files = scan_files(path, postfix=".jpg")
-        #select_same(files, 0.1, folder)
-    # classes = ["01_ASCUS", "02_LSIL", "03_ASCH", "04_HSIL", "05_SCC"]
-    # for class_i in classes:
-        # files = scan_files(os.path.join(path, class_i), postfix=".xml")
-        # select_diff(files, 0.1) 
-        
+        files = scan_files(os.path.join(path_train, folder), postfix=".jpg")
+        select_diff(files, factor, os.path.join(path_test, folder))
+
+if __name__ == "__main__":
+    path_train = ""
+    split_test_from_train(path_train)
