@@ -3,6 +3,7 @@ from keras.layers import *
 from keras.applications import *
 from keras.preprocessing.image import *
 import numpy as np
+import math
 
 weights_file = "Xception_finetune.h5"
 
@@ -23,7 +24,7 @@ def xception_init():
 def xception_predict(img_data, batch_size, model):
 
     predictions = []
-    batches = int(len(img_data) / batch_size) + 1
+    batches = math.ceil(int(len(img_data)/batch_size))
 
     for i in range(batches):
         batch_data =  img_data[i * batch_size : (i + 1) * batch_size]
