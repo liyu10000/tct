@@ -20,16 +20,22 @@ def scan_files(directory, prefix=None, postfix=None):
 
 def _split_test_from_train(path_train, factor, path_test):
     files = scan_files(path_train, postfix=".xml")
-    tif_names = {}
+    tif_names = set()
+    pattern1 = re.compile("201\d-\d\d-\d\d.{0,1}\d\d_\d\d_\d\d")
+    pattern2 = re.compile("[a-zA-Z]*[0-9]{6,}")
     for file in files:
         file = os.path.basename(file)
-        pattern = '201\d-\d\d-\d\d.{0,1}\d\d_\d\d_\d\d'
-        tif_name = re.search(pattern, file).group()
-        if not tif_name in tif_names:
-            tif_names[tif_name] = 1
+        m1 = pattern1.search(file)
+        m2 = pattern2.search(file)
+        if m1:
+            tif_name = m1.group(0)
+        elif m2:
+            tif_name = m2.group(0)
         else:
-            tif_names[tif_name] += 1
-    names = list(tif_names.keys())
+            print("cannot match tif/kfb name")
+            continue
+        tif_names.add(tif_name)
+    names = list(tif_names)
     os.makedirs(path_test, exist_ok=True)
     selected = sample(names, int(len(files)*factor))
     for i in selected:
