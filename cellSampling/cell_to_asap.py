@@ -1,4 +1,5 @@
 import os
+import re
 import xml.dom.minidom
 
 
@@ -9,6 +10,19 @@ classes = {'AGC2': '#ff557f', 'ACTINO': '#55aa00', 'LSIL': '#005500', 'AGC3': '#
            'RC': '#ff0000', 'VIRUS': '#55aa7f', 'ASCUS': '#00557f', 
            'AGC2-3': '#ff557f', 'NORMAL': '#ffffff'}
 
+def scan_files(directory, prefix=None, postfix=None):
+    files_list = []
+    for root, sub_dirs, files in os.walk(directory):
+        for special_file in files:
+            if postfix:
+                if special_file.endswith(postfix):
+                    files_list.append(os.path.join(root, special_file))
+            elif prefix:
+                if special_file.startswith(prefix):
+                    files_list.append(os.path.join(root, special_file))
+            else:
+                files_list.append(os.path.join(root, special_file))
+    return files_list
 
 def generate_xml(tif, coordinates_all, path_out):
     """
@@ -48,27 +62,46 @@ def collect_coords(tif_dir):
     collect coordinates from single tif folder.
     tree view of tif_dir should be:
     tif_dir:
-        class_0:
-            tif_x_y_w_h.jpg
-            ...
-        class_1:
-            tif_x_y_w_h.jpg
-            ...
-        ...
+        ... [could be zero or more layers]
+            class_0:
+                tif_x_y_w_h.jpg
+                ...
+            class_1:
+                tif_x_y_w_h.jpg
+                ...
     :params tif_dir: tif directory path
     :return: coordinates: [(class_i, x, y, w, h),]
     """
     coords = []
-    tif_classes = os.listdir(tif_dir)
-    for class_i in tif_classes:
-        tif_path_i = os.path.join(tif_dir, class_i)
-        jpgs = os.listdir(tif_path_i)
-        for jpg in jpgs:
-            tokens = os.path.splitext(jpg)[0].rsplit('_', 4)
-            x, y = int(tokens[1][1:]), int(tokens[2][1:])
-            w, h = int(tokens[3][1:]), int(tokens[4][1:])
+    jpgs = scan_files(tif_dir, postfix=".jpg")
+    for jpg in jpgs:
+        class_i = os.path.basename(os.path.dirname(jpg))
+        jpgname = os.path.basename(jpg)
+        p = re.compile("x\d+_y\d+_w\d+_h\d+")
+        m = p.search(jpgname)
+        if m:
+            x, y, w, h = m.group(0).split('_')
+            x, y, w, h = int(x[1:]), int(y[1:]), int(w[1:]), int(h[1:])
             coords.append((class_i, x, y, w, h))
+        else:
+            print("{} is not the right jpg.".format(jpg))
     return coords
+
+    # coords = []
+    # tif_classes = os.listdir(tif_dir)
+    # for class_i in tif_classes:
+    #     tif_path_i = os.path.join(tif_dir, class_i)
+    #     jpgs = os.listdir(tif_path_i)
+    #     for jpg in jpgs:
+    #         p = re.compile("x\d+_y\d+_w\d+_h\d+")
+    #         m = p.search(jpgname)
+    #         if m:
+    #             x, y, w, h = m.group(0).split('_')
+    #             x, y, w, h = int(x[1:]), int(y[1:]), int(w[1:]), int(h[1:])
+    #             coords.append((class_i, x, y, w, h))
+    #         else:
+    #             print("{} is not jpg.".format(jpg))
+    # return coords
 
 
 def convert_coords(coords):
@@ -92,12 +125,12 @@ def main(path_in, path_out):
     path_in:
         sub_dir1:
             tif_dir1:
-                class_0:
-                    tif_x_y_w_h.jpg
-                    ...
-                class_1:
-                    tif_x_y_w_h.jpg
-                    ...
+                ... [could be zero or more layers]
+                    class_0:
+                        tif_x_y_w_h.jpg
+                        ...
+                    class_1:
+                        tif_x_y_w_h.jpg
     path_out should preserves the structure
     """
     sub_dirs = os.listdir(path_in)

@@ -263,13 +263,7 @@ public class OcrGui {
 			renameLabel();
 		}
 		try {
-			if (step == -1) {
-				loadImage(index - 1);
-			} else if (step == 0) {
-				loadImage(index);
-			} else if (step == 1) {
-				loadImage(index + 1);
-			}
+			loadImage(index + step);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

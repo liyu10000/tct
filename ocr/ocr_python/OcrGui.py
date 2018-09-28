@@ -102,12 +102,7 @@ class OcrGui:
             return
         if rename:
             self.rename_label()
-        if step == -1:
-            self.load_image(self.index - 1)
-        elif step == 0:
-            self.load_image(self.index)
-        elif step == 1:
-            self.load_image(self.index + 1)
+        self.load_image(self.index + step)
         self.show_label()
 
     def load_image(self, i):  
