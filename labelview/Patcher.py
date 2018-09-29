@@ -3,6 +3,7 @@ import csv
 import openslide
 from PIL import Image, ImageDraw
 
+from Config import *
 
 class Patcher:
     def __init__(self, wsi_name, label_csv):
@@ -29,6 +30,8 @@ class Patcher:
         """ read label information
         :output: {class_i: [(p, (xmin, ymin, xmax, ymax)),]}
         """
+        if self.label_csv is None:
+            return
         with open(self.label_csv) as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
             for tokens in csv_reader:
@@ -47,6 +50,8 @@ class Patcher:
                     self.labels_old[class_i].append(box)
 
     def convert_labels(self):
+        if not self.labels_old:
+            return
         for class_i, boxes in self.labels_old.items():
             self.labels_new[class_i] = []
             for box in boxes:
@@ -63,17 +68,17 @@ class Patcher:
         patched_image = self.meta['thumnail']
         draw = ImageDraw.Draw(patched_image)
         for class_i in classes:
-            if not class_i in self.labels_new:
+            if not self.labels_new or not class_i in self.labels_new:
                 continue
             for box in self.labels_new[class_i]:
-                draw.rectangle(xy=box[1], fill=None, outline=225)
+                draw.rectangle(xy=box[1], fill=COLOURS[class_i], outline=COLOURS[class_i])
         # self.patched_images[tuple(classes)] = patched_image
-        patched_image.show()
+        # patched_image.show()
         return patched_image
 
 
 if __name__ == "__main__":
-    wsi_name = "C:\\tsimage\\tct\\labelview\\res\\test.tif"
-    label_csv = "C:\\tsimage\\tct\\labelview\\res\\test_clas.csv"
+    wsi_name = "res/test.tif"
+    label_csv = "res/test_clas.csv"
     patcher = Patcher(wsi_name, label_csv)
     patcher.patch_label(["ASCH"])
