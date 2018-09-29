@@ -43,9 +43,16 @@ class Viewer:
         load_ld = tk.Button(self.control, text="load csv/xml dir", command=self.load_labels_dir)
         load_ld.grid(row=1, column=2, columnspan=2, sticky=tk.EW, ipady=5, padx=10, pady=10)
 
+        # current directory name
+        self.dir_name_ = tk.Label(self.control, text="dir:")
+        self.dir_name_.grid(row=2, column=0, columnspan=1, sticky=tk.EW, ipady=5, padx=10, pady=10)
+        self.dir_name = tk.Label(self.control, text="----")
+        self.dir_name.grid(row=2, column=1, columnspan=1, sticky=tk.EW, ipady=5, padx=10, pady=10)
         # display file count
-        self.n_count = tk.Label(self.control, text=".kfb/.tif count")
-        self.n_count.grid(row=2, column=0, columnspan=2, sticky=tk.EW, ipady=5, padx=10, pady=10)
+        self.n_count_ = tk.Label(self.control, text="count:")
+        self.n_count_.grid(row=2, column=2, columnspan=1, sticky=tk.EW, ipady=5, padx=10, pady=10)
+        self.n_count = tk.Label(self.control, text="----")
+        self.n_count.grid(row=2, column=3, columnspan=1, sticky=tk.EW, ipady=5, padx=10, pady=10)
 
         # display fname
         self.fname = tk.Label(self.control, text="XXXX.kfb/.tif")
@@ -56,10 +63,10 @@ class Viewer:
 
         # previous
         prev_b = tk.Button(self.control, text="previous", command=lambda: self.update(step=-1))
-        prev_b.grid(row=4, column=0, columnspan=2, sticky=tk.EW, ipady=5, padx=10, pady=10)
+        prev_b.grid(row=4, column=0, columnspan=2, sticky=tk.EW, ipady=5, padx=10, pady=30)
         # next
         next_b = tk.Button(self.control, text="next", command=lambda: self.update(step=1))
-        next_b.grid(row=4, column=2, columnspan=2, sticky=tk.EW, ipady=5, padx=10, pady=10)
+        next_b.grid(row=4, column=2, columnspan=2, sticky=tk.EW, ipady=5, padx=10, pady=30)
 
         # checkbox control panel
         # checkbox hint
@@ -69,14 +76,19 @@ class Viewer:
         conform = tk.Button(self.control, text="confirm", command=lambda: self.update())
         conform.grid(row=5, column=2, columnspan=2, sticky=tk.EW, ipady=5, padx=10, pady=10)
         # add checkboxes
+        self.colorblock = []
         self.checkboxes = []
         for i, class_i in enumerate(CLASSES):
             var = IntVar(value=1)
+            clb = tk.Label(self.control, text="-", background=COLOURS[class_i])
             chk = tk.Checkbutton(self.control, text=class_i, variable=var)
             if i < len(CLASSES)//2:
+                clb.grid(row=6+i, column=0, columnspan=1, sticky=tk.EW, ipady=5, padx=10, pady=2)
                 chk.grid(row=6+i, column=1, columnspan=1, sticky=tk.W, ipady=5, padx=10, pady=2)
             else:
+                clb.grid(row=6+i-len(CLASSES)//2, column=2, columnspan=1, sticky=tk.EW, ipady=5, padx=10, pady=2)
                 chk.grid(row=6+i-len(CLASSES)//2, column=3, columnspan=1, sticky=tk.W, ipady=5, padx=10, pady=2)
+            self.colorblock.append(clb)
             self.checkboxes.append(var)
 
 
@@ -118,9 +130,9 @@ class Viewer:
 
 
     def load_labels(self):
-        # if not self.database:
-        #     messagebox.showinfo("error", "no kfb/tif file loaded")
-        #     return
+        if self.index is None:
+            messagebox.showinfo("error", "no kfb/tif file loaded")
+            return
         lname = filedialog.askopenfilename(filetypes=(("csv files", "*.csv"), ("xml files", "*.xml")))
         if not lname:
             messagebox.showinfo("warning", "no file choosed")
@@ -144,9 +156,9 @@ class Viewer:
             else:
                 self.index = None
 
-        # if not self.database:
-        #     messagebox.showinfo("error", "no kfb/tif file loaded")
-        #     return
+        if self.index is None:
+            messagebox.showinfo("error", "no kfb/tif file loaded")
+            return
         file_dir = filedialog.askdirectory()
         if not file_dir:
             messagebox.showinfo("warning", "no directory choosed")
@@ -164,23 +176,20 @@ class Viewer:
             self.update()
 
 
-    def load_thumbnail(self, i, classes):
-        if i == len(self.database) or i < 0:
-            messagebox.showinfo("warning", "already the end")
-            return
+    def load_thumbnail(self, classes):
         def resize(image, w, h):
             w0, h0 = image.size
             factor = min(w/w0, h/w0)
             return image.resize((int(w0*factor), int(h0*factor)))
-        self.patcher = Patcher(self.database[i]["fname"], self.database[i]["lname"])
+        self.patcher = Patcher(self.database[self.index]["fname"], self.database[self.index]["lname"])
         image = self.patcher.patch_label(classes)
         image = ImageTk.PhotoImage(resize(image, self.w*self.f, self.h))
         self.image_on = image
         self.display.create_image(self.w*self.f/2, self.h*0.5, image=image)
-        self.index = i
 
 
     def update_text(self):
+        self.dir_name.config(text=os.path.basename(os.path.dirname(self.database[self.index]["fname"])))
         self.n_count.config(text="{} / {}".format(self.index+1, len(self.database)))
         self.fname.config(text=os.path.basename(self.database[self.index]["fname"]))
         if self.database[self.index]["lname"] is not None:
@@ -189,12 +198,21 @@ class Viewer:
             self.lname.config(text="--------")
 
 
+    def update_label_counts(self):
+        self.database[self.index]["labels"] = self.patcher.get_labels()
+        for i,class_i in enumerate(CLASSES):
+            self.colorblock[i].config(text=str(len(self.database[self.index]["labels"][class_i])))
+
+
     def clear(self):
+        self.dir_name.config(text="dir name")
         self.n_count.config(text=".kfb/.tif count")
         self.fname.config(text=".kfb/.tif")
         self.lname.config(text=".csv/.xml")
         self.image_on = None
         self.database = []
+        for clb in self.colorblock:
+            clb.config(text="-")
 
 
     def update(self, step=0):
@@ -202,9 +220,14 @@ class Viewer:
             messagebox.showinfo("error", "there is no file/label matched")
             self.clear()
             return
+        if self.index+step not in range(len(self.database)):
+            messagebox.showinfo("warning", "already the end")
+            return
+        self.index += step
         checked_classes = [CLASSES[i] for i,var in enumerate(self.checkboxes) if var.get()]
-        self.load_thumbnail(self.index+step, checked_classes)
+        self.load_thumbnail(checked_classes)
         self.update_text()
+        self.update_label_counts()
 
 
     def run(self):
