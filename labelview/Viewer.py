@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, IntVar
 from PIL import ImageTk, Image
 
-from Config import *
+from Config import cfg
 from Patcher import Patcher
 
 class Viewer:
@@ -78,16 +78,16 @@ class Viewer:
         # add checkboxes
         self.colorblock = []
         self.checkboxes = []
-        for i, class_i in enumerate(CLASSES):
+        for i, class_i in enumerate(cfg.CLASSES):
             var = IntVar(value=1)
-            clb = tk.Label(self.control, text="-", background=COLOURS[class_i])
+            clb = tk.Label(self.control, text="-", background=cfg.COLOURS[class_i])
             chk = tk.Checkbutton(self.control, text=class_i, variable=var)
-            if i < len(CLASSES)//2:
-                clb.grid(row=6+i, column=0, columnspan=1, sticky=tk.EW, ipady=5, padx=10, pady=2)
-                chk.grid(row=6+i, column=1, columnspan=1, sticky=tk.W, ipady=5, padx=10, pady=2)
+            if i < len(cfg.CLASSES)//2:
+                clb.grid(row=6+i, column=0, columnspan=1, sticky=tk.EW, ipady=1, padx=10, pady=2)
+                chk.grid(row=6+i, column=1, columnspan=1, sticky=tk.W, ipady=1, padx=10, pady=2)
             else:
-                clb.grid(row=6+i-len(CLASSES)//2, column=2, columnspan=1, sticky=tk.EW, ipady=5, padx=10, pady=2)
-                chk.grid(row=6+i-len(CLASSES)//2, column=3, columnspan=1, sticky=tk.W, ipady=5, padx=10, pady=2)
+                clb.grid(row=6+i-len(cfg.CLASSES)//2, column=2, columnspan=1, sticky=tk.EW, ipady=1, padx=10, pady=2)
+                chk.grid(row=6+i-len(cfg.CLASSES)//2, column=3, columnspan=1, sticky=tk.W, ipady=1, padx=10, pady=2)
             self.colorblock.append(clb)
             self.checkboxes.append(var)
 
@@ -200,13 +200,13 @@ class Viewer:
 
     def update_label_counts(self):
         self.database[self.index]["labels"] = self.patcher.get_labels()
-        for i,class_i in enumerate(CLASSES):
+        for i,class_i in enumerate(cfg.CLASSES):
             self.colorblock[i].config(text=str(len(self.database[self.index]["labels"][class_i])))
 
 
     def clear(self):
-        self.dir_name.config(text="dir name")
-        self.n_count.config(text=".kfb/.tif count")
+        self.dir_name.config(text="----")
+        self.n_count.config(text="----")
         self.fname.config(text=".kfb/.tif")
         self.lname.config(text=".csv/.xml")
         self.image_on = None
@@ -224,7 +224,7 @@ class Viewer:
             messagebox.showinfo("warning", "already the end")
             return
         self.index += step
-        checked_classes = [CLASSES[i] for i,var in enumerate(self.checkboxes) if var.get()]
+        checked_classes = [cfg.CLASSES[i] for i,var in enumerate(self.checkboxes) if var.get()]
         self.load_thumbnail(checked_classes)
         self.update_text()
         self.update_label_counts()
