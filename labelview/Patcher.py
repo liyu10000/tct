@@ -21,7 +21,7 @@ class Patcher:
         self.meta['m'], self.meta['n'] = slide.level_dimensions[0]
         self.meta['mtop'], self.meta['ntop'] = slide.level_dimensions[level_count-1]
         self.meta['level_downsamples'] = slide.level_downsamples[level_count-1]
-        self.meta['thumnail'] = slide.get_thumbnail((self.meta['mtop'], self.meta['ntop']))
+        self.meta['thumbnail'] = slide.get_thumbnail((self.meta['mtop'], self.meta['ntop']))
         slide.close()
 
     def read_labels(self):
@@ -93,7 +93,11 @@ class Patcher:
 
 
     def patch_label(self, classes):
-        patched_image = self.meta['thumnail']
+        """ patch label boxes of choosen classes on thumbnail image
+        :param classes: choosen label classes to patch
+        :return: thumbnail image with label boxes patched
+        """
+        patched_image = self.meta['thumbnail']
         draw = ImageDraw.Draw(patched_image)
         for class_i in classes:
             for box,box_z in self.labels[class_i].items():
@@ -101,6 +105,26 @@ class Patcher:
         # patched_image.show()
         return patched_image
 
+
+    def crop_images(self, sublabels, N):
+        """ crop cell images from kfb/tif
+        :param sublabels: {class_i: {(xmin, ymin, xmax, ymax): (xmin_z, ymin_z, xmax_z, ymax_z),},}
+        :param N: the times of image size over cell (label box) size
+        :return: {class_i: {(xmin, ymin, xmax, ymax): image,},}
+        """
+        images = {}
+        slide = openslide.OpenSlide(self.wsi_file)
+        for class_i,boxes in sublabels.items():
+            images[class_i] = {}
+            for box in boxes:
+                x, y = box[0], box[1]
+                w, h = box[2]-box[0], box[3]-box[1]
+                x_cut, y_cut = int(x+(1-N)*w/2), int(y+(1-N)*h/2)
+                w_cut, h_cut = int(N*w), int(N*h)
+                image = slide.read_region((x_cut,y_cut), 0, (w_cut, h_cut)).convert("RGB")
+                images[class_i][box] = image
+        slide.close()
+        return images
 
 if __name__ == "__main__":
     wsi_file = "res/test.tif"

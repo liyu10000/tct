@@ -1,6 +1,6 @@
 import os
 import tkinter as tk
-from tkinter import filedialog, messagebox, IntVar
+from tkinter import ttk, filedialog, messagebox, IntVar
 from PIL import ImageTk, Image
 
 from Config import cfg
@@ -23,78 +23,91 @@ class Viewer:
         self.f = 0.8  # the fraction of image region
         self.b = 0.3  # the fraction of button region
         
+        self.tabs = ttk.Notebook(self.root)
 
+        self.thumb_tab = ttk.Frame(self.tabs)
         # left side control panel
-        self.control = tk.Frame(self.root, width=self.w*(1-self.f), height=self.h)
+        self.control = ttk.Frame(self.thumb_tab, width=self.w*(1-self.f), height=self.h)
         self.control.grid(row=0, column=0)
 
         # button control panel
         # open single file
-        open_f = tk.Button(self.control, text="open file", command=self.load_file)
-        open_f.grid(row=0, column=0, columnspan=2, sticky=tk.EW, ipady=5, padx=10, pady=10)
+        open_f = ttk.Button(self.control, text="open file", command=self.load_file)
+        open_f.grid(row=0, column=0, columnspan=2, sticky="ew", ipady=5, padx=10, pady=10)
         # load single csv/xml corresponding to wsi file
-        load_l = tk.Button(self.control, text="load csv/xml", command=self.load_labels)
-        load_l.grid(row=0, column=2, columnspan=2, sticky=tk.EW, ipady=5, padx=10, pady=10)
+        load_l = ttk.Button(self.control, text="load csv/xml", command=self.load_labels)
+        load_l.grid(row=0, column=2, columnspan=2, sticky="ew", ipady=5, padx=10, pady=10)
 
         # open directory
-        open_d = tk.Button(self.control, text="open dir", command=self.load_files)
-        open_d.grid(row=1, column=0, columnspan=2, sticky=tk.EW, ipady=5, padx=10, pady=10)
+        open_d = ttk.Button(self.control, text="open dir", command=self.load_files)
+        open_d.grid(row=1, column=0, columnspan=2, sticky="ew", ipady=5, padx=10, pady=10)
         # set csv/xml directory
-        load_ld = tk.Button(self.control, text="load csv/xml dir", command=self.load_labels_dir)
-        load_ld.grid(row=1, column=2, columnspan=2, sticky=tk.EW, ipady=5, padx=10, pady=10)
+        load_ld = ttk.Button(self.control, text="load csv/xml dir", command=self.load_labels_dir)
+        load_ld.grid(row=1, column=2, columnspan=2, sticky="ew", ipady=5, padx=10, pady=10)
 
         # current directory name
-        self.dir_name_ = tk.Label(self.control, text="dir:")
-        self.dir_name_.grid(row=2, column=0, columnspan=1, sticky=tk.EW, ipady=5, padx=10, pady=10)
-        self.dir_name = tk.Label(self.control, text="----")
-        self.dir_name.grid(row=2, column=1, columnspan=1, sticky=tk.EW, ipady=5, padx=10, pady=10)
+        self.dir_name_ = ttk.Label(self.control, text="dir:")
+        self.dir_name_.grid(row=2, column=0, columnspan=1, sticky="ew", ipady=5, padx=10, pady=10)
+        self.dir_name = ttk.Label(self.control, text="----")
+        self.dir_name.grid(row=2, column=1, columnspan=1, sticky="ew", ipady=5, padx=10, pady=10)
         # display file count
-        self.n_count_ = tk.Label(self.control, text="count:")
-        self.n_count_.grid(row=2, column=2, columnspan=1, sticky=tk.EW, ipady=5, padx=10, pady=10)
-        self.n_count = tk.Label(self.control, text="----")
-        self.n_count.grid(row=2, column=3, columnspan=1, sticky=tk.EW, ipady=5, padx=10, pady=10)
+        self.n_count_ = ttk.Label(self.control, text="count:")
+        self.n_count_.grid(row=2, column=2, columnspan=1, sticky="ew", ipady=5, padx=10, pady=10)
+        self.n_count = ttk.Label(self.control, text="----")
+        self.n_count.grid(row=2, column=3, columnspan=1, sticky="ew", ipady=5, padx=10, pady=10)
 
         # display fname
-        self.fname = tk.Label(self.control, text="XXXX.kfb/.tif")
-        self.fname.grid(row=3, column=0, columnspan=2, sticky=tk.EW, ipady=5, padx=10, pady=10)
+        self.fname = ttk.Label(self.control, text="XXXX.kfb/.tif")
+        self.fname.grid(row=3, column=0, columnspan=2, sticky="ew", ipady=5, padx=10, pady=10)
         # display lname
-        self.lname = tk.Label(self.control, text="XXXX.csv/.xml")
-        self.lname.grid(row=3, column=2, columnspan=2, sticky=tk.EW, ipady=5, padx=10, pady=10)
+        self.lname = ttk.Label(self.control, text="XXXX.csv/.xml")
+        self.lname.grid(row=3, column=2, columnspan=2, sticky="ew", ipady=5, padx=10, pady=10)
 
         # previous
-        prev_b = tk.Button(self.control, text="previous", command=lambda: self.update(step=-1))
-        prev_b.grid(row=4, column=0, columnspan=2, sticky=tk.EW, ipady=5, padx=10, pady=30)
+        prev_b = ttk.Button(self.control, text="previous", command=lambda: self.update(step=-1))
+        prev_b.grid(row=4, column=0, columnspan=2, sticky="ew", ipady=5, padx=10, pady=30)
         # next
-        next_b = tk.Button(self.control, text="next", command=lambda: self.update(step=1))
-        next_b.grid(row=4, column=2, columnspan=2, sticky=tk.EW, ipady=5, padx=10, pady=30)
+        next_b = ttk.Button(self.control, text="next", command=lambda: self.update(step=1))
+        next_b.grid(row=4, column=2, columnspan=2, sticky="ew", ipady=5, padx=10, pady=30)
 
         # checkbox control panel
         # checkbox hint
-        c_hint = tk.Label(self.control, text="choose classes here:")
-        c_hint.grid(row=5, column=0, columnspan=2, sticky=tk.E, ipady=5, padx=10, pady=10)
+        c_hint = ttk.Label(self.control, text="choose classes here:")
+        c_hint.grid(row=5, column=0, columnspan=2, sticky="e", ipady=5, padx=10, pady=10)
         # add confirm button
-        conform = tk.Button(self.control, text="confirm", command=lambda: self.update())
-        conform.grid(row=5, column=2, columnspan=2, sticky=tk.EW, ipady=5, padx=10, pady=10)
+        conform = ttk.Button(self.control, text="confirm", command=lambda: self.update())
+        conform.grid(row=5, column=2, columnspan=2, sticky="ew", ipady=5, padx=10, pady=10)
         # add checkboxes
         self.colorblock = []
         self.checkboxes = []
         for i, class_i in enumerate(cfg.CLASSES):
             var = IntVar(value=1)
-            clb = tk.Label(self.control, text="-", background=cfg.COLOURS[class_i])
-            chk = tk.Checkbutton(self.control, text=class_i, variable=var)
+            clb = ttk.Label(self.control, text="-", background=cfg.COLOURS[class_i])
+            chk = ttk.Checkbutton(self.control, text=class_i, variable=var)
             if i < len(cfg.CLASSES)//2:
-                clb.grid(row=6+i, column=0, columnspan=1, sticky=tk.EW, ipady=1, padx=10, pady=2)
-                chk.grid(row=6+i, column=1, columnspan=1, sticky=tk.W, ipady=1, padx=10, pady=2)
+                clb.grid(row=6+i, column=0, columnspan=1, sticky="ew", ipady=1, padx=10, pady=2)
+                chk.grid(row=6+i, column=1, columnspan=1, sticky="w", ipady=1, padx=10, pady=2)
             else:
-                clb.grid(row=6+i-len(cfg.CLASSES)//2, column=2, columnspan=1, sticky=tk.EW, ipady=1, padx=10, pady=2)
-                chk.grid(row=6+i-len(cfg.CLASSES)//2, column=3, columnspan=1, sticky=tk.W, ipady=1, padx=10, pady=2)
+                clb.grid(row=6+i-len(cfg.CLASSES)//2, column=2, columnspan=1, sticky="ew", ipady=1, padx=10, pady=2)
+                chk.grid(row=6+i-len(cfg.CLASSES)//2, column=3, columnspan=1, sticky="w", ipady=1, padx=10, pady=2)
             self.colorblock.append(clb)
             self.checkboxes.append(var)
+        
+
+        # separator
+        separator = ttk.Separator(self.thumb_tab, orient="vertical")
+        separator.grid(row=0, column=1, sticky="ns")
 
 
         # right side image panel
-        self.display = tk.Canvas(self.root, width=self.w*self.f, height=self.h)
-        self.display.grid(row=0, column=1)
+        self.display = tk.Canvas(self.thumb_tab, width=self.w*self.f, height=self.h)
+        self.display.grid(row=0, column=2)
+
+        self.tabs.add(self.thumb_tab, text="thumbnail")
+
+        self.image_tab = ttk.Frame(self.tabs)
+        self.tabs.add(self.image_tab, text="label images")
+        self.tabs.pack()
 
 
     def load_file(self):
@@ -229,6 +242,8 @@ class Viewer:
         self.update_text()
         self.update_label_counts()
 
+    def load_images(self):
+    	pass
 
     def run(self):
         self.root.mainloop()
