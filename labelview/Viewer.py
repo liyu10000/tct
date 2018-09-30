@@ -346,6 +346,14 @@ class Viewer:
             for i in range(M):
                 self.anchors.append((int(self.size_avg/2 + self.size_avg*i), int(self.size_avg/2 + self.size_avg*row + pad*(row+1))))
 
+    def on_single_click(self, event):
+        print("single clicked:", event.widget.find_closest(event.x, event.y))
+
+    def on_double_click(self, event):
+        print("double clicked:", event.widget.find_closest(event.x, event.y))
+
+    def on_right_click(self, event):
+        print("right clicked:", event.widget.find_closest(event.x, event.y))
                     
     def update_images(self, step):
         def resize(image, size):
@@ -363,13 +371,17 @@ class Viewer:
         # update images
         del self.images_on
         self.images_on = []
+        self.display_i.delete("all")  # delete all objects before loading
         cursor = self.cursor
         for anchor in self.anchors:
             if cursor not in range(len(self.image_list)):
                 break
             image = ImageTk.PhotoImage(resize(self.image_list[cursor][2], self.size_avg))
             self.images_on.append(image)
-            self.display_i.create_image(anchor[0], anchor[1], image=image)
+            self.display_i.create_image(anchor[0], anchor[1], image=image, tags="image_{}".format(cursor))
+            self.display_i.tag_bind("image_{}".format(cursor), "<ButtonPress-1>", self.on_single_click)
+            self.display_i.tag_bind("image_{}".format(cursor), "<Double-Button-1>", self.on_double_click)
+            self.display_i.tag_bind("image_{}".format(cursor), "<Button-3>", self.on_right_click)
             cursor += 1
 
     def load_thumbnailmini(self):
@@ -395,12 +407,18 @@ class Viewer:
         self.thumbmini.create_image(self.w_left_i/2, self.w_left_i/2, image=image)
 
 
+    def update_label_counts_i(self):
+        for i,class_i in enumerate(cfg.CLASSES):
+            self.colorblock_i[i].config(text=str(len(self.database[self.index]["labels"][class_i])))
+
+
     def update_i(self, step):
         if step == 0:
             self.load_images()
         if hasattr(self, "cursor"):
             self.update_images(step=step)
             self.load_thumbnailmini()
+        self.update_label_counts_i()
 
     def run(self):
         self.root.mainloop()
