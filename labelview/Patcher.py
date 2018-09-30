@@ -2,7 +2,8 @@ import os
 import csv
 import xml.dom.minidom
 import openslide
-from PIL import Image, ImageDraw
+from copy import copy
+from PIL import Image, ImageFilter, ImageDraw
 
 from Config import cfg
 
@@ -22,6 +23,7 @@ class Patcher:
         self.meta['mtop'], self.meta['ntop'] = slide.level_dimensions[level_count-1]
         self.meta['level_downsamples'] = slide.level_downsamples[level_count-1]
         self.meta['thumbnail'] = slide.get_thumbnail((self.meta['mtop'], self.meta['ntop']))
+        self.meta['thumbnail_blur'] = self.meta['thumbnail'].filter(ImageFilter.GaussianBlur(radius=16))
         slide.close()
 
     def read_labels(self):
@@ -97,7 +99,7 @@ class Patcher:
         :param classes: choosen label classes to patch
         :return: thumbnail image with label boxes patched
         """
-        patched_image = self.meta['thumbnail']
+        patched_image = copy(self.meta['thumbnail'])
         draw = ImageDraw.Draw(patched_image)
         for class_i in classes:
             for box,box_z in self.labels[class_i].items():
@@ -105,16 +107,25 @@ class Patcher:
         # patched_image.show()
         return patched_image
 
+    def patch_label_mini(self, sub_labels):
+        patched_image = copy(self.meta["thumbnail_blur"])
+        draw = ImageDraw.Draw(patched_image)
+        for class_i,boxes in sub_labels.items():
+            for box,box_z in boxes.items():
+                draw.rectangle(xy=box_z, fill=cfg.COLOURS[class_i], outline=cfg.COLOURS[class_i])
+        # patched_image.show()
+        return patched_image
 
-    def crop_images(self, sublabels, N):
+
+    def crop_images(self, sub_labels, N):
         """ crop cell images from kfb/tif
-        :param sublabels: {class_i: {(xmin, ymin, xmax, ymax): (xmin_z, ymin_z, xmax_z, ymax_z),},}
+        :param sub_labels: {class_i: {(xmin, ymin, xmax, ymax): (xmin_z, ymin_z, xmax_z, ymax_z),},}
         :param N: the times of image size over cell (label box) size
         :return: {class_i: {(xmin, ymin, xmax, ymax): image,},}
         """
         images = {}
         slide = openslide.OpenSlide(self.wsi_file)
-        for class_i,boxes in sublabels.items():
+        for class_i,boxes in sub_labels.items():
             images[class_i] = {}
             for box in boxes:
                 x, y = box[0], box[1]
@@ -132,3 +143,5 @@ if __name__ == "__main__":
     patcher = Patcher(wsi_file, label_file)
     patcher.patch_label(cfg.CLASSES)
     labels = patcher.get_labels()
+    sub_labels = {}
+    patcher.patch_label_mini(sub_labels)

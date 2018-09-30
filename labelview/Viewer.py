@@ -1,4 +1,5 @@
 import os
+import math
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox, IntVar
 from PIL import ImageTk, Image
@@ -9,7 +10,9 @@ from Patcher import Patcher
 class Viewer:
     def __init__(self):
         self.index = None
-        self.image_on = None  # stores the image to show on gui
+        self.thumb_on = None  # stores the thumbnail image on first tab
+        self.thumbmini_on = None  # stores the mini thumbnail image on second tab
+        self.images_on = None  # stores the labeled images on second tab
         self.database = []
         self.setup()
 
@@ -20,13 +23,14 @@ class Viewer:
         # self.root.resizable(width=False, height=False)  # cannot change window size
         self.w = self.root.winfo_screenwidth()
         self.h = self.root.winfo_screenheight()
-        self.i = 0.8  # the fraction of image region, horizontal
-        self.f = 0.4  # the fraction of file control region, vertical
-        self.c = 0.4  # the fraction of checkbox region, vertical
         
         self.tabs = ttk.Notebook(self.root)
 
         # thumbnail tab
+        self.i = 0.8  # the fraction of image region, horizontal
+        self.f = 0.4  # the fraction of file control region, vertical
+        self.c = 0.4  # the fraction of checkbox region, vertical
+
         self.thumb_tab = ttk.Frame(self.tabs)
         self.tabs.add(self.thumb_tab, text="thumbnail")
 
@@ -35,22 +39,23 @@ class Viewer:
         self.control.grid(row=0, column=0)
 
         # file flow control
-        self.flowctl = ttk.Labelframe(self.control, text="file flow control", width=self.w*(1-self.f), height=self.h*self.f)
+        self.flowctl = ttk.Labelframe(self.control, text="file flow control", width=self.w*(1-self.i), height=self.h*self.f)
         self.control.add(self.flowctl)
 
+
         # open single file
-        open_f = ttk.Button(self.flowctl, text="open file", command=self.load_file)
-        open_f.grid(row=0, column=0, columnspan=2, sticky="ew", ipady=5, padx=10, pady=10)
+        self.open_f = ttk.Button(self.flowctl, text="open file", command=self.load_file)
+        self.open_f.grid(row=0, column=0, columnspan=2, sticky="ew", ipady=5, padx=10, pady=10)
         # load single csv/xml corresponding to wsi file
-        load_l = ttk.Button(self.flowctl, text="load csv/xml", command=self.load_labels)
-        load_l.grid(row=0, column=2, columnspan=2, sticky="ew", ipady=5, padx=10, pady=10)
+        self.load_l = ttk.Button(self.flowctl, text="load csv/xml", command=self.load_labels)
+        self.load_l.grid(row=0, column=2, columnspan=2, sticky="ew", ipady=5, padx=10, pady=10)
 
         # open directory
-        open_d = ttk.Button(self.flowctl, text="open dir", command=self.load_files)
-        open_d.grid(row=1, column=0, columnspan=2, sticky="ew", ipady=5, padx=10, pady=10)
+        self.open_d = ttk.Button(self.flowctl, text="open dir", command=self.load_files)
+        self.open_d.grid(row=1, column=0, columnspan=2, sticky="ew", ipady=5, padx=10, pady=10)
         # set csv/xml directory
-        load_ld = ttk.Button(self.flowctl, text="load csv/xml dir", command=self.load_labels_dir)
-        load_ld.grid(row=1, column=2, columnspan=2, sticky="ew", ipady=5, padx=10, pady=10)
+        self.load_ld = ttk.Button(self.flowctl, text="load csv/xml dir", command=self.load_labels_dir)
+        self.load_ld.grid(row=1, column=2, columnspan=2, sticky="ew", ipady=5, padx=10, pady=10)
 
         # current directory name
         self.dir_name_ = ttk.Label(self.flowctl, text="dir:")
@@ -71,11 +76,11 @@ class Viewer:
         self.lname.grid(row=3, column=2, columnspan=2, sticky="ew", ipady=5, padx=10, pady=10)
 
         # previous
-        prev_b = ttk.Button(self.flowctl, text="previous", command=lambda: self.update(step=-1))
-        prev_b.grid(row=4, column=0, columnspan=2, sticky="ew", ipady=5, padx=10, pady=10)
+        self.prev_b = ttk.Button(self.flowctl, text="previous", command=lambda: self.update(step=-1))
+        self.prev_b.grid(row=4, column=0, columnspan=2, sticky="ew", ipady=5, padx=10, pady=10)
         # next
-        next_b = ttk.Button(self.flowctl, text="next", command=lambda: self.update(step=1))
-        next_b.grid(row=4, column=2, columnspan=2, sticky="ew", ipady=5, padx=10, pady=10)
+        self.next_b = ttk.Button(self.flowctl, text="next", command=lambda: self.update(step=1))
+        self.next_b.grid(row=4, column=2, columnspan=2, sticky="ew", ipady=5, padx=10, pady=10)
 
         
 
@@ -84,8 +89,8 @@ class Viewer:
         self.control.add(self.colorctl)
 
         # add confirm button
-        conform = ttk.Button(self.colorctl, text="confirm", command=lambda: self.update())
-        conform.grid(row=0, column=2, columnspan=2, sticky="ew", ipady=5, padx=10, pady=5)
+        self.conform = ttk.Button(self.colorctl, text="confirm", command=lambda: self.update())
+        self.conform.grid(row=0, column=2, columnspan=2, sticky="ew", ipady=5, padx=10, pady=5)
         # add checkboxes
         self.colorblock = []
         self.checkboxes = []
@@ -93,27 +98,101 @@ class Viewer:
             var = IntVar(value=1)
             clb = ttk.Label(self.colorctl, text="--", background=cfg.COLOURS[class_i])
             chk = ttk.Checkbutton(self.colorctl, text=class_i, variable=var)
-            if i < len(cfg.CLASSES)//2:
+            if i < math.ceil(len(cfg.CLASSES)/2):
                 clb.grid(row=1+i, column=0, columnspan=1, sticky="ew", ipady=1, padx=10, pady=2)
                 chk.grid(row=1+i, column=1, columnspan=1, sticky="w", ipady=1, padx=10, pady=2)
             else:
-                clb.grid(row=1+i-len(cfg.CLASSES)//2, column=2, columnspan=1, sticky="ew", ipady=1, padx=10, pady=2)
-                chk.grid(row=1+i-len(cfg.CLASSES)//2, column=3, columnspan=1, sticky="w", ipady=1, padx=10, pady=2)
+                clb.grid(row=1+i-math.ceil(len(cfg.CLASSES)/2), column=2, columnspan=1, sticky="ew", ipady=1, padx=10, pady=2)
+                chk.grid(row=1+i-math.ceil(len(cfg.CLASSES)/2), column=3, columnspan=1, sticky="w", ipady=1, padx=10, pady=2)
             self.colorblock.append(clb)
             self.checkboxes.append(var)
         
         
         # separator
-        separator = ttk.Separator(self.thumb_tab, orient="vertical")
-        separator.grid(row=0, column=1, sticky="ns")
+        self.separator = ttk.Separator(self.thumb_tab, orient="vertical")
+        self.separator.grid(row=0, column=1, sticky="ns")
 
         # right side image panel
         self.display = tk.Canvas(self.thumb_tab, width=self.w*self.i, height=self.h)
         self.display.grid(row=0, column=2)
 
+
+
         # labeled images tab
+        self.w_left_i = 256  # the size of left size panel, horizontal
+        self.f_i = 0.2  # the fraction of images flow control panel, vertical
+        self.c_i = 0.4  # the fraction of checkbox control panel, vertical
+
         self.image_tab = ttk.Frame(self.tabs)
         self.tabs.add(self.image_tab, text="label images")
+
+        # left side control panel
+        self.control_i = ttk.Panedwindow(self.image_tab, orient="vertical")
+        self.control_i.grid(row=0, column=0)
+
+        # images flow control
+        self.flowctl_i = ttk.Labelframe(self.control_i, text="images flow control", width=self.w_left_i, height=self.h*self.f_i)
+        self.control_i.add(self.flowctl_i)
+
+        # previous
+        self.prev_b_i = ttk.Button(self.flowctl_i, text="previous batch", command=lambda: self.update_i(step=-1))
+        self.prev_b_i.grid(row=0, column=0, columnspan=2, sticky="ew", ipady=5, padx=10, pady=10)
+        # next
+        self.next_b_i = ttk.Button(self.flowctl_i, text="next batch", command=lambda: self.update_i(step=1))
+        self.next_b_i.grid(row=0, column=2, columnspan=2, sticky="ew", ipady=5, padx=10, pady=10)
+
+
+        # checkbox control
+        self.colorctl_i = ttk.Labelframe(self.control_i, text="choose classes", width=self.w_left_i, height=self.h*self.c_i)
+        self.control_i.add(self.colorctl_i)
+
+        # confirm button
+        self.confirm_i = ttk.Button(self.colorctl_i, text="confirm", command=lambda: self.update_i(step=0))
+        self.confirm_i.grid(row=0, column=2, columnspan=2, sticky="ew", ipady=5, padx=10, pady=10)
+        # set display modes: the number of images in a row
+        self.M_ = ttk.Label(self.colorctl_i, text="# number:")
+        self.M_.grid(row=1, column=0, columnspan=1, sticky="ew", ipady=1, padx=10, pady=5)
+        self.M = ttk.Entry(self.colorctl_i)
+        self.M.insert(0, "3")
+        self.M.config(width=10)
+        self.M.grid(row=1, column=1, columnspan=1, sticky="e", ipady=1, padx=10, pady=5)
+        # set image size: the times of image size over label box
+        self.N_ = ttk.Label(self.colorctl_i, text="# image size:")
+        self.N_.grid(row=1, column=2, columnspan=1, sticky="ew", ipady=1, padx=10, pady=5)
+        self.N = ttk.Entry(self.colorctl_i)
+        self.N.insert(0, "2")
+        self.N.config(width=10)
+        self.N.grid(row=1, column=3, columnspan=1, sticky="e", ipady=1, padx=10, pady=5)
+        # add checkboxes
+        self.colorblock_i = []
+        self.checkboxes_i = []
+        for i,class_i in enumerate(cfg.CLASSES):
+            var = IntVar(value=0)
+            clb = ttk.Label(self.colorctl_i, text="--", background=cfg.COLOURS[class_i])
+            chk = ttk.Checkbutton(self.colorctl_i, text=class_i, variable=var)
+            if i < math.ceil(len(cfg.CLASSES)/2):
+                clb.grid(row=2+i, column=0, columnspan=1, sticky="ew", ipady=1, padx=10, pady=2)
+                chk.grid(row=2+i, column=1, columnspan=1, sticky="w", ipady=1, padx=10, pady=2)
+            else:
+                clb.grid(row=2+i-math.ceil(len(cfg.CLASSES)/2), column=2, columnspan=1, sticky="ew", ipady=1, padx=10, pady=2)
+                chk.grid(row=2+i-math.ceil(len(cfg.CLASSES)/2), column=3, columnspan=1, sticky="w", ipady=1, padx=10, pady=2)
+            self.colorblock_i.append(clb)
+            self.checkboxes_i.append(var)
+
+
+        # thumbnail display for comparison purpose
+        self.thumbmini = tk.Canvas(self.control_i, width=self.w_left_i, height=self.w_left_i)
+        self.control_i.add(self.thumbmini)
+
+
+        # separator
+        self.separator_i = ttk.Separator(self.image_tab, orient="vertical")
+        self.separator_i.grid(row=0, column=1, sticky="ns")
+
+        # right side image panel
+        self.display_i = tk.Canvas(self.image_tab, width=self.w-self.w_left_i, height=self.h)
+        self.display_i.grid(row=0, column=2)
+
         self.tabs.pack()
 
 
@@ -204,7 +283,7 @@ class Viewer:
         self.patcher = Patcher(self.database[self.index]["fname"], self.database[self.index]["lname"])
         image = self.patcher.patch_label(classes)
         image = ImageTk.PhotoImage(resize(image, self.w*self.i, self.h))
-        self.image_on = image
+        self.thumb_on = image
         self.display.create_image(self.w*self.i/2, self.h*0.5, image=image)
 
 
@@ -219,7 +298,8 @@ class Viewer:
 
 
     def update_label_counts(self):
-        self.database[self.index]["labels"] = self.patcher.get_labels()
+        if not "labels" in self.database[self.index]:
+            self.database[self.index]["labels"] = self.patcher.get_labels()
         for i,class_i in enumerate(cfg.CLASSES):
             self.colorblock[i].config(text=str(len(self.database[self.index]["labels"][class_i])))
 
@@ -229,7 +309,7 @@ class Viewer:
         self.n_count.config(text="----")
         self.fname.config(text=".kfb/.tif")
         self.lname.config(text=".csv/.xml")
-        self.image_on = None
+        self.thumb_on = None
         self.database = []
         for clb in self.colorblock:
             clb.config(text="--")
@@ -249,8 +329,78 @@ class Viewer:
         self.update_text()
         self.update_label_counts()
 
+
     def load_images(self):
-    	pass
+        checked_classes = [cfg.CLASSES[i] for i,var in enumerate(self.checkboxes_i) if var.get()]
+        sub_labels = {key:value for key,value in self.database[self.index]["labels"].items() if key in checked_classes}
+        sub_images = self.patcher.crop_images(sub_labels, N=int(self.N.get()))
+        self.image_list = [[class_i,box,image] for class_i,boxes in sub_images.items() for box,image in boxes.items()]
+        self.cursor = 0
+
+        M = int(self.M.get())  # number of images in a row
+        self.size_avg = self.w * self.i / M  # average image size to display
+        rows = int(self.h / self.size_avg)  # number of rows to display
+        pad = (self.h-self.size_avg*rows)/(rows+1)
+        self.anchors = []  # stores the center position of images to show
+        for row in range(rows):
+            for i in range(M):
+                self.anchors.append((int(self.size_avg/2 + self.size_avg*i), int(self.size_avg/2 + self.size_avg*row + pad*(row+1))))
+
+                    
+    def update_images(self, step):
+        def resize(image, size):
+            w, h = image.size
+            f = min(1, min(size/w, size/h))
+            return image.resize((int(w*f), int(h*f)))
+
+        # update cursor
+        self.cursor += step * len(self.anchors)
+        if self.cursor not in range(len(self.image_list)):
+            self.cursor -= step * len(self.anchors)
+            messagebox.showinfo("warning", "no more images")
+            return
+
+        # update images
+        del self.images_on
+        self.images_on = []
+        cursor = self.cursor
+        for anchor in self.anchors:
+            if cursor not in range(len(self.image_list)):
+                break
+            image = ImageTk.PhotoImage(resize(self.image_list[cursor][2], self.size_avg))
+            self.images_on.append(image)
+            self.display_i.create_image(anchor[0], anchor[1], image=image)
+            cursor += 1
+
+    def load_thumbnailmini(self):
+        def resize(image, w, h):
+            w0, h0 = image.size
+            factor = min(w/w0, h/w0)
+            return image.resize((int(w0*factor), int(h0*factor)))
+
+        sub_labels = {}
+        for i in range(len(self.anchors)):
+            cursor = self.cursor + i
+            if cursor not in range(len(self.image_list)):
+                break
+            class_i = self.image_list[cursor][0]
+            box = self.image_list[cursor][1]
+            if class_i not in sub_labels:
+                sub_labels[class_i] = {}
+            sub_labels[class_i][box] = self.database[self.index]["labels"][class_i][box]
+        
+        image = self.patcher.patch_label_mini(sub_labels)
+        image = ImageTk.PhotoImage(resize(image, self.w_left_i, self.w_left_i))
+        self.thumbmini_on = image
+        self.thumbmini.create_image(self.w_left_i/2, self.w_left_i/2, image=image)
+
+
+    def update_i(self, step):
+        if step == 0:
+            self.load_images()
+        if hasattr(self, "cursor"):
+            self.update_images(step=step)
+            self.load_thumbnailmini()
 
     def run(self):
         self.root.mainloop()
