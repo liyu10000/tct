@@ -1,7 +1,7 @@
 import os
 import math
 import tkinter as tk
-from tkinter import ttk, filedialog, messagebox, IntVar
+from tkinter import ttk, filedialog, messagebox, IntVar, StringVar
 from PIL import ImageTk, Image
 
 from Config import cfg
@@ -420,10 +420,11 @@ class Viewer:
 
     def on_double_click(self, event):
         x_can, y_can = event.x, event.y
+        pass
 
 
     def on_right_click(self, event):
-        def show_label_choose(x, y, label):
+        def show_choices(mouse_p_on_can, cursor_of_image, label):
             # destroy existing toplevel window if exists
             destroy()
             # creates a toplevel window
@@ -431,18 +432,22 @@ class Viewer:
             # Leaves only the label and removes the app window
             self.tw.wm_overrideredirect(True)
             win = tk.Frame(self.tw, borderwidth=0)
-            self.radioBox = IntVar(value=cfg.CLASSES.index(label))
+            self.radioBox = StringVar(value=label)
             # delete choice
             tk.Radiobutton(win, text="DELETE", padx=5, variable=self.radioBox, 
-                                command=choice_made, value=-1).pack(anchor=tk.W)
+                                command=lambda: choice_made(cursor_of_image, label), 
+                                value="DELETE").pack(anchor=tk.W)
             # choices to be change label to
-            for i,class_i in enumerate(cfg.CLASSES):
+            for class_i in cfg.CLASSES:
                 tk.Radiobutton(win, text=class_i, padx=5, variable=self.radioBox,
-                                    command=choice_made, value=i).pack(anchor=tk.W)
+                                    command=lambda: choice_made(cursor_of_image,label), 
+                                    value=class_i).pack(anchor=tk.W)
             win.grid()
             # set the position of label to show on screen
+            # first get the position of canvas (upleft) on screen
             x_of_c, y_of_c = self.display_i.winfo_rootx(), self.display_i.winfo_rooty()
-            x, y = x + x_of_c + 5, y + y_of_c - 150  # need to use a universal configuration here
+            # then add the position of mouse on canvas (note: need to use a universal configuration here)
+            x, y = mouse_p_on_can[0] + x_of_c + 5, mouse_p_on_can[1] + y_of_c - 150
             self.tw.wm_geometry("+%d+%d" % (x, y))  
 
         def destroy():
@@ -450,25 +455,36 @@ class Viewer:
                 self.tw.destroy()
             self.tw = None
 
-        def choice_made():
-            choice = self.radioBox.get()
-            if choice == -1:
-                print("delete image and label")
-            else:
-                print("change label to {}".format(cfg.CLASSES[choice]))
+        def choice_made(cursor_of_image,label):
             waittime = 300  # in miniseconds
             self.display_i.after(waittime, destroy)
 
+            # retrieve choice and make changes accordingly
+            choice = self.radioBox.get()
+            # detect if there are changes made
+            if choice == label:
+                return
+            box = self.image_list[cursor_of_image][1]           
+            # change original label to choice
+            if choice != "DELETE":
+                self.database[self.index]["labels"][choice][box] = self.database[self.index]["labels"][label][box]
+            # delete label
+            del self.database[self.index]["labels"][label][box]
+            # update label counts
+            self.update_label_counts_i()
+                
         # get mouse position, relative to canvas
         x_can, y_can = event.x, event.y
         # get the index of image in self.image_list
         cursor_of_image = self.get_cursor_of_image((x_can, y_can))
         # get the lable of the image
         label = self.get_label_by_cursor(cursor_of_image)
+        # check if label has been deleted
+        if label == "DELETED!!!":
+            messagebox.showinfo("error", "image has already been deleted")
+            return
         # show label choose dialog on screen
-        show_label_choose(x_can, y_can, label)
-        # destroy dialog if no action is performed
-        # destroy()
+        show_choices((x_can,y_can), cursor_of_image, label)
                     
 
     def update_images(self, step):
