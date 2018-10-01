@@ -365,7 +365,12 @@ class Viewer:
             note: label may be changed, need to reimplement: get label from self.database[self.index]["labels"].
             Will maintain an updated labels map in self.database
         """
-        return self.image_list[cursor_of_image][0]
+        box = self.image_list[cursor_of_image][1]
+        # search self.database[self.index]["labels"] for class_i
+        for class_i,boxes in self.database[self.index]["labels"].items():
+            if box in boxes:
+                return class_i
+        return "DELETED!!!"
 
     def on_single_click(self, event):
         def show(x, y, label):
@@ -437,7 +442,7 @@ class Viewer:
             win.grid()
             # set the position of label to show on screen
             x_of_c, y_of_c = self.display_i.winfo_rootx(), self.display_i.winfo_rooty()
-            x, y = x + x_of_c + 5, y + y_of_c - 25
+            x, y = x + x_of_c + 5, y + y_of_c - 150  # need to use a universal configuration here
             self.tw.wm_geometry("+%d+%d" % (x, y))  
 
         def destroy():
