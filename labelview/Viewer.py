@@ -197,7 +197,7 @@ class Viewer:
 
 
     def load_file(self):
-        fname = filedialog.askopenfilename(filetypes=(("kfb files", "*.kfb"), ("tif files", "*.tif")))
+        fname = filedialog.askopenfilename(filetypes=(("*.kfb files", "*.kfb"), ("*.tif files", "*.tif")))
         if not fname:
             messagebox.showinfo("warning", "no file choosed")
         else:
@@ -330,6 +330,7 @@ class Viewer:
         self.update_label_counts()
 
 
+    # below are functions relative to second tab
     def load_images(self):
         checked_classes = [cfg.CLASSES[i] for i,var in enumerate(self.checkboxes_i) if var.get()]
         sub_labels = {key:value for key,value in self.database[self.index]["labels"].items() if key in checked_classes}
@@ -346,15 +347,125 @@ class Viewer:
             for i in range(M):
                 self.anchors.append((int(self.size_avg/2 + self.size_avg*i), int(self.size_avg/2 + self.size_avg*row + pad*(row+1))))
 
+
+    def get_cursor_of_image(self, position):
+        """ get current cursor, given position (event.x, event.y) """
+        distance = {}
+        cursor = self.cursor
+        for anchor in self.anchors:
+            if cursor not in range(len(self.image_list)):
+                break
+            distance[(position[0]-anchor[0])**2 + (position[1]-anchor[1])**2] = cursor
+            cursor += 1
+        sort_dist = sorted(distance.items())
+        return sort_dist[0][1]
+
+    def get_label_by_cursor(self, cursor_of_image):
+        """ get label by the index in self.image_list.
+            note: label may be changed, need to reimplement: get label from self.database[self.index]["labels"].
+            Will maintain an updated labels map in self.database
+        """
+        return self.image_list[cursor_of_image][0]
+
     def on_single_click(self, event):
-        print("single clicked:", event.widget.find_closest(event.x, event.y))
+        def show(x, y, label):
+            # destroy any toplevel window if exists
+            destroy()
+
+            # creates a toplevel window
+            self.tw = tk.Toplevel(self.display_i)
+            # Leaves only the label and removes the app window
+            self.tw.wm_overrideredirect(True)
+            win = tk.Frame(self.tw, borderwidth=0)
+            label = ttk.Label(win,
+                              text=label,
+                              justify=tk.LEFT,
+                              relief=tk.SOLID,
+                              borderwidth=0)
+            pad = (5, 3, 5, 3)
+            label.grid(padx=(pad[0], pad[2]),
+                       pady=(pad[1], pad[3]),
+                       sticky=tk.NSEW)
+            win.grid()
+            # set the position of label to show on screen
+            x_of_c, y_of_c = self.display_i.winfo_rootx(), self.display_i.winfo_rooty()
+            x, y = x + x_of_c + 5, y + y_of_c - 25
+            self.tw.wm_geometry("+%d+%d" % (x, y))
+
+        def destroy():
+            if hasattr(self, "tw") and self.tw:
+                self.tw.destroy()
+            self.tw = None
+
+        def wait_and_hide():
+            waittime = 500  # in miniseconds
+            self.display_i.after(waittime, destroy)
+
+        # get mouse position, relative to canvas
+        x_can, y_can = event.x, event.y
+        # get the index of image in self.image_list
+        cursor_of_image = self.get_cursor_of_image((x_can, y_can))
+        # get the lable of the image
+        label = self.get_label_by_cursor(cursor_of_image)
+        # show label on screen
+        show(x_can, y_can, label)
+        # hide label after some time
+        wait_and_hide()
+
 
     def on_double_click(self, event):
-        print("double clicked:", event.widget.find_closest(event.x, event.y))
+        x_can, y_can = event.x, event.y
+
 
     def on_right_click(self, event):
-        print("right clicked:", event.widget.find_closest(event.x, event.y))
+        def show_label_choose(x, y, label):
+            # destroy existing toplevel window if exists
+            destroy()
+            # creates a toplevel window
+            self.tw = tk.Toplevel(self.display_i)
+            # Leaves only the label and removes the app window
+            self.tw.wm_overrideredirect(True)
+            win = tk.Frame(self.tw, borderwidth=0)
+            self.radioBox = IntVar(value=cfg.CLASSES.index(label))
+            # delete choice
+            tk.Radiobutton(win, text="DELETE", padx=5, variable=self.radioBox, 
+                                command=choice_made, value=-1).pack(anchor=tk.W)
+            # choices to be change label to
+            for i,class_i in enumerate(cfg.CLASSES):
+                tk.Radiobutton(win, text=class_i, padx=5, variable=self.radioBox,
+                                    command=choice_made, value=i).pack(anchor=tk.W)
+            win.grid()
+            # set the position of label to show on screen
+            x_of_c, y_of_c = self.display_i.winfo_rootx(), self.display_i.winfo_rooty()
+            x, y = x + x_of_c + 5, y + y_of_c - 25
+            self.tw.wm_geometry("+%d+%d" % (x, y))  
+
+        def destroy():
+            if hasattr(self, "tw") and self.tw:
+                self.tw.destroy()
+            self.tw = None
+
+        def choice_made():
+            choice = self.radioBox.get()
+            if choice == -1:
+                print("delete image and label")
+            else:
+                print("change label to {}".format(cfg.CLASSES[choice]))
+            waittime = 300  # in miniseconds
+            self.display_i.after(waittime, destroy)
+
+        # get mouse position, relative to canvas
+        x_can, y_can = event.x, event.y
+        # get the index of image in self.image_list
+        cursor_of_image = self.get_cursor_of_image((x_can, y_can))
+        # get the lable of the image
+        label = self.get_label_by_cursor(cursor_of_image)
+        # show label choose dialog on screen
+        show_label_choose(x_can, y_can, label)
+        # destroy dialog if no action is performed
+        # destroy()
                     
+
     def update_images(self, step):
         def resize(image, size):
             w, h = image.size
