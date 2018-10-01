@@ -468,6 +468,10 @@ class Viewer:
             # change original label to choice
             if choice != "DELETE":
                 self.database[self.index]["labels"][choice][box] = self.database[self.index]["labels"][label][box]
+            else:  # when choice == "DELETE"
+                if "DELETED!!!" not in self.database[self.index]["labels"]:
+                    self.database[self.index]["labels"]["DELETED!!!"] = {}
+                self.database[self.index]["labels"]["DELETED!!!"][box] = self.database[self.index]["labels"][label][box]
             # delete label
             del self.database[self.index]["labels"][label][box]
             # update label counts
@@ -481,8 +485,7 @@ class Viewer:
         label = self.get_label_by_cursor(cursor_of_image)
         # check if label has been deleted
         if label == "DELETED!!!":
-            messagebox.showinfo("error", "image has already been deleted")
-            return
+            messagebox.showinfo("warning", "image has been deleted")
         # show label choose dialog on screen
         show_choices((x_can,y_can), cursor_of_image, label)
                     
