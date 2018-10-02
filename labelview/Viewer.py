@@ -371,6 +371,7 @@ class Viewer:
         sort_dist = sorted(distance.items())
         return sort_dist[0][1]
 
+
     def get_label_by_cursor(self, cursor_of_image):
         """ get label by the index in self.image_list.
             note: label may be changed, need to reimplement: get label from self.database[self.index]["labels"].
@@ -382,6 +383,7 @@ class Viewer:
             if box in boxes:
                 return class_i
         return "DELETED!!!"
+
 
     def on_single_click(self, event):
         def show(x, y, label):
@@ -479,14 +481,24 @@ class Viewer:
             # change original label to choice
             if choice != "DELETE":
                 self.database[self.index]["labels"][choice][box] = self.database[self.index]["labels"][label][box]
+                outline_color = "blue"
+                self.image_list[cursor_of_image][0] = choice  # update class_i in image_list
             else:  # when choice == "DELETE"
                 if "DELETED!!!" not in self.database[self.index]["labels"]:
                     self.database[self.index]["labels"]["DELETED!!!"] = {}
                 self.database[self.index]["labels"]["DELETED!!!"][box] = self.database[self.index]["labels"][label][box]
+                outline_color = "red"
+                self.image_list[cursor_of_image][0] = "DELETED!!!"  # update class_i in image_list, note: new key here
             # delete label
             del self.database[self.index]["labels"][label][box]
             # update label counts
             self.update_label_counts_i()
+            # add surrounding rectangle to changed image on canvas
+            self.image_list[cursor_of_image].append(outline_color)
+            anchor = self.anchors[cursor_of_image - self.cursor]
+            x0, y0 = anchor[0] - self.size_avg/2 + 1, anchor[1] - self.size_avg/2 + 1
+            x1, y1 = anchor[0] + self.size_avg/2 - 1, anchor[1] + self.size_avg/2 - 1
+            self.display_i.create_rectangle(x0, y0, x1, y1, outline=outline_color, width=2)
                 
         # get mouse position, relative to canvas
         x_can, y_can = event.x, event.y
@@ -494,12 +506,12 @@ class Viewer:
         cursor_of_image = self.get_cursor_of_image((x_can, y_can))
         # get the lable of the image
         label = self.get_label_by_cursor(cursor_of_image)
-        # check if label has been deleted
-        if label == "DELETED!!!":
-            messagebox.showinfo("warning", "image has been deleted")
+        # # check if label has been deleted
+        # if label == "DELETED!!!":
+        #     messagebox.showinfo("warning", "image has been deleted")
         # show label choose dialog on screen
         show_choices((x_can,y_can), cursor_of_image, label)
-                    
+    
 
     def update_images(self, step):
         def resize(image, size):
@@ -528,6 +540,12 @@ class Viewer:
             self.display_i.tag_bind("image_{}".format(cursor), "<ButtonPress-1>", self.on_single_click)
             self.display_i.tag_bind("image_{}".format(cursor), "<Double-Button-1>", self.on_double_click)
             self.display_i.tag_bind("image_{}".format(cursor), "<Button-3>", self.on_right_click)
+            # add bounding rectangle for changed images, on canvas
+            if len(self.image_list[cursor]) > 3:
+                outline_color = self.image_list[cursor][-1]  # get the last color, should i only store one instead?
+                x0, y0 = anchor[0] - self.size_avg/2 + 1, anchor[1] - self.size_avg/2 + 1
+                x1, y1 = anchor[0] + self.size_avg/2 - 1, anchor[1] + self.size_avg/2 - 1
+                self.display_i.create_rectangle(x0, y0, x1, y1, outline=outline_color, width=2)                
             cursor += 1
 
     def load_thumbnailmini(self):
@@ -542,6 +560,8 @@ class Viewer:
             if cursor not in range(len(self.image_list)):
                 break
             class_i = self.image_list[cursor][0]
+            if class_i == "DELETED!!!":
+                continue
             box = self.image_list[cursor][1]
             if class_i not in sub_labels:
                 sub_labels[class_i] = {}
@@ -578,7 +598,7 @@ class Viewer:
         if self.old_index != self.index:
             self.thumbmini.delete("all")  # delete thumbnail image
             self.display_i.delete("all")  # delete all images on canvas
-            if self.index is None:
+            if self.index is None:  # happens when failed to load new label files
                 self.update_label_counts_i(clean=True)  # clean label counts on second tab
             else:
                 self.update_label_counts_i()  # update label counts on second tab
