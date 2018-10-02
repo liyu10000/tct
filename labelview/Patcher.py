@@ -32,7 +32,6 @@ class Patcher:
         """
         def zoom_out_labels():
             """ resize the coordinates of labels to accommodate thumbnail image """
-            labels_new = {class_i:{} for class_i in cfg.CLASSES}
             for class_i, boxes in self.labels.items():
                 for box in boxes:
                     box_z = (int(box[0]/self.meta['level_downsamples']),

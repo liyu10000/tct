@@ -124,6 +124,7 @@ class Viewer:
         self.c_i = 0.4  # the fraction of checkbox control panel, vertical
 
         self.image_tab = ttk.Frame(self.tabs)
+        self.image_tab.bind("<Visibility>", self.on_visibility)  # clean and update contents when switch to this tab
         self.tabs.add(self.image_tab, text="label images")
 
         # left side control panel
@@ -205,7 +206,7 @@ class Viewer:
             del self.database
             self.database = []
             self.database.append({"basename":os.path.splitext(os.path.basename(fname))[0], "fname":fname, "lname":None})
-            self.update_text()
+            self.update()
 
 
     def load_files(self):
@@ -225,7 +226,7 @@ class Viewer:
                 messagebox.showinfo("warning", "no kfb file exists")
             else:
                 self.index = 0
-                self.update_text()
+                self.update()
 
 
     def load_labels(self):
@@ -250,10 +251,6 @@ class Viewer:
             database_new = [item for item in self.database if item["lname"] is not None]
             del self.database
             self.database = database_new
-            if self.database:
-                self.index = 0
-            else:
-                self.index = None
 
         if self.index is None:
             messagebox.showinfo("error", "no kfb/tif file loaded")
@@ -272,6 +269,7 @@ class Viewer:
                             self.database[i]["lname"] = os.path.join(file_dir, lname)
                             break
             choose_matched()
+            self.index = 0 if self.database else None
             self.update()
 
 
@@ -298,7 +296,20 @@ class Viewer:
 
 
     def update_label_counts(self):
-        if not "labels" in self.database[self.index]:
+        def need_reget_label():
+            """ check if need to get label from patcher """
+            # check if haven't got labels from patcher
+            if not "labels" in self.database[self.index]:
+                return True
+            # check if have got labels from patcher, but with None label file
+            # note: there is a case that this will lead to excess label getting,
+            # that is, patcher.labels contains no labels.
+            count = 0
+            for class_i,boxes in self.database[self.index]["labels"].items():
+                count += len(boxes)
+            return count == 0
+
+        if need_reget_label():
             self.database[self.index]["labels"] = self.patcher.get_labels()
         for i,class_i in enumerate(cfg.CLASSES):
             self.colorblock[i].config(text=str(len(self.database[self.index]["labels"][class_i])))
@@ -542,9 +553,13 @@ class Viewer:
         self.thumbmini.create_image(self.w_left_i/2, self.w_left_i/2, image=image)
 
 
-    def update_label_counts_i(self):
-        for i,class_i in enumerate(cfg.CLASSES):
-            self.colorblock_i[i].config(text=str(len(self.database[self.index]["labels"][class_i])))
+    def update_label_counts_i(self, clean=False):
+        if clean:
+            for clb in self.colorblock_i:
+                clb.config(text="--")
+        else:
+            for i,class_i in enumerate(cfg.CLASSES):
+                self.colorblock_i[i].config(text=str(len(self.database[self.index]["labels"][class_i])))
 
 
     def update_i(self, step):
@@ -554,6 +569,21 @@ class Viewer:
             self.update_images(step=step)
             self.load_thumbnailmini()
         self.update_label_counts_i()
+
+
+    def on_visibility(self, event):
+        """ clean up and update second tab upon tab switch, when self.index changed in first tab """
+        if not hasattr(self, "old_index"):
+            self.old_index = None
+        if self.old_index != self.index:
+            self.thumbmini.delete("all")  # delete thumbnail image
+            self.display_i.delete("all")  # delete all images on canvas
+            if self.index is None:
+                self.update_label_counts_i(clean=True)  # clean label counts on second tab
+            else:
+                self.update_label_counts_i()  # update label counts on second tab
+            self.old_index = self.index
+
 
     def run(self):
         self.root.mainloop()

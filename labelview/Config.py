@@ -3,10 +3,12 @@ from easydict import EasyDict as edict
 __C = edict()
 cfg = __C
 
+# classes used checkboxes
 __C.CLASSES = ["ASCUS", "LSIL", "ASCH", "HSIL", "SCC", "AGC1", "AGC2",
            	   "ADC", "EC", "FUNGI", "TRI", "CC", "ACTINO", "VIRUS",
            	   "MC", "SC", "RC", "GEC"]
 
+# color used in display of checkboxes and patches on thumbnail image
 __C.COLOURS = {'AGC3': '#ff55ff', 'ASCUS': '#00557f', 'FUNGI': '#00aa00', 
            	   'LSIL': '#005500', 'SCC': '#0055ff', 'EC': '#aa55ff', 
            	   'ASCH': '#aa007f', 'VIRUS': '#55aa7f', 'SC': '#aa00ff', 
@@ -15,6 +17,7 @@ __C.COLOURS = {'AGC3': '#ff55ff', 'ASCUS': '#00557f', 'FUNGI': '#00aa00',
            	   'ADC': '#aa557f', 'TRI': '#00aa7f', 'AGC1': '#ff5500', 
            	   'GEC': '#aa5500'}
 
+# color used in xml
 __C.CONVERT = {'#000000': 'MC', '#aa55ff': 'EC', '#005500': 'LSIL', 
                '#00557f': 'ASCUS', '#ff557f': 'AGC2', '#00aaff': 'CC', 
                '#aa5500': 'GEC', '#00aa7f': 'TRI', '#ff0000': 'RC', 
