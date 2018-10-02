@@ -80,7 +80,41 @@ class Patcher:
         elif self.label_file.endswith(".xml"):
             read_xml()
         zoom_out_labels()
-                  
+    
+
+    def write_labels(self, label_file):
+        doc = xml.dom.minidom.Document()
+        ASAP_Annotations = doc.createElement("ASAP_Annotations")
+        doc.appendChild(ASAP_Annotations)
+        Annotations = doc.createElement("Annotations")
+        ASAP_Annotations.appendChild(Annotations)
+        AnnotationGroups = doc.createElement("AnnotationGroups")
+        ASAP_Annotations.appendChild(AnnotationGroups)
+        i = 0  # record the number of annotation (label)
+        for class_i,boxes in self.labels.items():
+            if class_i not in cfg.COLOURS:  # "DELETED!!!"
+                continue
+            for box in boxes:
+                Annotation = doc.createElement("Annotation")
+                Annotation.attributes["Color"] = cfg.COLOURS[class_i]
+                Annotation.attributes["PartOfGroup"] = "None"
+                Annotation.attributes["Type"] = "Polygon"
+                Annotation.attributes["Name"] = "Annotation " + str(i)
+                Annotations.appendChild(Annotation)
+                i += 1
+
+                Coordinates = doc.createElement("Coordinates")
+                Annotation.appendChild(Coordinates)
+                vertices = [(box[0],box[1]), (box[2],box[1]), (box[2],box[3]), (box[0],box[3])]
+                for j in range(4):
+                    Coordinate = doc.createElement("Coordinate")
+                    Coordinate.attributes["X"] = str(vertices[j][0])
+                    Coordinate.attributes["Y"] = str(vertices[j][1])
+                    Coordinate.attributes["Order"] = str(j)
+                    Coordinates.appendChild(Coordinate)
+        with open(os.path.join(label_file), "w") as file:
+            file.write(doc.toprettyxml(indent="\t"))
+
 
     def get_meta(self):
         return self.meta

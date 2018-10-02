@@ -120,7 +120,8 @@ class Viewer:
 
         # labeled images tab
         self.w_left_i = 256  # the size of left size panel, horizontal
-        self.f_i = 0.2  # the fraction of images flow control panel, vertical
+        self.s_i = 0.2  # the fraction of file info display and label file save control, vertical
+        self.i_i = 0.2  # the fraction of images flow control panel, vertical
         self.c_i = 0.4  # the fraction of checkbox control panel, vertical
 
         self.image_tab = ttk.Frame(self.tabs)
@@ -131,8 +132,24 @@ class Viewer:
         self.control_i = ttk.Panedwindow(self.image_tab, orient="vertical")
         self.control_i.grid(row=0, column=0)
 
+
+        # file info display and label file save control
+        self.savectl_i = ttk.Labelframe(self.control_i, text="label file write control", width=self.w_left_i, height=self.h*self.s_i)
+        self.control_i.add(self.savectl_i)
+
+        # set label file save dir
+        self.label_dir = ttk.Button(self.savectl_i, text="set label file save dir", command=self.set_save_dir)
+        self.label_dir.grid(row=0, column=0, columnspan=4, sticky="ew", ipady=5, padx=10, pady=10)
+        # display file progress
+        self.n_count_i = ttk.Label(self.savectl_i, text="file progress")
+        self.n_count_i.grid(row=1, column=0, columnspan=2, sticky="ew", ipady=5, padx=10, pady=10)
+        # save changes
+        self.save_changes = ttk.Button(self.savectl_i, text="save changes", command=self.save_labels)
+        self.save_changes.grid(row=1, column=2, columnspan=2, sticky="ew", ipady=5, padx=10, pady=10)
+
+
         # images flow control
-        self.flowctl_i = ttk.Labelframe(self.control_i, text="images flow control", width=self.w_left_i, height=self.h*self.f_i)
+        self.flowctl_i = ttk.Labelframe(self.control_i, text="images flow control", width=self.w_left_i, height=self.h*self.i_i)
         self.control_i.add(self.flowctl_i)
 
         # previous
@@ -147,6 +164,9 @@ class Viewer:
         self.colorctl_i = ttk.Labelframe(self.control_i, text="choose classes", width=self.w_left_i, height=self.h*self.c_i)
         self.control_i.add(self.colorctl_i)
 
+        # images view progress
+        self.image_pro = ttk.Label(self.colorctl_i, text="images view progress")
+        self.image_pro.grid(row=0, column=0, columnspan=2, sticky="ew", ipady=5, padx=10, pady=10)
         # confirm button
         self.confirm_i = ttk.Button(self.colorctl_i, text="confirm", command=lambda: self.update_i(step=0))
         self.confirm_i.grid(row=0, column=2, columnspan=2, sticky="ew", ipady=5, padx=10, pady=10)
@@ -342,6 +362,15 @@ class Viewer:
 
 
     # below are functions relative to second tab
+    def set_save_dir(self):
+        if self.index is None:
+            messagebox.showinfo("error", "there is no file/label matched")
+            return
+        self.save_dir = filedialog.askdirectory()
+        if not self.save_dir:
+            messagebox.showinfo("warning", "no directory choosed, will use default")
+
+
     def load_images(self):
         checked_classes = [cfg.CLASSES[i] for i,var in enumerate(self.checkboxes_i) if var.get()]
         sub_labels = {key:value for key,value in self.database[self.index]["labels"].items() if key in checked_classes}
@@ -573,35 +602,68 @@ class Viewer:
         self.thumbmini.create_image(self.w_left_i/2, self.w_left_i/2, image=image)
 
 
-    def update_label_counts_i(self, clean=False):
-        if clean:
+    def update_label_counts_i(self, clear=False):
+        if clear:
             for clb in self.colorblock_i:
                 clb.config(text="--")
         else:
             for i,class_i in enumerate(cfg.CLASSES):
                 self.colorblock_i[i].config(text=str(len(self.database[self.index]["labels"][class_i])))
 
+    def update_text_i(self, clear=False):
+        if clear:
+            self.n_count_i.config(text="no progress")
+        else:
+            self.n_count_i.config(text="files: {} / {}".format(self.index+1, len(self.database)))
+        if hasattr(self, "cursor"):
+            self.image_pro.config(text="images in view: {} / {}".format(self.cursor+1, len(self.image_list)))
+        else:
+            self.image_pro.config(text="no progress")
+
 
     def update_i(self, step):
+        if self.index is None:
+            messagebox.showinfo("error", "there is no file/label matched")
+            return
         if step == 0:
             self.load_images()
         if hasattr(self, "cursor"):
             self.update_images(step=step)
             self.load_thumbnailmini()
+        self.update_text_i()
         self.update_label_counts_i()
 
 
+    def save_labels(self, index=None):
+        """ upload labels changes to patcher """
+        if hasattr(self, "patcher"):
+            if index is None:
+                if self.index is None:
+                    return
+                else:
+                    index = self.index
+            self.patcher.set_labels(self.database[index]["labels"])
+            if not self.save_dir:
+                self.save_dir = os.path.dirname(self.database[index]["lname"])
+            label_file = os.path.join(self.save_dir, self.database[index]["basename"]+".xml")
+            self.patcher.write_labels(label_file)
+
     def on_visibility(self, event):
-        """ clean up and update second tab upon tab switch, when self.index changed in first tab """
+        """ clear up and update second tab upon tab switch, when self.index changed in first tab """
         if not hasattr(self, "old_index"):
             self.old_index = None
+            self.save_dir = None
         if self.old_index != self.index:
             self.thumbmini.delete("all")  # delete thumbnail image
             self.display_i.delete("all")  # delete all images on canvas
             if self.index is None:  # happens when failed to load new label files
-                self.update_label_counts_i(clean=True)  # clean label counts on second tab
+                self.update_text_i(clear=True)
+                self.update_label_counts_i(clear=True)  # clear label counts on second tab
             else:
+                self.update_text_i()
                 self.update_label_counts_i()  # update label counts on second tab
+            if self.old_index is not None:  # save labels to label file
+                self.save_labels(self.old_index)
             self.old_index = self.index
 
 
