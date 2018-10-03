@@ -189,7 +189,7 @@ class Viewer:
         self.checkboxes_i = []
         for i,class_i in enumerate(cfg.CLASSES):
             var = IntVar(value=0)
-            clb = ttk.Label(self.colorctl_i, text="--", background=cfg.COLOURS[class_i])
+            clb = ttk.Label(self.colorctl_i, text="--", background='#ffffff')
             chk = ttk.Checkbutton(self.colorctl_i, text=class_i, variable=var)
             if i < math.ceil(len(cfg.CLASSES)/2):
                 clb.grid(row=2+i, column=0, columnspan=1, sticky="ew", ipady=1, padx=10, pady=2)
@@ -372,12 +372,18 @@ class Viewer:
 
 
     def load_images(self):
+        # update color
+        self.update_color_i(finished=False)
+        # get checked classes
         checked_classes = [cfg.CLASSES[i] for i,var in enumerate(self.checkboxes_i) if var.get()]
+        # get images from patcher
         sub_labels = {key:value for key,value in self.database[self.index]["labels"].items() if key in checked_classes}
-        sub_images = self.patcher.crop_images(sub_labels, N=int(self.N.get()))
-        self.image_list = [[class_i,box,image] for class_i,boxes in sub_images.items() for box,image in boxes.items()]
+        # sub_images = self.patcher.crop_images(sub_labels, N=int(self.N.get()))
+        # self.image_list = [[class_i,box,image] for class_i,boxes in sub_images.items() for box,image in boxes.items()]
+        self.image_list = self.patcher.crop_images(sub_labels, N=int(self.N.get()))
         self.cursor = 0
 
+        # calculate anchor points for images
         M = int(self.M.get())  # number of images in a row
         self.size_avg = self.w * self.i / M  # average image size to display
         rows = int(self.h / self.size_avg)  # number of rows to display
@@ -548,6 +554,10 @@ class Viewer:
             f = min(1, min(size/w, size/h))
             return image.resize((int(w*f), int(h*f)))
 
+        # update color
+        if self.cursor + 2*len(self.anchors) >= len(self.image_list):
+            self.update_color_i(finished=True)
+
         # update cursor
         self.cursor += step * len(self.anchors)
         if self.cursor not in range(len(self.image_list)):
@@ -620,6 +630,21 @@ class Viewer:
         else:
             self.image_pro.config(text="no progress")
 
+    def update_color_i(self, finished=False, clear=False):
+        """ change colorbox color
+        :param finished: the status of viewing images. Change color to shallow yellow if started viewing, green if finished.
+        :param clear: the command to reset color to white, at tab changes
+        """
+        if clear:
+            for clb in self.colorblock_i:
+                clb.configure(background="#ffffff")
+            return
+        color = "#00ff00" if finished else "#ffff99"
+        checked_classes = [i for i,var in enumerate(self.checkboxes_i) if var.get()]
+        for i,clb in enumerate(self.colorblock_i):
+            if i in checked_classes:
+                clb.configure(background=color)
+
 
     def update_i(self, step):
         if self.index is None:
@@ -656,6 +681,7 @@ class Viewer:
         if self.old_index != self.index:
             self.thumbmini.delete("all")  # delete thumbnail image
             self.display_i.delete("all")  # delete all images on canvas
+            self.update_color_i(clear=True)  # reset background color in colorboxes
             if self.index is None:  # happens when failed to load new label files
                 self.update_text_i(clear=True)
                 self.update_label_counts_i(clear=True)  # clear label counts on second tab

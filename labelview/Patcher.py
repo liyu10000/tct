@@ -4,6 +4,8 @@ import xml.dom.minidom
 import openslide
 from copy import copy
 from PIL import Image, ImageFilter, ImageDraw
+from multiprocessing import cpu_count
+from concurrent.futures import ProcessPoolExecutor, as_completed
 
 from Config import cfg
 
@@ -140,41 +142,69 @@ class Patcher:
         # patched_image.show()
         return patched_image
 
-    def patch_label_mini(self, sub_labels):
+    def patch_label_mini(self, labels):
         patched_image = copy(self.meta["thumbnail_blur"])
         draw = ImageDraw.Draw(patched_image)
-        for class_i,boxes in sub_labels.items():
+        for class_i,boxes in labels.items():
             for box,box_z in boxes.items():
                 draw.rectangle(xy=box_z, fill=cfg.COLOURS[class_i], outline=cfg.COLOURS[class_i])
         # patched_image.show()
         return patched_image
 
 
-    def crop_images(self, sub_labels, N):
-        """ crop cell images from kfb/tif
-        :param sub_labels: {class_i: {(xmin, ymin, xmax, ymax): (xmin_z, ymin_z, xmax_z, ymax_z),},}
-        :param N: the times of image size over cell (label box) size
-        :return: {class_i: {(xmin, ymin, xmax, ymax): image,},}
+    def batch_process(self, images_pre):
+        """ batch cut images
+        :param images_pre: [[class_i,(xmin,ymin,xmax,ymax),((xmin_z,ymin_z),(xmax_z,ymax_z))],]
+        :return: [[class_i,(xmin,ymin,xmax,ymax),image],]
         """
-        images = {}
+        images = []
         slide = openslide.OpenSlide(self.wsi_file)
-        for class_i,boxes in sub_labels.items():
-            images[class_i] = {}
+        for image_i in images_pre:
+            image = slide.read_region(image_i[2][0], 0, image_i[2][1]).convert("RGB")
+            images.append([image_i[0], image_i[1], image])
+        slide.close()
+        return images
+
+    def crop_images(self, labels, N=2, batch_size=100):
+        """ crop cell images from kfb/tif
+        :param labels: {class_i: {(xmin, ymin, xmax, ymax): (xmin_z, ymin_z, xmax_z, ymax_z),},}
+        :param N: the times of image size over cell (label box) size
+        :return: [[class_i,(xmin, ymin, xmax, ymax),image],]
+        """
+        # prepare label coordinates for batch cut
+        images_pre = []
+        for class_i,boxes in labels.items():
             for box in boxes:
                 x, y = box[0], box[1]
                 w, h = box[2]-box[0], box[3]-box[1]
                 x_cut, y_cut = int(x+(1-N)*w/2), int(y+(1-N)*h/2)
                 w_cut, h_cut = int(N*w), int(N*h)
-                image = slide.read_region((x_cut,y_cut), 0, (w_cut, h_cut)).convert("RGB")
-                images[class_i][box] = image
-        slide.close()
+                images_pre.append([class_i, box, ((x_cut,y_cut),(w_cut,h_cut))])
+
+        # cut images in batches
+        executor = ProcessPoolExecutor(max_workers=cpu_count() - 4)
+        tasks = []
+        for i in range(0, len(images_pre), batch_size):
+            tasks.append(executor.submit(self.batch_process, images_pre[i:i+batch_size]))
+
+        # collect results
+        images = []
+        # job_count = len(tasks)
+        for future in as_completed(tasks):
+            result = future.result()  # get the returning result from calling fuction
+            images.extend(result)
+            # job_count -= 1
+            # print("One Job Done, Rest Job Count: %s" % (job_count))
+
         return images
+
 
 if __name__ == "__main__":
     wsi_file = "res/test.tif"
     label_file = "res/test_clas.csv"
     patcher = Patcher(wsi_file, label_file)
-    patcher.patch_label(cfg.CLASSES)
+    # patcher.patch_label(cfg.CLASSES)
     labels = patcher.get_labels()
-    sub_labels = {}
-    patcher.patch_label_mini(sub_labels)
+    # sub_labels = {}
+    # patcher.patch_label_mini(sub_labels)
+    patcher.crop_images(labels)
