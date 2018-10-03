@@ -182,7 +182,7 @@ class Patcher:
                 images_pre.append([class_i, box, ((x_cut,y_cut),(w_cut,h_cut))])
 
         # cut images in batches
-        executor = ProcessPoolExecutor(max_workers=cpu_count() - 4)
+        executor = ProcessPoolExecutor(max_workers=cpu_count() - 2)
         tasks = []
         for i in range(0, len(images_pre), batch_size):
             tasks.append(executor.submit(self.batch_process, images_pre[i:i+batch_size]))

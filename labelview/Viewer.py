@@ -10,9 +10,6 @@ from Patcher import Patcher
 class Viewer:
     def __init__(self):
         self.index = None
-        self.thumb_on = None  # stores the thumbnail image on first tab
-        self.thumbmini_on = None  # stores the mini thumbnail image on second tab
-        self.images_on = None  # stores the labeled images on second tab
         self.database = []
         self.setup()
 
@@ -218,6 +215,7 @@ class Viewer:
 
 
     def load_file(self):
+        """ open wsi file dialog """
         fname = filedialog.askopenfilename(filetypes=(("*.kfb files", "*.kfb"), ("*.tif files", "*.tif")))
         if not fname:
             messagebox.showinfo("warning", "no file choosed")
@@ -230,6 +228,7 @@ class Viewer:
 
 
     def load_files(self):
+        """ open wsi file directory dialog """
         file_dir = filedialog.askdirectory()
         if not file_dir:
             messagebox.showinfo("warning", "no directory choosed")
@@ -250,6 +249,7 @@ class Viewer:
 
 
     def load_labels(self):
+        """ open label file dialog """
         if self.index is None:
             messagebox.showinfo("error", "no kfb/tif file loaded")
             return
@@ -264,6 +264,7 @@ class Viewer:
 
 
     def load_labels_dir(self):
+        """ open label file directory dialog """
         def nullify_lname():
             for item in self.database:
                 item["lname"] = None
@@ -294,6 +295,9 @@ class Viewer:
 
 
     def load_thumbnail(self, classes):
+        """ load thumbnail image, given selected classes 
+        :classes: classes of labels to show on thumbnail image
+        """
         def resize(image, w, h):
             w0, h0 = image.size
             factor = min(w/w0, h/w0)
@@ -301,11 +305,12 @@ class Viewer:
         self.patcher = Patcher(self.database[self.index]["fname"], self.database[self.index]["lname"])
         image = self.patcher.patch_label(classes)
         image = ImageTk.PhotoImage(resize(image, self.w*self.i, self.h))
-        self.thumb_on = image
+        self.thumb_on = image  # stores the thumbnail image on first tab
         self.display.create_image(self.w*self.i/2, self.h*0.5, image=image)
 
 
     def update_text(self):
+        """ tab1: update display text """
         self.dir_name.config(text=os.path.basename(os.path.dirname(self.database[self.index]["fname"])))
         self.n_count.config(text="{} / {}".format(self.index+1, len(self.database)))
         self.fname.config(text=os.path.basename(self.database[self.index]["fname"]))
@@ -381,7 +386,8 @@ class Viewer:
         # sub_images = self.patcher.crop_images(sub_labels, N=int(self.N.get()))
         # self.image_list = [[class_i,box,image] for class_i,boxes in sub_images.items() for box,image in boxes.items()]
         self.image_list = self.patcher.crop_images(sub_labels, N=int(self.N.get()))
-        self.cursor = 0
+        self.cursor = 0  # stores the index of first image on canvas of second tab
+        self.images_on = None  # stores the labeled images on second tab
 
         # calculate anchor points for images
         M = int(self.M.get())  # number of images in a row
@@ -421,13 +427,12 @@ class Viewer:
 
 
     def on_single_click(self, event):
-        def show(x, y, label):
-            # destroy any toplevel window if exists
+        def show_label(mouse_p_on_can, label):
+            # destroy any toplevel window
             destroy()
-
             # creates a toplevel window
             self.tw = tk.Toplevel(self.display_i)
-            # Leaves only the label and removes the app window
+            # Leaves only the frame and removes the app window
             self.tw.wm_overrideredirect(True)
             win = tk.Frame(self.tw, borderwidth=0)
             label = ttk.Label(win,
@@ -442,7 +447,7 @@ class Viewer:
             win.grid()
             # set the position of label to show on screen
             x_of_c, y_of_c = self.display_i.winfo_rootx(), self.display_i.winfo_rooty()
-            x, y = x + x_of_c + 5, y + y_of_c - 25
+            x, y = mouse_p_on_can[0] + x_of_c + 5, mouse_p_on_can[1] + y_of_c - 25
             self.tw.wm_geometry("+%d+%d" % (x, y))
 
         def destroy():
@@ -461,30 +466,49 @@ class Viewer:
         # get the lable of the image
         label = self.get_label_by_cursor(cursor_of_image)
         # show label on screen
-        show(x_can, y_can, label)
+        show_label((x_can,y_can), label)
         # hide label after some time
         wait_and_hide()
 
 
     def on_double_click(self, event):
+        def show_image(cursor_of_image, label):
+            # destroy existing toplevel window
+            destroy()
+            # create a toplevel window
+            self.tw = tk.Toplevel(self.display_i)
+            # Leaves only the frame and removes the app window
+            self.tw.wm_overrideredirect(True)
+            win = tk.Frame(self.tw, borderwidth=0)
+            
+
+        def destroy():
+            if hasattr(self, "tw") and self.tw:
+                self.tw.destroy()
+            self.tw = None
+
+        # get mouse position, relative to canvas
         x_can, y_can = event.x, event.y
-        pass
+        # get the index of image in self.image_list
+        cursor_of_image = self.get_cursor_of_image((x_can, y_can))
+        # get the lable of the image
+        label = self.get_label_by_cursor(cursor_of_image)
 
 
     def on_right_click(self, event):
         def show_choices(mouse_p_on_can, cursor_of_image, label):
-            # destroy existing toplevel window if exists
+            # destroy existing toplevel window
             destroy()
             # creates a toplevel window
             self.tw = tk.Toplevel(self.display_i)
-            # Leaves only the label and removes the app window
+            # Leaves only the frame and removes the app window
             self.tw.wm_overrideredirect(True)
             win = tk.Frame(self.tw, borderwidth=0)
             self.radioBox = StringVar(value=label)
             # delete choice
             tk.Radiobutton(win, text="DELETE", padx=5, variable=self.radioBox, 
                                 command=lambda: choice_made(cursor_of_image, label), 
-                                value="DELETE").pack(anchor=tk.W)
+                                value="DELETE", fg="#ff0000", activeforeground="#ff0000").pack(anchor=tk.W)
             # choices to be change label to
             for class_i in cfg.CLASSES:
                 tk.Radiobutton(win, text=class_i, padx=5, variable=self.radioBox,
@@ -494,8 +518,12 @@ class Viewer:
             # set the position of label to show on screen
             # first get the position of canvas (upleft) on screen
             x_of_c, y_of_c = self.display_i.winfo_rootx(), self.display_i.winfo_rooty()
-            # then add the position of mouse on canvas (note: need to use a universal configuration here)
+            # then add the position of mouse on canvas 
             x, y = mouse_p_on_can[0] + x_of_c + 5, mouse_p_on_can[1] + y_of_c - 150
+            # adjust x,y if tw falls out of window
+            x = min(x, self.w-100)
+            y = min(y, self.h-400)
+            y = max(y, 10)
             self.tw.wm_geometry("+%d+%d" % (x, y))  
 
         def destroy():
@@ -587,6 +615,7 @@ class Viewer:
                 self.display_i.create_rectangle(x0, y0, x1, y1, outline=outline_color, width=2)                
             cursor += 1
 
+
     def load_thumbnailmini(self):
         def resize(image, w, h):
             w0, h0 = image.size
@@ -608,7 +637,7 @@ class Viewer:
         
         image = self.patcher.patch_label_mini(sub_labels)
         image = ImageTk.PhotoImage(resize(image, self.w_left_i, self.w_left_i))
-        self.thumbmini_on = image
+        self.thumbmini_on = image  # stores the mini thumbnail image on second tab
         self.thumbmini.create_image(self.w_left_i/2, self.w_left_i/2, image=image)
 
 
@@ -617,8 +646,10 @@ class Viewer:
             for clb in self.colorblock_i:
                 clb.config(text="--")
         else:
-            for i,class_i in enumerate(cfg.CLASSES):
-                self.colorblock_i[i].config(text=str(len(self.database[self.index]["labels"][class_i])))
+            for i,clb in enumerate(self.colorblock_i):
+                clb.config(text=str(len(self.database[self.index]["labels"][cfg.CLASSES[i]])))
+            # for i,class_i in enumerate(cfg.CLASSES):
+            #     self.colorblock_i[i].config(text=str(len(self.database[self.index]["labels"][class_i])))
 
     def update_text_i(self, clear=False):
         if clear:
@@ -672,6 +703,7 @@ class Viewer:
                 self.save_dir = os.path.dirname(self.database[index]["lname"])
             label_file = os.path.join(self.save_dir, self.database[index]["basename"]+".xml")
             self.patcher.write_labels(label_file)
+
 
     def on_visibility(self, event):
         """ clear up and update second tab upon tab switch, when self.index changed in first tab """
