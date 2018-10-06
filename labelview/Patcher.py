@@ -170,7 +170,7 @@ class Patcher:
         slide.close()
         return images
 
-    def crop_images(self, labels, N=2, batch_size=100):
+    def crop_images(self, labels, N=2, batch_size=80):
         """ crop cell images from kfb/tif
         :param labels: {class_i: {(xmin, ymin, xmax, ymax): (xmin_z, ymin_z, xmax_z, ymax_z),},}
         :param N: the times of image size over cell (label box) size
