@@ -32,6 +32,7 @@ def main():
     mycanvas.create_line(0, 100, 200, 0, fill="red", dash=(4, 4))
     mycanvas.create_rectangle(50, 25, 150, 75, fill="blue")
     image = ImageTk.PhotoImage(Image.new("RGB", (300, 300)))
+    print(image.width(), image.height())
     mycanvas.create_image(200, 200, image=image)  # image cannot be resized
 
     # tag all of the drawn widgets

@@ -13,6 +13,8 @@ class ResizeWindow:
         self.mybutton.pack(side=LEFT)
         self.mybutton = Button(self.myframe, text="increase", command=self.increase)
         self.mybutton.pack(side=RIGHT)
+        self.spinbox = Spinbox(self.myframe, from_=1, to=10)
+        self.spinbox.pack()
         
         # tag all of the drawn widgets
         self.mycanvas.addtag_all("all")

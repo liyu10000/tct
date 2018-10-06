@@ -9,6 +9,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 
 from Config import cfg
 
+
 class Patcher:
     def __init__(self, wsi_file, label_file):
         self.wsi_file = wsi_file
@@ -18,7 +19,9 @@ class Patcher:
         self.read_meta()
         self.read_labels()
 
+
     def read_meta(self):
+        """ read meta info of wsi file """
         slide = openslide.OpenSlide(self.wsi_file)
         level_count = slide.level_count
         self.meta['m'], self.meta['n'] = slide.level_dimensions[0]
@@ -28,8 +31,9 @@ class Patcher:
         self.meta['thumbnail_blur'] = self.meta['thumbnail'].filter(ImageFilter.GaussianBlur(radius=16))
         slide.close()
 
+
     def read_labels(self):
-        """ read label information
+        """ read label information, from label file
         :output: {class_i: {(xmin, ymin, xmax, ymax):(xmin_z, ymin_z, xmax_z, ymax_z)}}
         """
         def zoom_out_labels():
@@ -85,6 +89,9 @@ class Patcher:
     
 
     def write_labels(self, label_file):
+        """ write labels information to given label file
+        :param label_file: full path name of new label file
+        """
         doc = xml.dom.minidom.Document()
         ASAP_Annotations = doc.createElement("ASAP_Annotations")
         doc.appendChild(ASAP_Annotations)
@@ -118,10 +125,6 @@ class Patcher:
             file.write(doc.toprettyxml(indent="\t"))
 
 
-    def get_meta(self):
-        return self.meta
-
-
     def get_labels(self):
         return self.labels
 
@@ -129,21 +132,13 @@ class Patcher:
         self.labels = labels
 
 
-    def patch_label(self, classes):
+    def patch_label(self, labels, blur=False):
         """ patch label boxes of choosen classes on thumbnail image
-        :param classes: choosen label classes to patch
+        :param labels: {class_i: {(xmin, ymin, xmax, ymax): (xmin_z, ymin_z, xmax_z, ymax_z),},}
         :return: thumbnail image with label boxes patched
         """
-        patched_image = copy(self.meta['thumbnail'])
-        draw = ImageDraw.Draw(patched_image)
-        for class_i in classes:
-            for box,box_z in self.labels[class_i].items():
-                draw.rectangle(xy=box_z, fill=cfg.COLOURS[class_i], outline=cfg.COLOURS[class_i])
-        # patched_image.show()
-        return patched_image
-
-    def patch_label_mini(self, labels):
-        patched_image = copy(self.meta["thumbnail_blur"])
+        key = 'thumbnail_blur' if blur else 'thumbnail'
+        patched_image = copy(self.meta[key])
         draw = ImageDraw.Draw(patched_image)
         for class_i,boxes in labels.items():
             for box,box_z in boxes.items():
@@ -182,7 +177,7 @@ class Patcher:
                 images_pre.append([class_i, box, ((x_cut,y_cut),(w_cut,h_cut))])
 
         # cut images in batches
-        executor = ProcessPoolExecutor(max_workers=cpu_count() - 2)
+        executor = ProcessPoolExecutor(max_workers=cpu_count())
         tasks = []
         for i in range(0, len(images_pre), batch_size):
             tasks.append(executor.submit(self.batch_process, images_pre[i:i+batch_size]))
@@ -197,6 +192,20 @@ class Patcher:
             # print("One Job Done, Rest Job Count: %s" % (job_count))
 
         return images
+
+
+    def get_cell_by_N(self, box, N):
+        """ cut single image, given coordiantes box and size scaler N """
+        # calculate new box_z
+        x, y = box[0], box[1]
+        w, h = box[2]-box[0], box[3]-box[1]
+        x_cut, y_cut = int(x+(1-N)*w/2), int(y+(1-N)*h/2)
+        w_cut, h_cut = int(N*w), int(N*h)
+        # cut Nx sized image
+        slide = openslide.OpenSlide(self.wsi_file)
+        image = slide.read_region((x_cut, y_cut), 0, (w_cut,h_cut)).convert("RGB")
+        slide.close()
+        return image
 
 
 if __name__ == "__main__":
