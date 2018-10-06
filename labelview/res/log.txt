@@ -1,25 +1,79 @@
-[INFO] loaded label files from C:/tsimage/tct/labelview/res
-[INFO] selected classes: ['ASCH']
-[CHANGE] (13421, 42561, 13952, 43095) ASCH [to] AGC2
-[SAVE] 2017-11-24-13_19_06
 
-2018-10-06 13:13:50.537118
+
+[INFO] loaded files from /home/sakulaki/yolo-yuli/tct/labelview/res
+[INFO] loaded label files from /home/sakulaki/yolo-yuli/tct/labelview/res
+
+2018-10-06 17:04:58.519610
+[OPEN] 2017-11-24-13_19_06
+[INFO] selected classes: ['ASCH']
+[CHANGE] (13421, 42561, 13952, 43095) ASCH [to] FUNGI
+[DELETE] (7907, 36013, 8512, 36456) ASCH
+[DELETE] (12346, 7682, 12625, 7885) ASCH
+[INFO] selected classes: ['HSIL']
+
+2018-10-06 17:05:25.146790
+[OPEN] test
+[INFO] selected classes: ['ASCUS']
+[CHANGE] (20982, 39098, 21244, 39478) ASCUS [to] ADC
+[DELETE] (34093, 8168, 34555, 8433) ASCUS
+[INFO] selected classes: ['LSIL']
+[CHANGE] (30437, 45143, 30906, 45576) LSIL [to] AGC2
+[CHANGE] (44993, 31753, 45382, 32100) LSIL [to] FUNGI
+
+2018-10-06 17:08:09.355865
 [OPEN] 2017-11-24-13_22_56
 [INFO] selected classes: ['ASCH']
 [DELETE] (12470, 55016, 12694, 55278) ASCH
-[CHANGE] (47587, 19008, 47943, 19246) ASCH [to] FUNGI
-[SAVE] 2017-11-24-13_22_56
+[DELETE] (1299, 28773, 1741, 29118) ASCH
+[INFO] loaded label files from /home/sakulaki/yolo-yuli/tct/labelview/res
+[INFO] selected classes: ['ASCH']
+[CHANGE] (13421, 42561, 13952, 43095) ASCH [to] FUNGI
+[SAVE] 2017-11-24-13_19_06
+[SAVE] 2017-11-24-13_19_06
 
-2018-10-06 13:15:10.004945
-[OPEN] test
-[INFO] selected classes: ['LSIL']
-[CHANGE] (50521, 19512, 51072, 19945) LSIL [to] CC
-[DELETE] (54141, 24321, 54221, 24361) LSIL
-[SAVE] test
-[INFO] loaded files from C:/tsimage/tct/labelview/res
-[INFO] loaded label files from C:/tsimage/tct/labelview/res
+2018-10-06 17:16:13.794496
+[OPEN] 2017-11-24-13_22_56
 
-2018-10-06 13:17:06.956912
+
+[INFO] loaded files from /home/sakulaki/yolo-yuli/tct/labelview/res
+[INFO] loaded label files from /home/sakulaki/yolo-yuli/tct/labelview/res
+
+2018-10-06 17:17:23.362195
 [OPEN] 2017-11-24-13_19_06
 [INFO] selected classes: ['ASCH']
+[CHANGE] (13421, 42561, 13952, 43095) ASCH [to] FUNGI
+[DELETE] (25095, 50465, 25492, 51010) ASCH
+
+2018-10-06 17:17:31.204411
+[OPEN] 2017-11-24-13_22_56
+
+
+[INFO] loaded files from /home/sakulaki/yolo-yuli/tct/labelview/res
+[INFO] loaded label files from /home/sakulaki/yolo-yuli/tct/labelview/res
+
+2018-10-06 17:20:55.281078
+[OPEN] 2017-11-24-13_19_06
+[INFO] selected classes: ['ASCH']
+[CHANGE] (25095, 50465, 25492, 51010) ASCH [to] AGC2
+[DELETE] (6749, 32868, 7231, 33440) ASCH
+[CHANGE] (13421, 42561, 13952, 43095) ASCH [to] FUNGI
+
+2018-10-06 17:21:45.304272
+[OPEN] 2017-11-24-13_22_56
+
+
+[INFO] loaded files from /home/sakulaki/yolo-yuli/tct/labelview/res
+[INFO] loaded label files from /home/sakulaki/yolo-yuli/tct/labelview/res
+
+2018-10-06 17:23:38.009062
+[OPEN] 2017-11-24-13_19_06
+[INFO] selected classes: ['ASCH']
+[CHANGE] (13421, 42561, 13952, 43095) ASCH [to] AGC2
 [SAVE] 2017-11-24-13_19_06
+[CHANGE] (3757, 32280, 4201, 32776) ASCH [to] AGC2
+[DELETE] (12346, 7682, 12625, 7885) ASCH
+[SAVE] 2017-11-24-13_19_06
+
+2018-10-06 17:23:56.625971
+[OPEN] 2017-11-24-13_22_56
+[SAVE] 2017-11-24-13_22_56

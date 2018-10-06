@@ -26,9 +26,9 @@ class Viewer:
         
         # configure ttk style
         s = ttk.Style()
-        s.configure("File.TButton", background="blue")
-        s.configure("Flow.TButton", background="green")
-        s.configure("Save.TButton", background="red")
+        s.configure("File.TButton", foreground="blue")
+        s.configure("Flow.TButton", foreground="red")
+        s.configure("Save.TButton", foreground="blue")
 
         self.tabs = ttk.Notebook(self.root)
 
@@ -94,6 +94,9 @@ class Viewer:
         self.colorctl = ttk.Labelframe(self.control, text="choose classes", width=self.w*(1-self.i), height=self.h*self.c)
         self.control.add(self.colorctl)
 
+        # add blur thumbnail image button
+        self.blur = ttk.Button(self.colorctl, text="blur", command=lambda: self.update(blur=True))
+        self.blur.grid(row=0, column=0, columnspan=2, sticky="ew", ipady=5, padx=10, pady=5)
         # add confirm button
         self.conform = ttk.Button(self.colorctl, text="confirm", command=lambda: self.update())
         self.conform.grid(row=0, column=2, columnspan=2, sticky="ew", ipady=5, padx=10, pady=5)
@@ -177,14 +180,14 @@ class Viewer:
         self.confirm_i = ttk.Button(self.colorctl_i, text="confirm", command=lambda: self.update_i(step=0))
         self.confirm_i.grid(row=0, column=2, columnspan=2, sticky="ew", ipady=5, padx=10, pady=10)
         # set display modes: the number of images in a row
-        self.M_ = ttk.Label(self.colorctl_i, text="# number:")
+        self.M_ = ttk.Label(self.colorctl_i, text="# M:")
         self.M_.grid(row=1, column=0, columnspan=1, sticky="ew", ipady=1, padx=10, pady=5)
         self.M = ttk.Entry(self.colorctl_i)
         self.M.insert(0, "3")
         self.M.config(width=10)
         self.M.grid(row=1, column=1, columnspan=1, sticky="e", ipady=1, padx=10, pady=5)
         # set image size: the times of image size over label box
-        self.N_ = ttk.Label(self.colorctl_i, text="# image size:")
+        self.N_ = ttk.Label(self.colorctl_i, text="# N:")
         self.N_.grid(row=1, column=2, columnspan=1, sticky="ew", ipady=1, padx=10, pady=5)
         self.N = ttk.Entry(self.colorctl_i)
         self.N.insert(0, "2")
@@ -218,6 +221,8 @@ class Viewer:
 
         # right side image panel
         self.display_i = tk.Canvas(self.image_tab, width=self.w-self.w_left_i, height=self.h)
+        # self.display_i.bind("<d>", self.on_d_pressed)
+        # self.display_i.focus_set()
         self.display_i.grid(row=0, column=2)
 
 
@@ -240,7 +245,7 @@ class Viewer:
             self.database = []
             self.database.append({"basename":os.path.splitext(os.path.basename(fname))[0], "fname":fname, "lname":None})
             self.update()
-            self.logger.log_info("\n\nloaded file " + fname)
+            self.logger.log_file("loaded file " + fname)
 
 
     def load_files(self):
@@ -262,7 +267,7 @@ class Viewer:
             else:
                 self.index = 0
                 self.update()
-                self.logger.log_info("\n\nloaded files from " + file_dir)
+                self.logger.log_file("loaded files from " + file_dir)
 
 
     def load_labels(self):
@@ -338,7 +343,7 @@ class Viewer:
             self.database[self.index]["labels"] = self.patcher.get_labels()
 
 
-    def load_thumbnail(self):
+    def load_thumbnail(self, blur):
         """ load thumbnail image, given selected classes """
         def resize(image, w, h):
             w0, h0 = image.size
@@ -346,7 +351,7 @@ class Viewer:
             return image.resize((int(w0*scale), int(h0*scale)))
         
         checked_classes = [cfg.CLASSES[i] for i,var in enumerate(self.checkboxes) if var.get()]
-        image = self.patcher.patch_label({key:value for key,value in self.database[self.index]["labels"].items() if key in checked_classes})
+        image = self.patcher.patch_label({key:value for key,value in self.database[self.index]["labels"].items() if key in checked_classes}, blur)
         image = ImageTk.PhotoImage(resize(image, self.w*self.i, self.h))
         self.thumb_on = image  # stores the thumbnail image on first tab
         self.display.create_image(self.w*self.i/2, self.h/2, image=image)
@@ -381,7 +386,7 @@ class Viewer:
             clb.config(text="--")
 
 
-    def update(self, step=0):
+    def update(self, step=0, blur=False):
         """ update method of first tab """
         if self.index is None:
             messagebox.showinfo("error", "there is no file/label matched")
@@ -392,7 +397,7 @@ class Viewer:
             return
         self.index += step
         self.update_patcher()
-        self.load_thumbnail()
+        self.load_thumbnail(blur)
         self.update_text()
         self.update_label_counts()
 
@@ -443,7 +448,7 @@ class Viewer:
             distance[(position[0]-anchor[0])**2 + (position[1]-anchor[1])**2] = cursor
             cursor += 1
         sort_dist = sorted(distance.items())
-        return sort_dist[0][1]
+        return sort_dist[0][1] if sort_dist else -1  # bug in canvas: still able to click when there are no images
 
 
     def get_label_by_cursor(self, cursor_of_image):
@@ -491,6 +496,8 @@ class Viewer:
         x_can, y_can = event.x, event.y
         # get the index of image in self.image_list
         cursor_of_image = self.get_cursor_of_image((x_can, y_can))
+        if cursor_of_image == -1:
+            return
         # get the lable of the image
         label = self.get_label_by_cursor(cursor_of_image)
         # show label on screen
@@ -552,6 +559,8 @@ class Viewer:
         x_can, y_can = event.x, event.y
         # get the index of image in self.image_list
         cursor_of_image = self.get_cursor_of_image((x_can, y_can))
+        if cursor_of_image == -1:
+            return
         # get the lable of the image
         label = self.get_label_by_cursor(cursor_of_image)
         # display image
@@ -602,7 +611,7 @@ class Viewer:
             # retrieve choice and make changes accordingly
             choice = self.radioBox.get()
             # detect if there are changes made
-            if choice == label:
+            if choice == label or (label == "DELETED!!!" and choice == "DELETE"):
                 return
             box = self.image_list[cursor_of_image][1]           
             # change original label to choice
@@ -612,7 +621,7 @@ class Viewer:
                 self.image_list[cursor_of_image][0] = choice  # update class_i in image_list
                 self.logger.log_change("{} {}".format(box,label), "{}".format(choice))
             else:  # when choice == "DELETE"
-                if "DELETED!!!" not in self.database[self.index]["labels"]:
+                if "DELETED!!!" not in self.database[self.index]["labels"]:  # add new key to labels
                     self.database[self.index]["labels"]["DELETED!!!"] = {}
                 self.database[self.index]["labels"]["DELETED!!!"][box] = self.database[self.index]["labels"][label][box]
                 outline_color = "red"
@@ -633,6 +642,8 @@ class Viewer:
         x_can, y_can = event.x, event.y
         # get the index of image in self.image_list
         cursor_of_image = self.get_cursor_of_image((x_can, y_can))
+        if cursor_of_image == -1:
+            return
         # get the lable of the image
         label = self.get_label_by_cursor(cursor_of_image)
         # # check if label has been deleted
@@ -641,6 +652,39 @@ class Viewer:
         # show label choose dialog on screen
         show_choices()
     
+
+    """ key press doesn't work after loading images
+    def on_d_pressed(self, event):
+        print("d pressed at {}, ({},{})".format(self.display_i.type(tk.CURRENT), event.x, event.y))
+        if self.display_i.type(tk.CURRENT) != "image":
+            return
+        # get mouse position, relative to canvas
+        x_can, y_can = event.x, event.y
+        # get the index of image in self.image_list
+        cursor_of_image = self.get_cursor_of_image((x_can, y_can))
+        # get the label of the image
+        label = self.get_label_by_cursor(cursor_of_image)
+        if label == "DELETED!!!":
+            return
+        # delete label
+        box = self.image_list[cursor_of_image][1] 
+        if "DELETED!!!" not in self.database[self.index]["labels"]:
+            self.database[self.index]["labels"]["DELETED!!!"] = {}
+        self.database[self.index]["labels"]["DELETED!!!"][box] = self.database[self.index]["labels"][label][box]
+        outline_color = "red"
+        self.image_list[cursor_of_image][0] = "DELETED!!!"  # update class_i in image_list, note: new key here
+        self.logger.log_delete("{} {}".format(box,label))
+        del self.database[self.index]["labels"][label][box]
+        # update label counts
+        self.update_label_counts_i()
+        # add surrounding rectangle to changed image on canvas
+        self.image_list[cursor_of_image].append(outline_color)
+        anchor = self.anchors[cursor_of_image - self.cursor]
+        x0, y0 = anchor[0] - self.size_avg/2 + 1, anchor[1] - self.size_avg/2 + 1
+        x1, y1 = anchor[0] + self.size_avg/2 - 1, anchor[1] + self.size_avg/2 - 1
+        self.display_i.create_rectangle(x0, y0, x1, y1, outline=outline_color, width=2)
+    """
+
 
     def update_images(self, step):
         """ update display images on canvas """
@@ -769,9 +813,11 @@ class Viewer:
                     return
                 else:
                     index = self.index
+            if index not in range(len(self.database)):  # happens when failed to load new label files
+                return
             self.patcher.set_labels(self.database[index]["labels"])
             # use the same directory if new label file dir is not set
-            if not self.save_dir:
+            if not hasattr(self, "save_dir") or not self.save_dir:
                 self.save_dir = os.path.dirname(self.database[index]["lname"])
             label_file = os.path.join(self.save_dir, self.database[index]["basename"]+".xml")
             self.patcher.write_labels(label_file)

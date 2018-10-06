@@ -24,6 +24,10 @@ class Logger:
 			self.cache = ""  # empty cache after flushing
 		self.logtxt.insert('end', line)
 
+	def log_file(self, msg):
+		line = "\n\n[INFO] {}\n".format(msg)
+		self.log(line)
+
 	def log_info(self, msg):
 		line = "[INFO] {}\n".format(msg)
 		self.log(line)

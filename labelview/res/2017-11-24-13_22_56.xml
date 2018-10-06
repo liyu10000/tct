@@ -11,13 +11,21 @@
 		</Annotation>
 		<Annotation Color="#aa007f" Name="Annotation 1" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
+				<Coordinate Order="0" X="12470" Y="55016"/>
+				<Coordinate Order="1" X="12694" Y="55016"/>
+				<Coordinate Order="2" X="12694" Y="55278"/>
+				<Coordinate Order="3" X="12470" Y="55278"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Color="#aa007f" Name="Annotation 2" PartOfGroup="None" Type="Polygon">
+			<Coordinates>
 				<Coordinate Order="0" X="50465" Y="26145"/>
 				<Coordinate Order="1" X="51003" Y="26145"/>
 				<Coordinate Order="2" X="51003" Y="26741"/>
 				<Coordinate Order="3" X="50465" Y="26741"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 2" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 3" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="1299" Y="28773"/>
 				<Coordinate Order="1" X="1741" Y="28773"/>
@@ -25,7 +33,15 @@
 				<Coordinate Order="3" X="1299" Y="29118"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 3" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 4" PartOfGroup="None" Type="Polygon">
+			<Coordinates>
+				<Coordinate Order="0" X="47587" Y="19008"/>
+				<Coordinate Order="1" X="47943" Y="19008"/>
+				<Coordinate Order="2" X="47943" Y="19246"/>
+				<Coordinate Order="3" X="47587" Y="19246"/>
+			</Coordinates>
+		</Annotation>
+		<Annotation Color="#aa007f" Name="Annotation 5" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="23713" Y="20800"/>
 				<Coordinate Order="1" X="24158" Y="20800"/>
@@ -33,7 +49,7 @@
 				<Coordinate Order="3" X="23713" Y="21174"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 4" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 6" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="11619" Y="53505"/>
 				<Coordinate Order="1" X="12153" Y="53505"/>
@@ -41,7 +57,7 @@
 				<Coordinate Order="3" X="11619" Y="54112"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 5" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 7" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="27361" Y="29877"/>
 				<Coordinate Order="1" X="27839" Y="29877"/>
@@ -49,7 +65,7 @@
 				<Coordinate Order="3" X="27361" Y="30385"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 6" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 8" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="4350" Y="33227"/>
 				<Coordinate Order="1" X="4833" Y="33227"/>
@@ -57,7 +73,7 @@
 				<Coordinate Order="3" X="4350" Y="33424"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 7" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 9" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="36764" Y="24231"/>
 				<Coordinate Order="1" X="36880" Y="24231"/>
@@ -65,7 +81,7 @@
 				<Coordinate Order="3" X="36764" Y="24320"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 8" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 10" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="26478" Y="16578"/>
 				<Coordinate Order="1" X="26572" Y="16578"/>
@@ -73,7 +89,7 @@
 				<Coordinate Order="3" X="26478" Y="16742"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 9" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 11" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="24929" Y="11725"/>
 				<Coordinate Order="1" X="25536" Y="11725"/>
@@ -81,7 +97,7 @@
 				<Coordinate Order="3" X="24929" Y="12160"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 10" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 12" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="5680" Y="36481"/>
 				<Coordinate Order="1" X="5880" Y="36481"/>
@@ -89,7 +105,7 @@
 				<Coordinate Order="3" X="5680" Y="36766"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 11" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 13" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="25042" Y="11871"/>
 				<Coordinate Order="1" X="25491" Y="11871"/>
@@ -97,7 +113,7 @@
 				<Coordinate Order="3" X="25042" Y="12096"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 12" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 14" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="37210" Y="6081"/>
 				<Coordinate Order="1" X="37690" Y="6081"/>
@@ -105,7 +121,7 @@
 				<Coordinate Order="3" X="37210" Y="6454"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 13" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 15" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="42561" Y="35988"/>
 				<Coordinate Order="1" X="42958" Y="35988"/>
@@ -113,7 +129,7 @@
 				<Coordinate Order="3" X="42561" Y="36480"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 14" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 16" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="31062" Y="2130"/>
 				<Coordinate Order="1" X="31258" Y="2130"/>
@@ -121,7 +137,7 @@
 				<Coordinate Order="3" X="31062" Y="2368"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 15" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 17" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="46209" Y="49857"/>
 				<Coordinate Order="1" X="46816" Y="49857"/>
@@ -129,7 +145,7 @@
 				<Coordinate Order="3" X="46209" Y="50464"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 16" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 18" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="43796" Y="32833"/>
 				<Coordinate Order="1" X="44252" Y="32833"/>
@@ -137,7 +153,7 @@
 				<Coordinate Order="3" X="43796" Y="33404"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 17" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 19" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="15288" Y="7515"/>
 				<Coordinate Order="1" X="15666" Y="7515"/>
@@ -145,7 +161,7 @@
 				<Coordinate Order="3" X="15288" Y="7826"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 18" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 20" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="20882" Y="24085"/>
 				<Coordinate Order="1" X="20993" Y="24085"/>
@@ -153,7 +169,7 @@
 				<Coordinate Order="3" X="20882" Y="24316"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 19" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 21" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="36489" Y="23786"/>
 				<Coordinate Order="1" X="37080" Y="23786"/>
@@ -161,7 +177,7 @@
 				<Coordinate Order="3" X="36489" Y="24070"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 20" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 22" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="46209" Y="49857"/>
 				<Coordinate Order="1" X="46719" Y="49857"/>
@@ -169,7 +185,7 @@
 				<Coordinate Order="3" X="46209" Y="50464"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 21" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 23" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="20287" Y="25851"/>
 				<Coordinate Order="1" X="20672" Y="25851"/>
@@ -177,7 +193,7 @@
 				<Coordinate Order="3" X="20287" Y="26128"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 22" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 24" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="15454" Y="5053"/>
 				<Coordinate Order="1" X="15728" Y="5053"/>
@@ -185,7 +201,7 @@
 				<Coordinate Order="3" X="15454" Y="5393"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 23" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 25" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="53509" Y="29793"/>
 				<Coordinate Order="1" X="54107" Y="29793"/>
@@ -193,7 +209,7 @@
 				<Coordinate Order="3" X="53509" Y="30400"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 24" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 26" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="5579" Y="24949"/>
 				<Coordinate Order="1" X="5851" Y="24949"/>
@@ -201,7 +217,7 @@
 				<Coordinate Order="3" X="5579" Y="25307"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 25" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 27" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="46262" Y="49936"/>
 				<Coordinate Order="1" X="46506" Y="49936"/>
@@ -209,7 +225,7 @@
 				<Coordinate Order="3" X="46262" Y="50323"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 26" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 28" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="42586" Y="36059"/>
 				<Coordinate Order="1" X="42876" Y="36059"/>
@@ -217,7 +233,7 @@
 				<Coordinate Order="3" X="42586" Y="36407"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 27" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 29" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="3834" Y="23363"/>
 				<Coordinate Order="1" X="3902" Y="23363"/>
@@ -225,7 +241,7 @@
 				<Coordinate Order="3" X="3834" Y="23447"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 28" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 30" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="41397" Y="24423"/>
 				<Coordinate Order="1" X="41899" Y="24423"/>
@@ -233,7 +249,7 @@
 				<Coordinate Order="3" X="41397" Y="24697"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 29" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 31" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="4974" Y="42661"/>
 				<Coordinate Order="1" X="5300" Y="42661"/>
@@ -241,7 +257,7 @@
 				<Coordinate Order="3" X="4974" Y="42890"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 30" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 32" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="12467" Y="37799"/>
 				<Coordinate Order="1" X="12765" Y="37799"/>
@@ -249,7 +265,7 @@
 				<Coordinate Order="3" X="12467" Y="37990"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 31" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 33" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="29363" Y="51424"/>
 				<Coordinate Order="1" X="29695" Y="51424"/>
@@ -257,7 +273,7 @@
 				<Coordinate Order="3" X="29363" Y="51633"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 32" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 34" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="31103" Y="2003"/>
 				<Coordinate Order="1" X="31578" Y="2003"/>
@@ -265,7 +281,7 @@
 				<Coordinate Order="3" X="31103" Y="2292"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 33" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 35" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="38607" Y="47427"/>
 				<Coordinate Order="1" X="38881" Y="47427"/>
@@ -273,7 +289,7 @@
 				<Coordinate Order="3" X="38607" Y="47694"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 34" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 36" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="35532" Y="47425"/>
 				<Coordinate Order="1" X="35843" Y="47425"/>
@@ -281,7 +297,7 @@
 				<Coordinate Order="3" X="35532" Y="48002"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 35" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 37" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="37152" Y="5524"/>
 				<Coordinate Order="1" X="37674" Y="5524"/>
@@ -289,7 +305,7 @@
 				<Coordinate Order="3" X="37152" Y="5721"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 36" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 38" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="18997" Y="11607"/>
 				<Coordinate Order="1" X="19288" Y="11607"/>
@@ -297,7 +313,7 @@
 				<Coordinate Order="3" X="18997" Y="11828"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 37" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 39" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="15831" Y="31057"/>
 				<Coordinate Order="1" X="16198" Y="31057"/>
@@ -305,7 +321,7 @@
 				<Coordinate Order="3" X="15831" Y="31498"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 38" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 40" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="22706" Y="11674"/>
 				<Coordinate Order="1" X="22943" Y="11674"/>
@@ -313,7 +329,7 @@
 				<Coordinate Order="3" X="22706" Y="12087"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 39" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 41" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="28891" Y="39599"/>
 				<Coordinate Order="1" X="29138" Y="39599"/>
@@ -321,7 +337,7 @@
 				<Coordinate Order="3" X="28891" Y="39931"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 40" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 42" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="26360" Y="15891"/>
 				<Coordinate Order="1" X="26682" Y="15891"/>
@@ -329,7 +345,7 @@
 				<Coordinate Order="3" X="26360" Y="16259"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 41" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 43" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="9749" Y="15326"/>
 				<Coordinate Order="1" X="10336" Y="15326"/>
@@ -337,7 +353,7 @@
 				<Coordinate Order="3" X="9749" Y="15598"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 42" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 44" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="29797" Y="32894"/>
 				<Coordinate Order="1" X="30202" Y="32894"/>
@@ -345,7 +361,7 @@
 				<Coordinate Order="3" X="29797" Y="33245"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 43" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 45" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="54324" Y="30125"/>
 				<Coordinate Order="1" X="54556" Y="30125"/>
@@ -353,7 +369,7 @@
 				<Coordinate Order="3" X="54324" Y="30400"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 44" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 46" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="10994" Y="17148"/>
 				<Coordinate Order="1" X="11303" Y="17148"/>
@@ -361,7 +377,7 @@
 				<Coordinate Order="3" X="10994" Y="17330"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 45" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 47" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="25089" Y="17740"/>
 				<Coordinate Order="1" X="25265" Y="17740"/>
@@ -369,7 +385,7 @@
 				<Coordinate Order="3" X="25089" Y="18056"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 46" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 48" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="46209" Y="49887"/>
 				<Coordinate Order="1" X="46816" Y="49887"/>
@@ -377,7 +393,7 @@
 				<Coordinate Order="3" X="46209" Y="50464"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 47" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 49" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="22386" Y="28294"/>
 				<Coordinate Order="1" X="22488" Y="28294"/>
@@ -385,20 +401,12 @@
 				<Coordinate Order="3" X="22386" Y="28402"/>
 			</Coordinates>
 		</Annotation>
-		<Annotation Color="#aa007f" Name="Annotation 48" PartOfGroup="None" Type="Polygon">
+		<Annotation Color="#aa007f" Name="Annotation 50" PartOfGroup="None" Type="Polygon">
 			<Coordinates>
 				<Coordinate Order="0" X="20340" Y="35268"/>
 				<Coordinate Order="1" X="20603" Y="35268"/>
 				<Coordinate Order="2" X="20603" Y="35503"/>
 				<Coordinate Order="3" X="20340" Y="35503"/>
-			</Coordinates>
-		</Annotation>
-		<Annotation Color="#00aa00" Name="Annotation 49" PartOfGroup="None" Type="Polygon">
-			<Coordinates>
-				<Coordinate Order="0" X="47587" Y="19008"/>
-				<Coordinate Order="1" X="47943" Y="19008"/>
-				<Coordinate Order="2" X="47943" Y="19246"/>
-				<Coordinate Order="3" X="47587" Y="19246"/>
 			</Coordinates>
 		</Annotation>
 	</Annotations>

@@ -111,6 +111,10 @@ grep: find certain str in a file/files
     grep --color -n pattern file
     grep --color -n -r pattern files
 
+ps: find process by name and kill
+    ps -ef | grep [process]
+    kill -9 [pid]
+
 configure shadowsocks on ubuntu (use as client)
     #https://www.linuxbabe.com/desktop-linux/how-to-install-and-use-shadowsocks-command-line-client
     pip install shadowsocks
