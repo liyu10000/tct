@@ -816,6 +816,8 @@ class Viewer:
             if index not in range(len(self.database)):  # happens when failed to load new label files
                 return
             self.patcher.set_labels(self.database[index]["labels"])
+            if self.database[index]["lname"] is None:  # happens when no label file is loaded
+                return
             # use the same directory if new label file dir is not set
             if not hasattr(self, "save_dir") or not self.save_dir:
                 self.save_dir = os.path.dirname(self.database[index]["lname"])

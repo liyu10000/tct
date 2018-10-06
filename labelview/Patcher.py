@@ -7,6 +7,7 @@ from PIL import Image, ImageFilter, ImageDraw
 from multiprocessing import cpu_count
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
+from tslide.tslide import TSlide
 from Config import cfg
 
 
@@ -22,12 +23,18 @@ class Patcher:
 
     def read_meta(self):
         """ read meta info of wsi file """
-        slide = openslide.OpenSlide(self.wsi_file)
+        try:
+            slide = TSlide(self.wsi_file)
+        except:
+            slide = openslide.OpenSlide(self.wsi_file)
         level_count = slide.level_count
         self.meta['m'], self.meta['n'] = slide.level_dimensions[0]
         self.meta['mtop'], self.meta['ntop'] = slide.level_dimensions[level_count-1]
         self.meta['level_downsamples'] = slide.level_downsamples[level_count-1]
-        self.meta['thumbnail'] = slide.get_thumbnail((self.meta['mtop'], self.meta['ntop']))
+        try:
+            self.meta['thumbnail'] = slide.get_thumbnail((self.meta['mtop'], self.meta['ntop']))
+        except:
+            self.meta['thumbnail'] = slide.read_region((0,0), level_count-1, (self.meta['mtop'], self.meta['ntop']))
         self.meta['thumbnail_blur'] = self.meta['thumbnail'].filter(ImageFilter.GaussianBlur(radius=16))
         slide.close()
 
@@ -152,8 +159,11 @@ class Patcher:
         :param images_pre: [[class_i,(xmin,ymin,xmax,ymax),((xmin_z,ymin_z),(xmax_z,ymax_z))],]
         :return: [[class_i,(xmin,ymin,xmax,ymax),image],]
         """
+        try:
+            slide = TSlide(self.wsi_file)
+        except:
+            slide = openslide.OpenSlide(self.wsi_file)
         images = []
-        slide = openslide.OpenSlide(self.wsi_file)
         for image_i in images_pre:
             image = slide.read_region(image_i[2][0], 0, image_i[2][1]).convert("RGB")
             images.append([image_i[0], image_i[1], image])
@@ -177,7 +187,7 @@ class Patcher:
                 images_pre.append([class_i, box, ((x_cut,y_cut),(w_cut,h_cut))])
 
         # cut images in batches
-        executor = ProcessPoolExecutor(max_workers=cpu_count())
+        executor = ProcessPoolExecutor(max_workers=cpu_count()-2)
         tasks = []
         for i in range(0, len(images_pre), batch_size):
             tasks.append(executor.submit(self.batch_process, images_pre[i:i+batch_size]))
@@ -202,7 +212,10 @@ class Patcher:
         x_cut, y_cut = int(x+(1-N)*w/2), int(y+(1-N)*h/2)
         w_cut, h_cut = int(N*w), int(N*h)
         # cut Nx sized image
-        slide = openslide.OpenSlide(self.wsi_file)
+        try:
+            slide = TSlide(self.wsi_file)
+        except:
+            slide = openslide.OpenSlide(self.wsi_file)
         image = slide.read_region((x_cut, y_cut), 0, (w_cut,h_cut)).convert("RGB")
         slide.close()
         return image

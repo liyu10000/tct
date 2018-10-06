@@ -77,3 +77,46 @@
 2018-10-06 17:23:56.625971
 [OPEN] 2017-11-24-13_22_56
 [SAVE] 2017-11-24-13_22_56
+
+
+[INFO] loaded files from /home/sakulaki/yolo-yuli/tct/labelview/res
+[INFO] loaded label files from /home/sakulaki/yolo-yuli/tct/labelview/res
+
+
+[INFO] loaded file /home/sakulaki/yolo-yuli/tct/labelview/res/test2.kfb
+[INFO] loaded label file /home/sakulaki/yolo-yuli/tct/labelview/res/test2.csv
+
+2018-10-06 18:09:12.556845
+[OPEN] test2
+[INFO] selected classes: ['ASCUS']
+[INFO] selected classes: ['ASCUS']
+[CHANGE] (21253, 42202, 21393, 42321) ASCUS [to] ADC
+[DELETE] (32957, 46520, 33067, 46610) ASCUS
+[INFO] selected classes: ['LSIL']
+[INFO] selected classes: ['HSIL']
+[DELETE] (40631, 49385, 40720, 49457) HSIL
+[DELETE] (27923, 54747, 28005, 54800) HSIL
+[DELETE] (18005, 31421, 18098, 31522) HSIL
+[DELETE] (22020, 36315, 22129, 36403) HSIL
+[SAVE] test2
+[SAVE] test2
+
+
+[INFO] loaded files from /home/sakulaki/yolo-yuli/tct/labelview/res
+[INFO] loaded label files from /home/sakulaki/yolo-yuli/tct/labelview/res
+[SAVE] test
+
+
+[INFO] loaded files from /home/sakulaki/yolo-yuli/tct/labelview/res
+[INFO] loaded label files from /home/sakulaki/yolo-yuli/tct/labelview/res
+[SAVE] test
+
+
+[INFO] loaded files from /home/sakulaki/yolo-yuli/tct/labelview/res
+[INFO] loaded label files from /home/sakulaki/yolo-yuli/tct/labelview/res
+
+2018-10-06 18:20:41.225816
+[OPEN] test2
+[INFO] selected classes: ['LSIL']
+[CHANGE] (34513, 45412, 34631, 45563) LSIL [to] ADC
+[SAVE] test2
