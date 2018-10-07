@@ -516,7 +516,7 @@ class Viewer:
             w, h = self.image_list[cursor_of_image][2].size
             scale = min(1.0, min(self.w/w, self.h/h))
             w, h = int(w*scale), int(h*scale)
-            self.tw_i.wm_geometry("{}x{}".format(w, h))
+            self.tw_i.wm_geometry("{}x{}+{}+{}".format(w, h, int(self.w/2-w/2), int(self.h/2-h/2)))
             self.tw_i_x = float(self.N.get())  # stores the times of image dimension over cell dimension
             self.tw_i.title(label+" {}x".format(self.tw_i_x))
             # add decrease and increase menu 
@@ -653,7 +653,7 @@ class Viewer:
         show_choices()
     
 
-    """ key press doesn't work after loading images
+    """ key press doesn't work after canvas loading images
     def on_d_pressed(self, event):
         print("d pressed at {}, ({},{})".format(self.display_i.type(tk.CURRENT), event.x, event.y))
         if self.display_i.type(tk.CURRENT) != "image":

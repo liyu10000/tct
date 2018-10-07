@@ -159,3 +159,96 @@
 [INFO] selected classes: ['ASCUS']
 [CHANGE] (11977, 45912, 12140, 46087) ASCUS [to] ASCH
 [SAVE] test2
+
+
+[INFO] loaded files from /home/sakulaki/yolo-yuli/tct/labelview/res
+[INFO] loaded label files from /home/sakulaki/yolo-yuli/tct/labelview/res
+
+2018-10-07 12:32:56.824529
+[OPEN] 2017-11-24-13_19_06
+[INFO] selected classes: ['ASCH']
+[CHANGE] (25095, 50465, 25492, 51010) ASCH [to] ADC
+[DELETE] (13421, 42561, 13952, 43095) ASCH
+[CHANGE] (7907, 36013, 8512, 36456) ASCH [to] ACTINO
+[INFO] selected classes: ['ASCUS']
+[INFO] selected classes: ['ASCUS', 'HSIL']
+[INFO] selected classes: ['ASCUS', 'ASCH', 'HSIL']
+[INFO] selected classes: ['ASCUS', 'ASCH', 'HSIL']
+[INFO] selected classes: ['ASCUS', 'ASCH', 'HSIL']
+[INFO] selected classes: ['ASCUS', 'ASCH', 'HSIL']
+[CHANGE] (12346, 7682, 12625, 7885) ASCH [to] AGC2
+[DELETE] (21940, 32833, 22383, 33316) ASCH
+[CHANGE] (34049, 41953, 34656, 42560) ASCH [to] FUNGI
+[SAVE] 2017-11-24-13_19_06
+
+2018-10-07 12:37:58.875715
+[OPEN] test2
+[INFO] selected classes: ['ASCUS']
+[DELETE] (44094, 39455, 44211, 39566) ASCUS
+[CHANGE] (30272, 54030, 30432, 54307) ASCUS [to] EC
+[DELETE] (35181, 53872, 35368, 54063) ASCUS
+[DELETE] (46056, 45290, 46188, 45414) ASCUS
+[DELETE] (30350, 12517, 30441, 12631) ASCUS
+[DELETE] (46650, 35083, 46761, 35182) ASCUS
+[DELETE] (20866, 51008, 21026, 51104) ASCUS
+[SAVE] test2
+
+2018-10-07 13:06:52.982120
+[OPEN] test1
+[INFO] selected classes: ['ASCUS']
+[SAVE] test1
+
+2018-10-07 13:07:24.408472
+[OPEN] 2017-11-24-13_22_56
+[INFO] selected classes: ['ASCH']
+[CHANGE] (29363, 51424, 29695, 51633) ASCH [to] AGC2
+[CHANGE] (53509, 29793, 54107, 30400) ASCH [to] SCC
+[CHANGE] (12470, 55016, 12694, 55278) ASCH [to] AGC1
+[CHANGE] (36764, 24231, 36880, 24320) ASCH [to] ADC
+[CHANGE] (46209, 49857, 46816, 50464) ASCH [to] AGC2
+[DELETE] (26478, 16578, 26572, 16742) ASCH
+[DELETE] (46209, 49857, 46816, 50464) AGC2
+[CHANGE] (43796, 32833, 44252, 33404) ASCH [to] AGC1
+[DELETE] (31062, 2130, 31258, 2368) ASCH
+[DELETE] (15454, 5053, 15728, 5393) ASCH
+[SAVE] 2017-11-24-13_22_56
+
+2018-10-07 13:14:45.477455
+[OPEN] test1
+[INFO] selected classes: ['ASCUS']
+[INFO] selected classes: ['LSIL']
+[INFO] selected classes: ['LSIL', 'HSIL']
+[INFO] selected classes: ['SCC']
+[INFO] selected classes: ['ADC']
+[INFO] selected classes: ['ASCUS']
+[CHANGE] (38835, 52631, 38960, 52744) ASCUS [to] ADC
+[DELETE] (30272, 54030, 30432, 54307) ASCUS
+[CHANGE] (11977, 45912, 12140, 46087) ASCUS [to] CC
+[CHANGE] (29519, 61934, 29652, 62047) ASCUS [to] EC
+[CHANGE] (47832, 37343, 47934, 37519) ASCUS [to] ACTINO
+[DELETE] (35181, 53872, 35368, 54063) ASCUS
+[DELETE] (36970, 15912, 37069, 16019) ASCUS
+[DELETE] (31218, 23633, 31377, 23806) ASCUS
+[DELETE] (28388, 19582, 28530, 19683) ASCUS
+[CHANGE] (41575, 59956, 41712, 60119) ASCUS [to] AGC2
+[SAVE] test1
+
+2018-10-07 13:21:14.256270
+[OPEN] test2
+[INFO] selected classes: ['LSIL']
+[CHANGE] (55767, 34671, 55873, 34765) LSIL [to] SCC
+[SAVE] test2
+
+
+[INFO] loaded files from /home/sakulaki/yolo-yuli/tct/labelview/res
+[INFO] loaded label files from /home/sakulaki/yolo-yuli/tct/labelview/res
+
+2018-10-07 14:36:15.883581
+[OPEN] 2017-11-24-13_19_06
+[INFO] selected classes: ['ASCH']
+[SAVE] 2017-11-24-13_19_06
+
+2018-10-07 14:37:16.175388
+[OPEN] test2
+[INFO] selected classes: ['ASCUS']
+[SAVE] test2
