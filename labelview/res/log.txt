@@ -120,3 +120,42 @@
 [INFO] selected classes: ['LSIL']
 [CHANGE] (34513, 45412, 34631, 45563) LSIL [to] ADC
 [SAVE] test2
+
+
+[INFO] loaded file /home/sakulaki/yolo-yuli/tct/labelview/res/test2.kfb
+[INFO] loaded label file /home/sakulaki/yolo-yuli/tct/labelview/res/test2.csv
+
+2018-10-07 11:28:14.095052
+[OPEN] test2
+[INFO] selected classes: ['LSIL']
+[CHANGE] (41590, 27347, 41732, 27588) LSIL [to] AGC2
+[INFO] selected classes: ['LSIL']
+[SAVE] test2
+
+
+[INFO] loaded file /home/sakulaki/yolo-yuli/tct/labelview/res/test2.kfb
+[INFO] loaded label file /home/sakulaki/yolo-yuli/tct/labelview/res/test2.csv
+
+2018-10-07 11:35:35.431466
+[OPEN] test2
+[INFO] selected classes: ['LSIL']
+[CHANGE] (46050, 13208, 46177, 13336) LSIL [to] FUNGI
+[DELETE] (40883, 52179, 40991, 52301) LSIL
+[SAVE] test2
+[SAVE] test2
+
+
+[INFO] loaded file /home/sakulaki/yolo-yuli/tct/labelview/res/test2.kfb
+[INFO] loaded label file /home/sakulaki/yolo-yuli/tct/labelview/res/test2.csv
+
+2018-10-07 11:39:58.008437
+[OPEN] test2
+[INFO] selected classes: ['HSIL']
+[SAVE] test2
+[INFO] loaded label file /home/sakulaki/yolo-yuli/tct/labelview/res/test2.csv
+[INFO] selected classes: []
+[INFO] selected classes: ['HSIL']
+[INFO] selected classes: ['ASCUS']
+[INFO] selected classes: ['ASCUS']
+[CHANGE] (11977, 45912, 12140, 46087) ASCUS [to] ASCH
+[SAVE] test2

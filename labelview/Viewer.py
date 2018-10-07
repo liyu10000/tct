@@ -175,24 +175,24 @@ class Viewer:
 
         # images view progress
         self.image_pro = ttk.Label(self.colorctl_i, text="images view progress")
-        self.image_pro.grid(row=0, column=0, columnspan=2, sticky="ew", ipady=5, padx=10, pady=10)
+        self.image_pro.grid(row=0, column=0, columnspan=2, sticky="ew", ipady=5, padx=5, pady=10)
         # confirm button
         self.confirm_i = ttk.Button(self.colorctl_i, text="confirm", command=lambda: self.update_i(step=0))
-        self.confirm_i.grid(row=0, column=2, columnspan=2, sticky="ew", ipady=5, padx=10, pady=10)
+        self.confirm_i.grid(row=0, column=2, columnspan=2, sticky="ew", ipady=5, padx=5, pady=10)
         # set display modes: the number of images in a row
         self.M_ = ttk.Label(self.colorctl_i, text="# M:")
-        self.M_.grid(row=1, column=0, columnspan=1, sticky="ew", ipady=1, padx=10, pady=5)
+        self.M_.grid(row=1, column=0, columnspan=1, sticky="w", ipady=1, padx=5, pady=5)
         self.M = ttk.Entry(self.colorctl_i)
         self.M.insert(0, "3")
-        self.M.config(width=10)
-        self.M.grid(row=1, column=1, columnspan=1, sticky="e", ipady=1, padx=10, pady=5)
+        self.M.config(width=8)
+        self.M.grid(row=1, column=1, columnspan=1, sticky="w", ipady=1, padx=5, pady=5)
         # set image size: the times of image size over label box
         self.N_ = ttk.Label(self.colorctl_i, text="# N:")
-        self.N_.grid(row=1, column=2, columnspan=1, sticky="ew", ipady=1, padx=10, pady=5)
+        self.N_.grid(row=1, column=2, columnspan=1, sticky="w", ipady=1, padx=5, pady=5)
         self.N = ttk.Entry(self.colorctl_i)
         self.N.insert(0, "2")
-        self.N.config(width=10)
-        self.N.grid(row=1, column=3, columnspan=1, sticky="e", ipady=1, padx=10, pady=5)
+        self.N.config(width=8)
+        self.N.grid(row=1, column=3, columnspan=1, sticky="w", ipady=1, padx=5, pady=5)
         # add checkboxes
         self.colorblock_i = []
         self.checkboxes_i = []
@@ -201,11 +201,11 @@ class Viewer:
             clb = ttk.Label(self.colorctl_i, text="--", background='#ffffff')
             chk = ttk.Checkbutton(self.colorctl_i, text=class_i, variable=var)
             if i < math.ceil(len(cfg.CLASSES)/2):
-                clb.grid(row=2+i, column=0, columnspan=1, sticky="ew", ipady=1, padx=10, pady=2)
-                chk.grid(row=2+i, column=1, columnspan=1, sticky="w", ipady=1, padx=10, pady=2)
+                clb.grid(row=2+i, column=0, columnspan=1, sticky="ew", ipady=1, padx=5, pady=2)
+                chk.grid(row=2+i, column=1, columnspan=1, sticky="w", ipady=1, padx=5, pady=2)
             else:
-                clb.grid(row=2+i-math.ceil(len(cfg.CLASSES)/2), column=2, columnspan=1, sticky="ew", ipady=1, padx=10, pady=2)
-                chk.grid(row=2+i-math.ceil(len(cfg.CLASSES)/2), column=3, columnspan=1, sticky="w", ipady=1, padx=10, pady=2)
+                clb.grid(row=2+i-math.ceil(len(cfg.CLASSES)/2), column=2, columnspan=1, sticky="ew", ipady=1, padx=5, pady=2)
+                chk.grid(row=2+i-math.ceil(len(cfg.CLASSES)/2), column=3, columnspan=1, sticky="w", ipady=1, padx=5, pady=2)
             self.colorblock_i.append(clb)
             self.checkboxes_i.append(var)
 
@@ -431,11 +431,11 @@ class Viewer:
         M = int(self.M.get())  # number of images in a row
         self.size_avg = self.w * self.i / M  # average image size to display
         rows = int(self.h / self.size_avg)  # number of rows to display
-        pad = (self.h-self.size_avg*rows)/(rows+1)
+        pad = (self.h-self.size_avg*rows)/rows  # padding between rows
         self.anchors = []  # stores the center position of images to show
         for row in range(rows):
             for i in range(M):
-                self.anchors.append((int(self.size_avg/2 + self.size_avg*i), int(self.size_avg/2 + self.size_avg*row + pad*(row+1))))
+                self.anchors.append((int(self.size_avg/2 + self.size_avg*i), int(self.size_avg/2 + self.size_avg*row + pad*row)))
 
 
     def get_cursor_of_image(self, position):
@@ -849,10 +849,13 @@ class Viewer:
 
     def on_close(self):
         """ actions performed when window closed """
-        self.save_labels(self.index)
-        self.logger.on_close()
-        del self.database
-        self.root.destroy()
+        try:
+            self.save_labels(self.index)
+            self.logger.on_close()
+            del self.database
+            self.root.destroy()
+        except:
+            print("failed to clear up program.")
 
 
     def run(self):
