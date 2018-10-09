@@ -4,6 +4,7 @@ __pycache__/
 *.class
 *.kfb
 *.tif
+*.DCM
 
 ~$*.doc*
 ~$*.docx*

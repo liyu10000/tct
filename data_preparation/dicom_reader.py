@@ -1,3 +1,5 @@
+# useful dicom viewing software: http://www.microdicom.com/downloads.html
+
 import os
 import cv2
 import png
