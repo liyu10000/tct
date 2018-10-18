@@ -81,6 +81,9 @@ shutdown os at set time
 find specific file by name or extension
     find /dir/path -name "*.jpg"
 
+get process id listening on port
+    lsof -i :[port]
+
 configure git lfs
     1. install git lfs
     2. set up: git lfs install
