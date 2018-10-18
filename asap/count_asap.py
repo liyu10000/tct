@@ -1,12 +1,13 @@
 # count the number of annotations in each category
 import os
+import csv
+import collections
 from xml.dom.minidom import parse
 import xml.dom.minidom
 import xlsxwriter
 
 def scan_files(directory, prefix=None, postfix=None):
     files_list = []
-
     for root, sub_dirs, files in os.walk(directory):
         for special_file in files:
             if postfix:
@@ -17,8 +18,8 @@ def scan_files(directory, prefix=None, postfix=None):
                     files_list.append(os.path.join(root, special_file))
             else:
                 files_list.append(os.path.join(root, special_file))
-
     return files_list
+
 
 colorCounts = {"#000000": 0,
                "#aa0000": 0,
@@ -60,6 +61,12 @@ largeCounts = {"#000000": 0,
                "#55aa00": 0,
                "#55aa7f": 0}
 
+classes = {"#aa0000": "HSIL", "#aa007f": "ASCH", "#005500": "LSIL", "#00557f": "ASCUS", 
+                       "#0055ff": "SCC", "#aa557f": "ADC", "#aa55ff": "EC", "#ff5500": "AGC1", 
+                       "#ff557f": "AGC2", "#ff55ff": "AGC3", "#00aa00": "FUNGI", "#00aa7f": "TRI", 
+                       "#00aaff": "CC", "#55aa00": "ACTINO", "#55aa7f": "VIRUS", "#ffffff": "NORMAL",
+                       "#000000": "MC", "#aa00ff": "SC", "#ff0000": "RC", "#aa5500": "GEC"}
+
 total = 0
 large = 0
 def count(files_list):
@@ -97,10 +104,20 @@ def count(files_list):
             print("# wrong color = " + str(wrong) + "  -->  " + file)
             print()
 
+
+def write_csv(counts, csv_path):
+    with open(csv_path, 'w') as csv_file:
+        csv_writer = csv.writer(csv_file)
+        for key,value in counts.items():
+            csv_writer.writerow([key,classes[key], value])
+
 # count annotations from single root directory
-file_path = "/media/tsimage/Elements/data/labelimg_to_asap"
+file_path = "/home/sakulaki/yolo-yuli/xxx/data_20180922/checked"
 files_list = scan_files(file_path, postfix=".xml")
 count(files_list)
+
+write_csv(collections.OrderedDict(sorted(colorCounts.items())), "/home/sakulaki/yolo-yuli/xxx/data_20180922/summary.csv")
+
 
 # # count annotations from multiple separated directories
 # classes = ("01_ASCUS", "02_LSIL", "03_ASCH", "04_HSIL", "05_SCC", "06_AGC1", "07_AGC2", "08_ADC", "09_EC", "10_FUNGI", "11_TRI", "12_CC", "13_ACTINO", "14_VIRUS")
