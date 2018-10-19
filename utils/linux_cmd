@@ -105,6 +105,17 @@ jupyter: run from a remote server
 linux: live watch gpu usage, every 1 second
     watch -n 1 nvidia-smi
 
+tmux: 
+    basic usage:
+        ^b ": split pane horizontally
+        ^b %: split pane vertically
+        ^b (hold) [arrow key]: change size of pane
+        ^b [arrow key]: switch between panes
+    change mouse scroll behaviour to scrolling (default is like using arrow keys in terminal):
+        setw -g mouse on
+        (if need to configure tmux for this behaviour, can write the above line into ~/.tmux.conf and reload it):
+            tmux source-file ~/.tmux.conf
+
 find and copy files from src_dir to des_dir
     find src_dir/ -type f -name "*.txt" | xargs cp -t des_dir/
     find src_dir/ -type f -name "*.txt" | xargs -0 -I file cp file des_dir/
