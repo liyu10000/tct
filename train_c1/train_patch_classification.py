@@ -383,16 +383,21 @@ def train():
 
 
 def test():
+    # setup logger
+    logger = utils.setup_logger(LOG_DIR, "train_inception_fix_"+class_type, save_log=False)
+
     # build model
     base_model = get_base_empty_model()
     model = add_fc_layer(base_model, NUM_CLASSES)
+
+    model.load_weights(pjoin(MODEL_CP_DIR, "cp.fine_tuned.final_weights.hdf5"))
 
     # form test data generator
     test_generator_tuple = get_test_data_generator(PATCH_ARR_DIR, logger)
 
     # predict
-    pred = evaluate_generator(test_generator_tuple[0])
-    print(pred)
+    score = evaluate_on(model, test_generator_tuple[0])
+    print("loss:", score[0], "accuracy:", score[1])
 
 
 if __name__ == "__main__":
