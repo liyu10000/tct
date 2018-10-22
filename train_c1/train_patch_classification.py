@@ -19,6 +19,7 @@ import cv2
 from config import *
 import utils
 
+
 def preprocess_2_gray(x):
     """"""
     gray_x = cv2.cvtColor(x, cv2.COLOR_BGR2GRAY)
@@ -319,7 +320,7 @@ def evaluate_on(model, data_gen):
     return model.evaluate_generator(data_gen)
 
 
-def main():
+def train():
 
     logger = utils.setup_logger(LOG_DIR, "train_inception_fix_"+class_type, save_log=True)
 
@@ -381,5 +382,19 @@ def main():
     model.save_weights(new_complete_inception_weights)
 
 
+def test():
+    # build model
+    base_model = get_base_empty_model()
+    model = add_fc_layer(base_model, NUM_CLASSES)
+
+    # form test data generator
+    test_generator_tuple = get_test_data_generator(PATCH_ARR_DIR, logger)
+
+    # predict
+    pred = evaluate_generator(test_generator_tuple[0])
+    print(pred)
+
+
 if __name__ == "__main__":
-    main()
+    # train()
+    test()
