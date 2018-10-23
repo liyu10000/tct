@@ -164,7 +164,8 @@ def get_test_data_generator(data_dir, logger):
         test_dir,
         target_size=(IMG_HEIGHT, IMG_WIDTH),
         batch_size=PATCH_BATCH_SIZE,
-        class_mode='categorical')
+        class_mode='categorical',
+        shuffle=False)
 
     return (test_generator, test_num)
 
