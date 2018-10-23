@@ -3,6 +3,8 @@ Train patch classification by a pre-trained CNN architecture.
 Fine-tuning is applied since data size is limited.
 """
 import os
+import csv
+import numpy as np
 from os.path import join as pjoin
 from keras import optimizers
 from keras.applications.inception_v3 import InceptionV3, preprocess_input
@@ -384,21 +386,34 @@ def train():
 
 
 def test():
-    # setup logger
-    logger = utils.setup_logger(LOG_DIR, "train_inception_fix_"+class_type, save_log=False)
+    logger = utils.setup_logger(LOG_DIR, 'train_inception_fix_'+class_type, save_log=True)
 
-    # build model
     base_model = get_base_empty_model()
     model = add_fc_layer(base_model, NUM_CLASSES)
+    model.load_weights(pjoin(MODEL_CP_DIR, 'cp.train.weights.41-0.7181.hdf5'))
 
-    model.load_weights(pjoin(MODEL_CP_DIR, "cp.fine_tuned.final_weights.hdf5"))
+    test_generator, _ = get_test_data_generator(PATCH_ARR_DIR, logger)
 
-    # form test data generator
-    test_generator_tuple = get_test_data_generator(PATCH_ARR_DIR, logger)
+    steps = len(test_generator)
+    # score = evaluate_on(model,test_generator)
+    # print('loss:' ,score[0],'accuracy:',score[1])
+    y_pred = model.predict_generator(test_generator, use_multiprocessing=True, verbose=1, steps=steps)
 
-    # predict
-    score = evaluate_on(model, test_generator_tuple[0])
-    print("loss:", score[0], "accuracy:", score[1])
+    results = []
+    for step in range(steps):
+        y = test_generator[step][1]
+        print(y)
+        for i,y_i in enumerate(y):
+            results.append([np.argmax(y_i)] + y_pred[step*PATCH_BATCH_SIZE+i].tolist())
+
+    with open("results.csv", "w") as f:
+        csv_writer = csv.writer(f)
+        for r in results:
+            csv_writer.writerow(r)
+            
+    return results
+
+
 
 
 if __name__ == "__main__":
