@@ -22,4 +22,5 @@ __pycache__/
 
 train_c1/algorithm/log
 train_c1/algorithm/arrange_patches_12_Glandular/
+train_c1/algorithm/arrange_patches_12_Glandular_new/
 train_c1/algorithm/model_checkpoints/
