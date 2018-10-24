@@ -1,10 +1,12 @@
 *.py[cod]
 __pycache__/
-.ipynb_checkpoints/
+*.ipynb_checkpoints/
 *.class
 *.kfb
 *.tif
 *.DCM
+*.h5
+*.hdf5
 
 ~$*.doc*
 ~$*.docx*
@@ -17,3 +19,6 @@ __pycache__/
 /ocr/ocr_python/build
 /ocr/ocr_python/OCRGui.spec
 /ocr/ocr_java/example_codes
+
+train_c1/arrange_patches_12_Glandular/
+train_c1/model_checkpoints/
