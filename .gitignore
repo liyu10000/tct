@@ -5,8 +5,6 @@ __pycache__/
 *.kfb
 *.tif
 *.DCM
-*.h5
-*.hdf5
 
 ~$*.doc*
 ~$*.docx*

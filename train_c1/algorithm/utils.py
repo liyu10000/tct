@@ -91,6 +91,7 @@ def open_wsi(tumor_wsi_file):
         # except:
         #     print("File {} has format error.".format(tumor_wsi_file))
         #     tumor_wsi_image = None
+        pass
     else:
         try:
             tumor_wsi_image = OpenSlide(tumor_wsi_file)
