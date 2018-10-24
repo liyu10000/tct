@@ -20,5 +20,6 @@ __pycache__/
 /ocr/ocr_python/OCRGui.spec
 /ocr/ocr_java/example_codes
 
-train_c1/arrange_patches_12_Glandular/
-train_c1/model_checkpoints/
+train_c1/algorithm/log
+train_c1/algorithm/arrange_patches_12_Glandular/
+train_c1/algorithm/model_checkpoints/
