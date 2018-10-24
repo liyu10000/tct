@@ -40,6 +40,8 @@ tar data
 	archive: tar -cvf des.tar src_dir/
 	extract: tar -xvf des.tar
 	extract .tgz file: tar -zxvf des.tgz
+    fast archive: tar --use-compress-program="pigz --best --keep --recursive --verbose" -cf des.tar.gz src_dir/
+    fast extract: pigz -dc des.tar.gz | tar xf -
 
 install samba (ubuntu&windows)
 step1:
