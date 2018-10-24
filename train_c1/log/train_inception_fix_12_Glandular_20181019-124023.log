@@ -1,0 +1,14 @@
+2018-10-19 20:40:23 - lbp - INFO - [DATA GENERATOR] Getting data generators for train/valid set.
+2018-10-19 20:40:23 - lbp - INFO - Summarizing sample info in train set.
+2018-10-19 20:40:23 - lbp - INFO - Samples num of class 211_AGC2: 6857.
+2018-10-19 20:40:23 - lbp - INFO - Samples num of class 213_EC: 6385.
+2018-10-19 20:40:23 - lbp - INFO - Samples num of class 210_AGC1: 10042.
+2018-10-19 20:40:23 - lbp - INFO - Samples num of class 212_ADC: 5829.
+2018-10-19 20:40:23 - lbp - INFO - Summarizing sample info in valid set.
+2018-10-19 20:40:23 - lbp - INFO - Samples num of class 211_AGC2: 0.
+2018-10-19 20:40:23 - lbp - INFO - Samples num of class 213_EC: 826.
+2018-10-19 20:40:23 - lbp - INFO - Samples num of class 210_AGC1: 1081.
+2018-10-19 20:40:23 - lbp - INFO - Samples num of class 212_ADC: 0.
+2018-10-19 20:40:23 - lbp - INFO - Total number of training data: 29113; Total number of validation data: 1907.
+2018-10-19 20:40:29 - lbp - INFO - [TRAIN SCRATCH] Start training from scratch.
+2018-10-20 09:57:20 - lbp - INFO - [TRAIN SCRATCH] Training from scratch with 50 epochs done in 47811.19423890114s.

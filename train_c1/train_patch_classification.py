@@ -402,7 +402,7 @@ def test():
     results = []
     for step in range(steps):
         y = test_generator[step][1]
-        print(y)
+        print(step)
         for i,y_i in enumerate(y):
             results.append([np.argmax(y_i)] + y_pred[step*PATCH_BATCH_SIZE+i].tolist())
 
