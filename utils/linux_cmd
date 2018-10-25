@@ -43,6 +43,9 @@ tar data
     fast archive: tar --use-compress-program="pigz --best --keep --recursive --verbose" -cf des.tar.gz src_dir/
     fast extract: pigz -dc des.tar.gz | tar xf -
 
+lsof: find the process listening on port
+    lsof -i :[port]
+
 install samba (ubuntu&windows)
 step1:
     sudo apt install samba
