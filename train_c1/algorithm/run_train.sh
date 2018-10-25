@@ -1,1 +1,0 @@
-python3 train_patch_classification.py
