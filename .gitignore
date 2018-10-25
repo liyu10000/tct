@@ -5,6 +5,7 @@ __pycache__/
 *.kfb
 *.tif
 *.DCM
+*.tar.gz
 
 ~$*.doc*
 ~$*.docx*
