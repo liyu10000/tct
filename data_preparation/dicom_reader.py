@@ -25,6 +25,25 @@ def scan_files(directory, prefix=None, postfix=None):
     return files_list
 
 
+def dcm2jpg(data_path):
+    if data_path.endswith('.dcm'):
+        dcm_path = data_path
+        scan = pydicom.dcmread(dcm_path)
+        print(scan)
+        pixels = scan.pixel_array
+
+        # cv2默认彩色颜色通道为(b,g,r), 将rgb转成bgr
+        if len(pixels.shape) == 3:
+            pixels = cv2.cvtColor(pixels, cv2.COLOR_RGB2BGR)
+        return pixels
+    elif(data_path.endswith('.jpg') or data_path.endswith('.JPG') or data_path.endswith('.bmp') or data_path.endswith('.BMP')):
+        img_data = cv2.imread(data_path)
+        return img_data
+    else:
+        print('Incorrect data format!')
+        return None
+
+
 dcms = scan_files("/media/tsimage001/TSIMAGE/CT/CT_84f77ab75fa682fca51a91e0b06ee818/0c61072af1a30e4b14ea57511b678aaa", postfix=".dcm")
 save_path = "/media/tsimage001/TSIMAGE/CT-png/CT_84f77ab75fa682fca51a91e0b06ee818/0c61072af1a30e4b14ea57511b678aaa"
 if not os.path.exists(save_path):
