@@ -37,7 +37,7 @@ def _split_test_from_train(path_train, factor, path_test):
         tif_names.add(tif_name)
     names = list(tif_names)
     os.makedirs(path_test, exist_ok=True)
-    selected = sample(names, int(len(files)*factor))
+    selected = sample(names, int(len(names)*factor))
     for i in selected:
         for file in files:
             if i in file:
