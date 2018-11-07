@@ -86,6 +86,9 @@ shutdown os at set time
 find specific file by name or extension
     find /dir/path -name "*.jpg"
 
+find process using gpu
+    sudo fuser -v /dev/nvidia*
+
 get process id listening on port
     lsof -i :[port]
 
