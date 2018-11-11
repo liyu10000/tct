@@ -43,6 +43,14 @@ tar data
     fast archive: tar --use-compress-program="pigz --best --keep --recursive --verbose" -cf des.tar.gz src_dir/
     fast extract: pigz -dc des.tar.gz | tar xf -
 
+unrar
+    extract in current directory
+        unrar e src.rar
+    extract to specific path
+        unrar e src.rar /path/to/
+    extract and keep directory structure
+        unrar x src.rar
+
 lsof: find the process listening on port
     lsof -i :[port]
 
@@ -192,3 +200,6 @@ configure vim settings on ubuntu
         set number
         set mouse=nicr
         set autoindent
+
+configure jupyter version in anaconda:
+    https://stackoverflow.com/questions/30492623/using-both-python-2-x-and-python-3-x-in-ipython-notebook
