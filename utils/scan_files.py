@@ -24,3 +24,11 @@ def copy_by_depth(file_in, path_out, depth):
     parent_dir = os.path.dirname(file_out)
     os.makedirs(parent_dir, exist_ok=True)
     shutil.copy(file_in, file_out)
+
+
+def move_by_depth(file_in, path_out, depth):
+    tokens = file_in.rsplit(os.sep, depth+1)
+    file_out = os.path.join(path_out, *tokens[1:])
+    parent_dir = os.path.dirname(file_out)
+    os.makedirs(parent_dir, exist_ok=True)
+    shutil.move(file_in, file_out)
