@@ -18,7 +18,10 @@ get the size of a directory
     
 get the free space in the disk
     df -h
-    
+
+conda vonfig file path:
+    /home/username/anaconda3/etc/profile.d/conda.sh
+
 mount and unmount a disk
     sudo fdisk -l   
     mount -o rw src/ des/
