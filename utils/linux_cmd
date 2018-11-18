@@ -54,9 +54,6 @@ unrar
     extract and keep directory structure
         unrar x src.rar
 
-lsof: find the process listening on port
-    lsof -i :[port]
-
 install samba (ubuntu&windows)
 step1:
     sudo apt install samba
@@ -102,6 +99,9 @@ find process using gpu
 
 get process id listening on port
     lsof -i :[port]
+
+find the working directory of process
+    lsof -i :[port] | grep cwd
 
 configure git lfs
     1. install git lfs
