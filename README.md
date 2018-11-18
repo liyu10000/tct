@@ -11,6 +11,7 @@ It contains:
 
 0. Teamviewer ID and password
 6k in yaozhong: ID: 11168485541, PWD: qx6d79
+2k in yiyuan: ID: 1115760858, PWD: s557es
 
 1. WSI Allocation:
 xiongxin_4k: conference/xiongxin_4k.txt, 3000 wsis
