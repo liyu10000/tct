@@ -73,7 +73,7 @@ def process(image_path, depth, save_path, HLS_L=0.20, HLS_S=0.8):
 
 
 if __name__ == "__main__":
-    image_path = "/home/nvme/CELLS"
-    save_path = "/home/nvme/CELLS_hls"
+    image_path = "/home/hdd0/Develop/tct/hls/test_data/zhengzhou_refined_299"
+    save_path = "/home/hdd0/Develop/tct/hls/test_data/zhengzhou_refined_299_hls"
     # hls_trans(image_name, 1, save_path)
     process(image_path, 1, save_path)

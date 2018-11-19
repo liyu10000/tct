@@ -66,8 +66,8 @@ def process(image_path, depth, save_path, size=299):
 
 
 if __name__ == "__main__":
-    image_path = "/home/nvme/CELLS_hls"
+    image_path = "/home/hdd0/Develop/tct/hls/test_data/zhengzhou_refined"
     depth = 1
-    save_path = "/home/nvme/CELLS_hls_299"
+    save_path = "/home/hdd0/Develop/tct/hls/test_data/zhengzhou_refined_299"
     size = 299
     process(image_path, depth, save_path, size)

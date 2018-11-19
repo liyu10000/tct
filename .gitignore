@@ -20,6 +20,7 @@ __pycache__/
 ~$*.pptx*
 
 /ImgHub
+/hls/test_data
 
 /ocr/ocr_python/dist
 /ocr/ocr_python/build
