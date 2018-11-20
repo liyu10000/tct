@@ -22,13 +22,12 @@ def scan_files(directory, prefix=None, postfix=None):
 def resize_img_with_padding(img, size):
     img_croped = img.crop(
         (
-            -((size - img.size[0]) / 2),
-            -((size - img.size[1]) / 2),
-            img.size[0] + (size - img.size[0]) / 2,
-            img.size[1] + (size - img.size[1]) / 2
+            -((size - img.size[0]) // 2),
+            -((size - img.size[1]) // 2),
+            size - ((size - img.size[0]) // 2),
+            size - ((size - img.size[1]) // 2)
         )
     )
-    img_resized = img_croped.resize((size, size))
     return img_resized
 
 
