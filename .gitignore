@@ -21,6 +21,8 @@ __pycache__/
 
 /ImgHub
 /hls/test_data
+/point_detect/CC
+/point_detect/CC_yolo
 
 /ocr/ocr_python/dist
 /ocr/ocr_python/build
