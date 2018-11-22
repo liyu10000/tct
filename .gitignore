@@ -11,6 +11,9 @@ __pycache__/
 *.tar.gz
 *.h5
 *.hdf5
+*.jpg
+*.csv
+*.txt
 
 ~$*.doc*
 ~$*.docx*
@@ -21,8 +24,7 @@ __pycache__/
 
 /ImgHub
 /hls/test_data
-/point_detect/CC
-/point_detect/CC_yolo
+/point_detect
 
 /ocr/ocr_python/dist
 /ocr/ocr_python/build
