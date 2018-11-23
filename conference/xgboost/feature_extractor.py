@@ -151,6 +151,7 @@ def csvs_to_txts(csv_path, chosen, header, save_path):
 
 
 def collect_labels(txt_path):
+    """ read from individual txt files and generate counts of records per class """
     txt_files = scan_files(txt_path, postfix=".txt")
     all_labels = dict()
     for txt_file in txt_files:
@@ -164,7 +165,7 @@ def collect_labels(txt_path):
     return all_labels
 
 
-def txts_to_csv(txt_path, csv_file):
+def txts_to_csv(txt_path, csv_file, binary=False):
     def read_feature_from_txt(txt_file):
         label_and_features = []
         with open(txt_file, 'r') as f:
@@ -174,9 +175,12 @@ def txts_to_csv(txt_path, csv_file):
             for line in f.readlines():
                 features.append(line.strip())
             for token in tokens:
-                if not token in classes_map:
+                if not token in classes_map:  # exclude those class with too few records
                     continue
-                i = classes_map.index(token)
+                if binary:
+                    i = 0 if token == "NORMAL" else 1
+                else:
+                    i = classes_map.index(token)
                 label_and_features.append([i] + features)
         return label_and_features
 
@@ -185,7 +189,6 @@ def txts_to_csv(txt_path, csv_file):
     for txt_file in txt_files:
         label_and_features += read_feature_from_txt(txt_file)
     print(len(txt_files), len(label_and_features))
-
 
     random.shuffle(label_and_features)
 
@@ -201,15 +204,8 @@ if __name__ == "__main__":
     #     chosen = pickle.load(f)
 
     # header_file = "header.txt"
-
     # header = read_header(header_file)
     # print(len(header))
-
-
-    # # csv_dir = "./big_features"
-    # # csv_name = "features.csv"
-    # # main(csv_dir, csv_name, header, chosen)
-
 
     # csv_path = "./big_features"
     # txt_path = "./txt_features"
@@ -218,6 +214,10 @@ if __name__ == "__main__":
     # txt_path = "./txt_features"
     # collect_labels(txt_path)
 
+    # txt_path = "./txt_features"
+    # csv_file = "features.csv"
+    # txts_to_csv(txt_path, csv_file)
+
     txt_path = "./txt_features"
-    csv_file = "features.csv"
-    txts_to_csv(txt_path, csv_file)
+    csv_file = "features_binary.csv"
+    txts_to_csv(txt_path, csv_file, binary=True)
