@@ -40,22 +40,25 @@ def scan_files(directory, prefix=None, postfix=None):
 def extract(csv_file):
     df = pd.read_csv(csv_file)
 
+    # number of cells per class, predicted by yolo
     yolo_classes_dict = {key+"_yolo":df[df["yolo_cell_class"] == key].shape[0] for key in yolo_classes}
 
+    # number of cells per class, predicted by yolo, grouped by det
     yolo_classes_det_dict = {}
     for c in yolo_classes:
         for p in yolo_det_p:
             yolo_classes_det_dict[c+'_yolo_'+str(p)] = df[(df["yolo_cell_class"] == c) & (df["yolo_cell_class_det"] > p)].shape[0]
 
-
+    # number of cells per class, predicted by xcp
     xcp_classes_dict = {key+"_xcp":df[df["xcp_cell_class"] == key].shape[0] for key in xcp_classes}
 
+    # number of cells per class, predicted by xcp, grouped by det
     xcp_classes_det_dict = {}
     for c in xcp_classes:
         for p in xcp_det_p:
             xcp_classes_det_dict[c+'_xcp_'+str(p)] = df[(df["xcp_cell_class"] == c) & (df["xcp_cell_class_det"] > p)].shape[0]
     
-
+    # count: for each cell predicted by xcp, it has a list of logloss class&values, group them on class and value
     xcp_cell_classes_det_dict = {}
     for c_row in xcp_classes:
         for c_col in xcp_classes:
