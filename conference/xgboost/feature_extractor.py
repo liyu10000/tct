@@ -18,8 +18,8 @@ xcp_cell_det_p = list(range(-1000, -200, 100)) + list(range(-200, -100, 20)) + l
 
 # classes_map = ['ACTINO', 'AGC', 'AGC1', 'AGC2', 'ASCH', 'ASCUS', 'CC', 'EC', 
 #                 'FUNGI', 'HISL', 'HSIL', 'LSIL', 'NORMAL', 'None', 'SCC', 'TRI', 'VIRUS']
-classes_map = ['ACTINO', 'AGC1', 'AGC2', 'ASCH', 'ASCUS', 'CC',  
-                'FUNGI', 'HSIL', 'LSIL', 'NORMAL', 'SCC', 'TRI', 'VIRUS']
+classes_map = ['ACTINO', 'AGC1', 'AGC2', 'ASCH', 'ASCUS', 'CC', 'FUNGI', 
+                'HSIL', 'LSIL', 'NORMAL', 'SCC', 'TRI', 'VIRUS', 'None']
 
 
 def scan_files(directory, prefix=None, postfix=None):
@@ -113,7 +113,10 @@ def get_label(chosen, basename):
 
 # write all the features into a txt, one per wsi
 def write_txt(csv_file, chosen, header, save_path):
-    label = get_label(chosen, os.path.splitext(os.path.basename(csv_file))[0])
+    if chosen is None:
+        label = "None"
+    else:
+        label = get_label(chosen, os.path.splitext(os.path.basename(csv_file))[0])
     all_dict = extract(csv_file)
     basename = os.path.splitext(os.path.basename(csv_file))[0]
     txt_name = os.path.join(save_path, basename+".txt")
@@ -165,7 +168,7 @@ def collect_labels(txt_path):
     return all_labels
 
 
-def txts_to_csv(txt_path, csv_file, binary=False):
+def txts_to_csv(txt_path, csv_file, test=False, binary=False):
     def read_feature_from_txt(txt_file):
         label_and_features = []
         with open(txt_file, 'r') as f:
@@ -185,6 +188,8 @@ def txts_to_csv(txt_path, csv_file, binary=False):
         return label_and_features
 
     txt_files = scan_files(txt_path, postfix=".txt")
+    if test:  # for test
+        txt_files.sort()
     label_and_features = []
     for txt_file in txt_files:
         label_and_features += read_feature_from_txt(txt_file)
@@ -203,21 +208,21 @@ if __name__ == "__main__":
     # with open("./chosen.pkl", 'rb') as f:
     #     chosen = pickle.load(f)
 
-    # header_file = "header.txt"
-    # header = read_header(header_file)
-    # print(len(header))
+    header_file = "header.txt"
+    header = read_header(header_file)
+    print(len(header))
 
-    # csv_path = "./big_features"
-    # txt_path = "./txt_features"
-    # csvs_to_txts(csv_path, chosen, header, txt_path)
+    csv_path = "./conf_20181124/csvs"
+    txt_path = "./conf_20181124/txts"
+    csvs_to_txts(csv_path, None, header, txt_path)
 
     # txt_path = "./txt_features"
     # collect_labels(txt_path)
 
-    # txt_path = "./txt_features"
-    # csv_file = "features.csv"
-    # txts_to_csv(txt_path, csv_file)
+    txt_path = "./conf_20181124/txts"
+    csv_file = "./conf_20181124/features.csv"
+    txts_to_csv(txt_path, csv_file, test=True)
 
-    txt_path = "./txt_features"
-    csv_file = "features_binary.csv"
-    txts_to_csv(txt_path, csv_file, binary=True)
+    # txt_path = "./txt_features"
+    # csv_file = "features_binary.csv"
+    # txts_to_csv(txt_path, csv_file, binary=True)
