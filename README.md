@@ -9,9 +9,11 @@ It contains:
 
  Workload Management for Henan Conference:
 
-0. Teamviewer ID and password
-6k in yaozhong: ID: 11168485541, PWD: qx6d79
-2k in yiyuan: ID: 1115760858, PWD: s557es
+0. Server IP
+8k: inuyasha@192.168.2.195
+guonan 2k: tsimage@192.168.2.128
+yuli 2k: lukawa@192.168.2.186
+xiongxin 4k: sakulaki@192.168.2.244
 
 1. WSI Allocation:
 xiongxin_4k: conference/xiongxin_4k.txt, 3000 wsis
