@@ -24,7 +24,7 @@ __pycache__/
 
 /ImgHub
 /hls/test_data
-/point_detect
+/point_detect_excess
 
 /ocr/ocr_python/dist
 /ocr/ocr_python/build
