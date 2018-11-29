@@ -10,12 +10,17 @@ It contains:
  Workload Management for Henan Conference:
 
 0. Server IP
+<pre>
 8k: inuyasha@192.168.2.195
 guonan 2k: tsimage@192.168.2.128
 yuli 2k: lukawa@192.168.2.186
 xiongxin 4k: sakulaki@192.168.2.244
+data-server: data-server@192.168.2.221:/home/data_samba/Code_by_yuli/
+</pre>
 
 1. WSI Allocation:
+<pre>
 xiongxin_4k: conference/xiongxin_4k.txt, 3000 wsis
 yaozhong_6k: conference/yaozhong_6k.txt, 3500 wsis
 mazong_4k: conference/1000.txt, 1000 wsis
+</pre>
