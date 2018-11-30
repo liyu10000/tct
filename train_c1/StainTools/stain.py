@@ -62,8 +62,8 @@ def main(input_dir, output_dir, depth):
 
 
 if __name__ == "__main__":
-	input_dir = "/home/nvme/ext_299"
-	output_dir = "/home/nvme/ext_299_stained"
-	depth = 1
+	input_dir = "/home/hdd0/Develop/immune/ext-data/data299"
+	output_dir = "/home/hdd0/Develop/immune/ext-data/data299_stained"
+	depth = 2
 
 	main(input_dir, output_dir, depth)
