@@ -7,8 +7,6 @@ It contains:
  - one-stop service from .kfb/.tif file to classicified images and final prediction.
 
 
- Workload Management for Henan Conference:
-
 0. Server IP
 <pre>
 8k: inuyasha@192.168.2.195
@@ -18,7 +16,7 @@ xiongxin 4k: sakulaki@192.168.2.244
 data-server: data-server@192.168.2.221:/home/data_samba/Code_by_yuli/
 </pre>
 
-1. WSI Allocation:
+1. WSI Allocation for all_algo processing, on 20181121:
 <pre>
 xiongxin_4k: conference/xiongxin_4k.txt, 3000 wsis
 yaozhong_6k: conference/yaozhong_6k.txt, 3500 wsis

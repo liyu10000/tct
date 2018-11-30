@@ -3,4 +3,5 @@
 #### Allocation
  - CC: guonan 2k
  - TRI: xiongxin 4k
- - SC: 8k, first trained on 608, then changed image size to 416, since cell is too small.
+ - SC: 8k, guonan 2k
+ - HSIL_H: 8k
