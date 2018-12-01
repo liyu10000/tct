@@ -1,3 +1,6 @@
+## caffe model
+https://github.com/soeaver/caffe-model/tree/master/cls
+
 ## Install caffe on Ubuntu 16.04 with gpu
 
 #### useful links:
@@ -86,59 +89,69 @@ add the following line:
 ### Debug
 1. 
 error at make all: 
+<pre>
 	caffe.cpp:(.text+0x15eb): undefined reference to `caffe::Net<float>::CopyTrainedLayersFrom(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)` collect2: error: ld returned 1 exit status
-
+</pre>
 solve:
+<pre>
 	delete libcaffe.so present under /usr/local/lib
-
+</pre>
 links:
 	https://github.com/rbgirshick/py-faster-rcnn/issues/477
 	https://github.com/BVLC/caffe/issues/3396
 
 2.
 error:
+<pre>
 	.build_release/tools/caffe: error while loading shared libraries: libcudart.so.9.0: cannot open shared object file: No such file or directory
-
+</pre>
 solve:
+<pre>
 	in ~/.bashrc, should have the two lines:
 		export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 		export PATH=/usr/local/cuda/bin:$PATH
 	sudo ldconfig /usr/local/cuda/lib64
-
+</pre>
 links:
 	https://github.com/BVLC/caffe/issues/4944
 
 3.
 error at make pycaffe:
+<pre>
 	python/caffe/_caffe.cpp:10:31: fatal error: numpy/arrayobject.h: No such file or directory
-
+</pre>
 solve:
+<pre>
 	sudo apt install python-numpy
-
+</pre>
 links:
 	https://blog.csdn.net/wuzuyu365/article/details/52430657
 
 4.
 error at _import caffe_ in python:
+<pre>
 	ImportError: No module named skimage.io
-
+</pre>
 solve:
+<pre>
 	pip install scikit-image
 	sudo apt-get install python-matplotlib python-numpy python-pil python-scipy
 	sudo apt-get install build-essential cython
 	sudo apt-get install python-skimage
-
+</pre>
 links:
 	https://github.com/yahoo/open_nsfw/issues/13
 	https://github.com/BVLC/caffe/issues/50
 
 5.
 error at _import caffe_ in python:
+<pre>
 	ImportError: No module named google.protobuf.internal
-
+</pre>
 solve:
+<pre>
 	sudo apt install python-protobuf
-
+</pre>
 links:
 	https://stackoverflow.com/questions/37666241/importing-caffe-results-in-importerror-no-module-named-google-protobuf-interna
 	https://stackoverflow.com/questions/37666241/importing-caffe-results-in-importerror-no-module-named-google-protobuf-interna/37905483
