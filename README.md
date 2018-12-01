@@ -13,6 +13,7 @@ It contains:
 guonan 2k: tsimage@192.168.2.128
 yuli 2k: lukawa@192.168.2.186
 xiongxin 4k: sakulaki@192.168.2.244
+mazong 4k: cnn@192.168.2.108
 data-server: data-server@192.168.2.221:/home/data_samba/Code_by_yuli/
 </pre>
 
