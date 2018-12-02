@@ -12,6 +12,7 @@ from mxnet import autograd
 import gluoncv as gcv
 from gluoncv import data as gdata
 from gluoncv import utils as gutils
+from gluoncv.data import VOCDetection
 from gluoncv.model_zoo import get_model
 from gluoncv.data.batchify import Tuple, Stack, Pad
 from gluoncv.data.transforms.presets.yolo import YOLO3DefaultTrainTransform
@@ -92,26 +93,37 @@ def parse_args():
     return args
 
 def get_dataset(dataset, args):
-    if dataset.lower() == 'voc':
-        train_dataset = gdata.VOCDetection(
-            splits=[(2007, 'trainval'), (2012, 'trainval')])
-        val_dataset = gdata.VOCDetection(
-            splits=[(2007, 'test')])
-        val_metric = VOC07MApMetric(iou_thresh=0.5, class_names=val_dataset.classes)
-    elif dataset.lower() == 'coco':
-        train_dataset = gdata.COCODetection(splits='instances_train2017', use_crowd=False)
-        val_dataset = gdata.COCODetection(splits='instances_val2017', skip_empty=False)
-        val_metric = COCODetectionMetric(
-            val_dataset, args.save_prefix + '_eval', cleanup=True,
-            data_shape=(args.data_shape, args.data_shape))
-    else:
-        raise NotImplementedError('Dataset: {} not implemented.'.format(dataset))
-    if args.num_samples < 0:
-        args.num_samples = len(train_dataset)
-    if args.mixup:
-        from gluoncv.data import MixupDetection
-        train_dataset = MixupDetection(train_dataset)
-    return train_dataset, val_dataset, val_metric
+    # if dataset.lower() == 'voc':
+    #     train_dataset = gdata.VOCDetection(
+    #         splits=[(2007, 'trainval'), (2012, 'trainval')])
+    #     val_dataset = gdata.VOCDetection(
+    #         splits=[(2007, 'test')])
+    #     val_metric = VOC07MApMetric(iou_thresh=0.5, class_names=val_dataset.classes)
+    # elif dataset.lower() == 'coco':
+    #     train_dataset = gdata.COCODetection(splits='instances_train2017', use_crowd=False)
+    #     val_dataset = gdata.COCODetection(splits='instances_val2017', skip_empty=False)
+    #     val_metric = COCODetectionMetric(
+    #         val_dataset, args.save_prefix + '_eval', cleanup=True,
+    #         data_shape=(args.data_shape, args.data_shape))
+    # else:
+    #     raise NotImplementedError('Dataset: {} not implemented.'.format(dataset))
+    # if args.num_samples < 0:
+    #     args.num_samples = len(train_dataset)
+    # if args.mixup:
+    #     from gluoncv.data import MixupDetection
+    #     train_dataset = MixupDetection(train_dataset)
+    # return train_dataset, val_dataset, val_metric
+
+    class VOCLike(VOCDetection):
+        CLASSES = ['bicycle', 'dog', 'car']
+        def __init__(self, root, splits, transform=None, index_map=None, preload_label=True):
+            super(VOCLike, self).__init__(root, splits, transform, index_map, preload_label)
+
+    train_dataset = VOCLike(root='images', splits=[(2018, 'train'),])
+    valid_dataset = VOCLike(root='images', splits=[(2018, 'valid'),])
+    metric = VOC07MApMetric(iou_thresh=0.5, class_names=valid_dataset.classes)
+
+    return train_dataset, valid_dataset, metric
 
 def get_dataloader(net, train_dataset, val_dataset, data_shape, batch_size, num_workers, args):
     """Get dataloader."""

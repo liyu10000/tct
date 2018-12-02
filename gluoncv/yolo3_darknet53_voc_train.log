@@ -1,0 +1,128 @@
+Namespace(batch_size=64, data_shape=416, dataset='voc', epochs=200, gpus='0', label_smooth=False, log_interval=100, lr=0.001, lr_decay=0.1, lr_decay_epoch='160,180', lr_decay_period=0, lr_mode='step', mixup=False, momentum=0.9, network='darknet53', no_mixup_epochs=20, no_random_shape=False, no_wd=False, num_samples=-1, num_workers=4, resume='', save_interval=10, save_prefix='yolo3_darknet53_voc', seed=233, start_epoch=0, syncbn=False, val_interval=1, warmup_epochs=0, warmup_lr=0.0, wd=0.0005)
+Start training from [Epoch 0]
+[Epoch 0] Training cost: 0.220, ObjLoss=nan, BoxCenterLoss=nan, BoxScaleLoss=nan, ClassLoss=nan
+[Epoch 0] Validation: 
+bicycle=0.0
+dog=0.0
+car=0.0
+mAP=0.0
+[Epoch 1] Training cost: 0.180, ObjLoss=nan, BoxCenterLoss=nan, BoxScaleLoss=nan, ClassLoss=nan
+[Epoch 1] Validation: 
+bicycle=0.0
+dog=0.0
+car=0.0
+mAP=0.0
+[Epoch 2] Training cost: 0.243, ObjLoss=nan, BoxCenterLoss=nan, BoxScaleLoss=nan, ClassLoss=nan
+[Epoch 2] Validation: 
+bicycle=0.0
+dog=0.0
+car=0.0
+mAP=0.0
+[Epoch 3] Training cost: 0.423, ObjLoss=nan, BoxCenterLoss=nan, BoxScaleLoss=nan, ClassLoss=nan
+[Epoch 3] Validation: 
+bicycle=0.0
+dog=0.0
+car=0.0
+mAP=0.0
+[Epoch 4] Training cost: 0.477, ObjLoss=nan, BoxCenterLoss=nan, BoxScaleLoss=nan, ClassLoss=nan
+[Epoch 4] Validation: 
+bicycle=0.0
+dog=0.0
+car=0.0
+mAP=0.0
+[Epoch 5] Training cost: 0.546, ObjLoss=nan, BoxCenterLoss=nan, BoxScaleLoss=nan, ClassLoss=nan
+[Epoch 5] Validation: 
+bicycle=0.0
+dog=0.0
+car=0.0
+mAP=0.0
+[Epoch 6] Training cost: 0.610, ObjLoss=nan, BoxCenterLoss=nan, BoxScaleLoss=nan, ClassLoss=nan
+[Epoch 6] Validation: 
+bicycle=0.0
+dog=0.0
+car=0.0
+mAP=0.0
+[Epoch 7] Training cost: 0.622, ObjLoss=nan, BoxCenterLoss=nan, BoxScaleLoss=nan, ClassLoss=nan
+[Epoch 7] Validation: 
+bicycle=0.0
+dog=0.0
+car=0.0
+mAP=0.0
+[Epoch 8] Training cost: 0.811, ObjLoss=nan, BoxCenterLoss=nan, BoxScaleLoss=nan, ClassLoss=nan
+[Epoch 8] Validation: 
+bicycle=0.0
+dog=0.0
+car=0.0
+mAP=0.0
+[Epoch 9] Training cost: 0.646, ObjLoss=nan, BoxCenterLoss=nan, BoxScaleLoss=nan, ClassLoss=nan
+[Epoch 9] Validation: 
+bicycle=0.0
+dog=0.0
+car=0.0
+mAP=0.0
+[Epoch 10] Training cost: 0.678, ObjLoss=nan, BoxCenterLoss=nan, BoxScaleLoss=nan, ClassLoss=nan
+[Epoch 10] Validation: 
+bicycle=0.0
+dog=0.0
+car=0.0
+mAP=0.0
+[Epoch 11] Training cost: 0.744, ObjLoss=nan, BoxCenterLoss=nan, BoxScaleLoss=nan, ClassLoss=nan
+[Epoch 11] Validation: 
+bicycle=0.0
+dog=0.0
+car=0.0
+mAP=0.0
+[Epoch 12] Training cost: 0.770, ObjLoss=nan, BoxCenterLoss=nan, BoxScaleLoss=nan, ClassLoss=nan
+[Epoch 12] Validation: 
+bicycle=0.0
+dog=0.0
+car=0.0
+mAP=0.0
+[Epoch 13] Training cost: 0.832, ObjLoss=nan, BoxCenterLoss=nan, BoxScaleLoss=nan, ClassLoss=nan
+[Epoch 13] Validation: 
+bicycle=0.0
+dog=0.0
+car=0.0
+mAP=0.0
+[Epoch 14] Training cost: 0.754, ObjLoss=nan, BoxCenterLoss=nan, BoxScaleLoss=nan, ClassLoss=nan
+[Epoch 14] Validation: 
+bicycle=0.0
+dog=0.0
+car=0.0
+mAP=0.0
+[Epoch 15] Training cost: 0.943, ObjLoss=nan, BoxCenterLoss=nan, BoxScaleLoss=nan, ClassLoss=nan
+[Epoch 15] Validation: 
+bicycle=0.0
+dog=0.0
+car=0.0
+mAP=0.0
+[Epoch 16] Training cost: 1.029, ObjLoss=nan, BoxCenterLoss=nan, BoxScaleLoss=nan, ClassLoss=nan
+[Epoch 16] Validation: 
+bicycle=0.0
+dog=0.0
+car=0.0
+mAP=0.0
+[Epoch 17] Training cost: 0.609, ObjLoss=nan, BoxCenterLoss=nan, BoxScaleLoss=nan, ClassLoss=nan
+[Epoch 17] Validation: 
+bicycle=0.0
+dog=0.0
+car=0.0
+mAP=0.0
+[Epoch 18] Training cost: 0.660, ObjLoss=nan, BoxCenterLoss=nan, BoxScaleLoss=nan, ClassLoss=nan
+[Epoch 18] Validation: 
+bicycle=0.0
+dog=0.0
+car=0.0
+mAP=0.0
+[Epoch 19] Training cost: 0.823, ObjLoss=nan, BoxCenterLoss=nan, BoxScaleLoss=nan, ClassLoss=nan
+[Epoch 19] Validation: 
+bicycle=0.0
+dog=0.0
+car=0.0
+mAP=0.0
+[Epoch 20] Training cost: 0.557, ObjLoss=nan, BoxCenterLoss=nan, BoxScaleLoss=nan, ClassLoss=nan
+[Epoch 20] Validation: 
+bicycle=0.0
+dog=0.0
+car=0.0
+mAP=0.0
