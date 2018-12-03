@@ -23,6 +23,7 @@ __pycache__/
 ~$*.xlsx*
 ~$*.ppt*
 ~$*.pptx*
+logs/
 
 /ImgHub
 /hls/test_data

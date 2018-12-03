@@ -112,7 +112,7 @@ def batch_process_new(path_in, path_out, size, positions):
         for future in as_completed(tasks):
             # result = future.result()  # get the returning result from calling fuction
             job_count -= 1
-            # print("One Job Done, last Job Count: %s" % (job_count))
+            # print("One Job Done, Remaining Job Count: %s" % (job_count))
 
         datetime2 = datetime.datetime.now()
         print("total time cost: {:.2f}s".format((datetime2 - datetime1).total_seconds()))
