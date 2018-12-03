@@ -31,8 +31,9 @@ def scan_files(directory, prefix=None, postfix=None):
 def process_image(normalizer, image_in, save_dir, depth):
     tokens = image_in.rsplit(os.sep, depth+1)
     image_out = os.path.join(save_dir, *tokens[1:])
-    parent_dir = os.path.dirname(image_out)
-    os.makedirs(parent_dir, exist_ok=True)
+    if os.path.isfile(image_out):  # pass if result image has already been generated
+        return
+    os.makedirs(os.path.dirname(image_out), exist_ok=True)
     r_img = read_image(image_in)
     target = normalizer.transform(r_img)
     target = cv2.cvtColor(target, cv2.COLOR_RGB2BGR)
