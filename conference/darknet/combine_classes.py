@@ -34,7 +34,7 @@ def change_txt(txt_name, save_path):
     with open(txt_name, 'r') as f:
         for line in f.readlines():
             tokens = line.strip().split()
-            count[int(tokens[0]] += 1
+            count[int(tokens[0])] += 1
             labels.append(tokens)
                       
     txt_name_new = os.path.join(save_path, os.path.basename(txt_name))
@@ -68,10 +68,10 @@ def main(txt_path, save_path):
         print("One Job Done, Remaining Job Count: %s" % (job_count))
                       
                     
- if __name__ == "__main__":
-    txt_path = ""
-    save_path = ""
+if __name__ == "__main__":
+    txt_path = "/home/cnn/Documents/batch6_1216/train_txts"
+    save_path = "/home/cnn/Documents/batch6_1216/train_txts_b"
     main(txt_path, save_path)
-                      
+    print(count)
                       
             
