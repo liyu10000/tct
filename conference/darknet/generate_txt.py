@@ -40,5 +40,5 @@ def generate_txt(data_path, split=0.1):
                                   
                                   
 if __name__ == "__main__":
-    data_path = "/home/cnn/Documents/batch6_1216/train_hls"
+    data_path = "/home/ssd0/Develop/liyu/batch6_neg_608/train"
     generate_txt(data_path)
