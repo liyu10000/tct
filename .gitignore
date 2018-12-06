@@ -32,6 +32,9 @@ logs/
 /hls/test_data
 /point_detect_excess
 
+/frames/tensorflow/models-master
+/frames/tensorflow/TensorFlow-Xception
+
 /ocr/ocr_python/dist
 /ocr/ocr_python/build
 /ocr/ocr_python/OCRGui.spec
