@@ -20,7 +20,23 @@ def scan_files(directory, prefix=None, postfix=None):
     return files_list
 
 
-def hls_trans(image_name, depth, save_path, HLS_L=0.20, HLS_S=0.8):
+def get_ls(image_name):
+    image = cv2.imread(image_name)
+
+    # 图像归一化，且转换为浮点型
+    hlsImg = image.astype(np.float32)
+    hlsImg = hlsImg / 255.0
+    # 颜色空间转换 BGR转为HLS
+    hlsImg = cv2.cvtColor(hlsImg, cv2.COLOR_BGR2HLS)
+    # 1.亮度
+    l = np.average(hls_img[:,:,1])
+    # 2.饱和度
+    s = np.average(hls_img[:,:,2])
+
+    return l, s
+
+
+def hls_trans(image_name, depth, save_path, HLS_L=1.0, HLS_S=0.8):
     image = cv2.imread(image_name)
 
     # 图像归一化，且转换为浮点型
@@ -29,10 +45,14 @@ def hls_trans(image_name, depth, save_path, HLS_L=0.20, HLS_S=0.8):
     # 颜色空间转换 BGR转为HLS
     hlsImg = cv2.cvtColor(hlsImg, cv2.COLOR_BGR2HLS)
     # 1.调整亮度, 2.将hlsCopy[:, :, 1]和hlsCopy[:, :, 2]中大于1的全部截取
-    hlsImg[:, :, 1] = (1.0 + HLS_L) * hlsImg[:, :, 1]
+    # hlsImg[:, :, 1] = (1.0 + HLS_L) * hlsImg[:, :, 1]
+    l = np.average(hlsImg[:,:,1])
+    hlsImg[:, :, 1] = HLS_L / l * hlsImg[:, :, 1]
     hlsImg[:, :, 1][hlsImg[:, :, 1] > 1] = 1
     # 2.调整饱和度
-    hlsImg[:, :, 2] = (1.0 + HLS_S) * hlsImg[:, :, 2]
+    # hlsImg[:, :, 2] = (1.0 + HLS_S) * hlsImg[:, :, 2]
+    s = np.average(hlsImg[:,:,2])
+    hlsImg[:, :, 2] = HLS_S / s * hlsImg[:, :, 2]
     hlsImg[:, :, 2][hlsImg[:, :, 2] > 1] = 1
     # HLS2BGR
     hlsImg = cv2.cvtColor(hlsImg, cv2.COLOR_HLS2BGR)

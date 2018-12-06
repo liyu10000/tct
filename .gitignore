@@ -17,12 +17,15 @@ __pycache__/
 *.xml
 *.lst
 *.params
+*.tfrecord
+
 ~$*.doc*
 ~$*.docx*
 ~$*.xls*
 ~$*.xlsx*
 ~$*.ppt*
 ~$*.pptx*
+
 logs/
 
 /ImgHub
