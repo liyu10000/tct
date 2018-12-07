@@ -29,14 +29,14 @@ def get_ls(image_name):
     # 颜色空间转换 BGR转为HLS
     hlsImg = cv2.cvtColor(hlsImg, cv2.COLOR_BGR2HLS)
     # 1.亮度
-    l = np.average(hls_img[:,:,1])
+    l = np.average(hlsImg[:,:,1])
     # 2.饱和度
-    s = np.average(hls_img[:,:,2])
+    s = np.average(hlsImg[:,:,2])
 
     return l, s
 
 
-def hls_trans(image_name, depth, save_path, HLS_L=1.0, HLS_S=0.8):
+def hls_trans(image_name, depth, save_path, HLS_L=0.9, HLS_S=0.5):
     image = cv2.imread(image_name)
 
     # 图像归一化，且转换为浮点型
@@ -72,7 +72,7 @@ def batch_hls_trans(image_names, depth, save_path, HLS_L=0.20, HLS_S=0.8):
         hls_trans(image_name, depth, save_path, HLS_L, HLS_S)
 
 
-def process(image_path, depth, save_path, HLS_L=0.20, HLS_S=0.8):
+def process(image_path, depth, save_path, HLS_L=0.8, HLS_S=0.8):
     image_names = scan_files(image_path, postfix=".jpg")
     print("total of {} images to process".format(len(image_names)))
 
@@ -93,7 +93,18 @@ def process(image_path, depth, save_path, HLS_L=0.20, HLS_S=0.8):
 
 
 if __name__ == "__main__":
-    image_path = "/home/hdd0/Develop/tct/hls/test_data/zhengzhou_refined_299"
-    save_path = "/home/hdd0/Develop/tct/hls/test_data/zhengzhou_refined_299_hls"
-    # hls_trans(image_name, 1, save_path)
-    process(image_path, 1, save_path)
+    # image_path = "/home/hdd0/Develop/tct/hls/test_data/zhengzhou_refined_299"
+    # save_path = "/home/hdd0/Develop/tct/hls/test_data/zhengzhou_refined_299_hls"
+    # # hls_trans(image_name, 1, save_path)
+    # process(image_path, 1, save_path)
+
+    src_dir = "/home/hdd0/Develop/tct/hls/samples"
+    src_imgs = scan_files(src_dir, postfix=".jpg")
+
+    for src_img in src_imgs:
+        # src_img = "/home/hdd0/Develop/tct/conference/xception/batch6.1_hls_half_train/20181205_BATCH_6.1/HSIL_B/2017-09-07-08_47_59_x13097_y7826_w167_h446.jpg"
+        print(src_img, get_ls(src_img))
+
+
+        save_path = "/home/hdd0/Develop/tct/hls"
+        hls_trans(src_img, 0, save_path)
