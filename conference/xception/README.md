@@ -2,30 +2,31 @@
 
 ### folders
  - batch6_half_train: use cells from batch6, half-size and pad with black borders, aligned to size 299x299. Use original Xception model for training.
- - batch6.1_hls_half_train: use cells from batch6.1, half-size and pad with white borders, aligned to size 299x299. Modified original model.
+ - batch6.1_hls_half_train: use cells from batch6.1, half-size and pad with white borders, aligned to size 299x299. Tried to modify original model, use the default finally.
 
 ### training
- - train1
-_dataset_: batch6.1, half-sized and pad with white border, all cells aligned to 299x299. read from jpg, save to jpg, with opencv. training data are quadrupled by rotating at 90, 180, 270 degrees.
-_model_: used default Xception model
-_weights_: used weights trained on dataset batch 6
+1. train1
+ - _dataset_: batch6.1, half-sized and pad with white border, all cells aligned to 299x299. read from jpg, save to jpg, with opencv. training data are quadrupled by rotating at 90, 180, 270 degrees.
+ - _model_: used default Xception model
+ - _weights_: used weights trained on dataset batch 6
 
- - train2
-_dataset_: the same with train1
-_model_: added two layers after base model (Conv2D and BatchNormalization)
-_weights_: used weights trained on dataset batch 6
+2. train2
+ - _dataset_: the same with train1
+ - _model_: added two layers after base model (Conv2D and BatchNormalization)
+ - _weights_: used weights trained on dataset batch 6
 
- - train3
-_dataset_: the same with train1
-_model_: added two layers after base model (Conv2D and BatchNormalization)
-_weights_: used pretrained weights on imagenet
+3. train3
+ - _dataset_: the same with train1
+ - _model_: added two layers after base model (Conv2D and BatchNormalization)
+ - _weights_: used pretrained weights on imagenet
 
- - train4
-_dataset_: the same with train1
-_model_: used default Xception model
-_weights_: used weights trained from train1, epoch 003
-_init_lr_: 0.005
+4. train4
+ - _dataset_: the same with train1
+ - _model_: used default Xception model
+ - _weights_: used weights trained from train1, epoch 003
+ - _init_lr_: 0.005
 
+<pre>
 Found 456792 images belonging to 20 classes.
 Found 12681 images belonging to 20 classes.
 Epoch 4/150
@@ -84,15 +85,17 @@ Epoch 17/150
 7138/7138 [==============================] - 4236s 593ms/step - loss: 0.1160 - acc: 0.9572 - val_loss: 0.1281 - val_acc: 0.9571
 
 Epoch 00017: saving model to weights_017_0.1281.hdf5
+</pre>
 
 
- - train5
-_dataset_: two parts: one part is from train1; the other part has the same number and source as train1 dataset, except that all images's l and s are enhanced.
-_model_: used default Xception model
-_weights_: used weights trained from train4, epoch 017
-_init_lr_: 0.001 at epochs 1-3, 0.0005 at epochs 4-9, 0.005 at epochs 10-16
-_lr_decay_: 0.5 at epochs 1-3, 0.6 at epochs 4-9, 0.6 at epochs 10-16
+5. train5
+ - _dataset_: two parts: one part is from train1; the other part has the same number and source as train1 dataset, except that all images's l and s are enhanced (HLS_L=[0.9], HLS_S=[0.4, 0.5]).
+ - _model_: used default Xception model
+ - _weights_: used weights trained from train4, epoch 017
+ - _init_lr_: 0.001 at epochs 1-3, 0.0005 at epochs 4-9, 0.005 at epochs 10-16
+ - _lr_decay_: 0.5 at epochs 1-3, 0.6 at epochs 4-9, 0.6 at epochs 10-16
 
+<pre>
 Found 913584 images belonging to 20 classes.
 Found 25362 images belonging to 20 classes.
 Epoch 1/100
@@ -136,33 +139,40 @@ Epoch 00009: saving model to weights_009_0.2320.hdf5
 Found 913584 images belonging to 20 classes.
 Found 25362 images belonging to 20 classes.
 Epoch 10/100
-14274/14275 [============================>.] - ETA: 0s - loss: 0.1535 - acc: 0.9441
 14275/14275 [==============================] - 8322s 583ms/step - loss: 0.1535 - acc: 0.9441 - val_loss: 0.2314 - val_acc: 0.9447
 
-Epoch 00004: saving model to weights_004_0.2314.hdf5
+Epoch 00010: saving model to weights_010_0.2314.hdf5
 Epoch 11/100
 14275/14275 [==============================] - 8505s 596ms/step - loss: 0.1403 - acc: 0.9480 - val_loss: 0.3009 - val_acc: 0.9394
 
-Epoch 00005: saving model to weights_005_0.3009.hdf5
+Epoch 00011: saving model to weights_011_0.3009.hdf5
 Epoch 12/100
 14275/14275 [==============================] - 8269s 579ms/step - loss: 0.1373 - acc: 0.9492 - val_loss: 0.2668 - val_acc: 0.9424
 
-Epoch 00006: saving model to weights_006_0.2668.hdf5
+Epoch 00012: saving model to weights_012_0.2668.hdf5
 Epoch 13/100
 14275/14275 [==============================] - 8418s 590ms/step - loss: 0.1351 - acc: 0.9498 - val_loss: 0.2899 - val_acc: 0.9401
 
-Epoch 00007: saving model to weights_007_0.2899.hdf5
+Epoch 00013: saving model to weights_013_0.2899.hdf5
 Epoch 14/100
-14274/14275 [============================>.] - ETA: 0s - loss: 0.1345 - acc: 0.9502
-Epoch 00007: saving model to weights_007_0.2899.hdf5
 14275/14275 [==============================] - 8172s 572ms/step - loss: 0.1345 - acc: 0.9502 - val_loss: 0.3299 - val_acc: 0.9377
 
-Epoch 00008: saving model to weights_008_0.3299.hdf5
+Epoch 00014: saving model to weights_014_0.3299.hdf5
 Epoch 15/100
 14275/14275 [==============================] - 8271s 579ms/step - loss: 0.1342 - acc: 0.9502 - val_loss: 0.2658 - val_acc: 0.9422
 
-Epoch 00009: saving model to weights_009_0.2658.hdf5
+Epoch 00015: saving model to weights_015_0.2658.hdf5
 Epoch 16/100
 14275/14275 [==============================] - 8390s 588ms/step - loss: 0.1343 - acc: 0.9503 - val_loss: 0.2750 - val_acc: 0.9412
 
-Epoch 00010: saving model to weights_010_0.2750.hdf5
+Epoch 00016: saving model to weights_016_0.2750.hdf5
+</pre>
+
+
+6. train6
+ - _dataset_: three parts: first part is from train1; second part has the same number and source as train1 dataset, except that all images's l and s are enhanced (HLS_L=[0.9], HLS_S=[0.4, 0.5]); third part has the same number and source as train1 dataset, except that all images's l and s are enhanced (HLS_L=[0.7], HLS_S=[0.4, 0.5])
+ - _model_: used default Xception model
+ - _weights_: used weights trained from train5, epoch 010
+ - _init_lr_: 0.0005 at epochs 1-
+ - _lr_decay_: 0.5 at epochs 1-
+
