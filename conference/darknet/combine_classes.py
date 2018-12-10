@@ -6,11 +6,17 @@ from multiprocessing import cpu_count
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 
-# source classes in yolo txts
-classes = {"ASCUS":0, "LSIL":1, "ASCH":2, "HSIL":3, "SCC":4, "AGC":5, 
-           "EC":6, "FUNGI":7, "TRI":8, "CC":9, "ACTINO":10, "VIRUS":11}
+# # source classes in yolo txts
+# classes = {"ASCUS":0, "LSIL":1, "ASCH":2, "HSIL":3, "SCC":4, "AGC":5, 
+#            "EC":6, "FUNGI":7, "TRI":8, "CC":9, "ACTINO":10, "VIRUS":11}
+# # target classes to change to 
+# targets = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0, 11: 0}
+
+# 11 classes merge agc1 agc2 adc as agc
+classes = {"ASCUS":0, "LSIL":1, "HSIL":2, "SCC":3, "AGC":4, 
+           "EC":5, "FUNGI":6, "TRI":7, "CC":8, "ACTINO":9, "VIRUS":10}
 # target classes to change to 
-targets = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0, 11: 0}
+targets = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0}
 
 count = {value:0 for key,value in classes.items()}
 
@@ -69,8 +75,8 @@ def main(txt_path, save_path):
                       
                     
 if __name__ == "__main__":
-    txt_path = "/home/cnn/Documents/batch6_1216/train_txts"
-    save_path = "/home/cnn/Documents/batch6_1216/train_txts_b"
+    txt_path = "/home/ssd0/Develop/liyu/batch6_hls0.9_1216/train"
+    save_path = "/home/ssd0/Develop/liyu/batch6_hls0.9_1216/train"
     main(txt_path, save_path)
     print(count)
                       

@@ -51,7 +51,7 @@ def main(path_in, path_out, depth):
         
         
 if __name__ == "__main__":
-    path_in = "/home/cnn/Documents/batch6_1216/train_txts_b"
-    path_out = "/home/cnn/Documents/batch6_1216/train_hls"
+    path_in = "/home/ssd0/Develop/liyu/batch6_hls0.9_1216/train"
+    path_out = "/home/ssd0/Develop/liyu/batch6_hls0.9_1216/txt_all_classes"
     depth = 0
     main(path_in, path_out, depth)

@@ -18,7 +18,8 @@ def scan_files(directory, prefix=None, postfix=None):
 
 
 def generate_txt(data_path, split=0.1):
-    jpg_names = scan_files(data_path, postfix=".jpg")
+    jpg_names = scan_files(data_path, postfix=".bmp")
+    print("# total:", len(jpg_names))
     
     random.shuffle(jpg_names)
     random.shuffle(jpg_names)
@@ -33,12 +34,14 @@ def generate_txt(data_path, split=0.1):
     with open(train_txt_name, 'w') as f:
         for jpg_name in train_jpg_names:
             f.write(jpg_name + '\n')
+    print("# train:", len(train_jpg_names))
                                   
     with open(valid_txt_name, 'w') as f:
         for jpg_name in valid_jpg_names:
             f.write(jpg_name + '\n')
+    print("# valid:", len(valid_jpg_names))
                                   
                                   
 if __name__ == "__main__":
-    data_path = "/home/ssd0/Develop/liyu/batch6_neg_608/train"
+    data_path = "/home/ssd0/Develop/liyu/batch6_hls09_1216/train"
     generate_txt(data_path)
