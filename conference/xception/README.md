@@ -173,6 +173,34 @@ Epoch 00016: saving model to weights_016_0.2750.hdf5
  - _dataset_: three parts: first part is from train1; second part has the same number and source as train1 dataset, except that all images's l and s are enhanced (HLS_L=[0.9], HLS_S=[0.4, 0.5]); third part has the same number and source as train1 dataset, except that all images's l and s are enhanced (HLS_L=[0.7], HLS_S=[0.4, 0.5])
  - _model_: used default Xception model
  - _weights_: used weights trained from train5, epoch 010
- - _init_lr_: 0.0005 at epochs 1-
- - _lr_decay_: 0.5 at epochs 1-
+ - _init_lr_: 0.0005 at epochs 1-6
+ - _lr_decay_: 0.5 at epochs 1-6
 
+<pre>
+Found 1370376 images belonging to 20 classes.
+Found 38043 images belonging to 20 classes.
+Epoch 1/100
+21413/21413 [==============================] - 12549s 586ms/step - loss: 0.1425 - acc: 0.9477 - val_loss: 0.2578 - val_acc: 0.9435
+
+Epoch 00001: saving model to weights_001_0.2578.hdf5
+Epoch 2/100
+21413/21413 [==============================] - 12530s 585ms/step - loss: 0.1406 - acc: 0.9484 - val_loss: 0.2440 - val_acc: 0.9449
+
+Epoch 00002: saving model to weights_002_0.2440.hdf5
+Epoch 3/100
+21413/21413 [==============================] - 12487s 583ms/step - loss: 0.1403 - acc: 0.9485 - val_loss: 0.2671 - val_acc: 0.9430
+
+Epoch 00003: saving model to weights_003_0.2671.hdf5
+Epoch 4/100
+21413/21413 [==============================] - 12520s 585ms/step - loss: 0.1398 - acc: 0.9484 - val_loss: 0.2400 - val_acc: 0.9442
+
+Epoch 00004: saving model to weights_004_0.2400.hdf5
+Epoch 5/100
+21413/21413 [==============================] - 12451s 581ms/step - loss: 0.1397 - acc: 0.9484 - val_loss: 0.3032 - val_acc: 0.9397
+
+Epoch 00005: saving model to weights_005_0.3032.hdf5
+Epoch 6/100
+21413/21413 [==============================] - 12430s 581ms/step - loss: 0.1394 - acc: 0.9486 - val_loss: 0.3171 - val_acc: 0.9389
+
+Epoch 00006: saving model to weights_006_0.3171.hdf5
+</pre>
