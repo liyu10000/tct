@@ -7,6 +7,7 @@ __pycache__/
 *.tif
 *.DCM
 
+*.pkl
 *.tar
 *.zip
 *.tar

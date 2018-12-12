@@ -35,6 +35,6 @@ def main(txt_path):
     
     
 if __name__ == "__main__":
-    txt_path = "/home/ssd0/Develop/liyu/batch6_hls0.9_1216/train"
+    txt_path = "/home/ssd0/Develop/liyu/batch6_1216/train"
     main(txt_path)
     print(count)
