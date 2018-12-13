@@ -20,10 +20,10 @@ def scan_files(directory, prefix=None, postfix=None):
     
 def rotate(xml_name):
     jpg_name_pre = os.path.splitext(xml_name)[0]
-    jpg = Image.open(jpg_name_pre + ".jpg")
-    jpg.rotate(90).save(jpg_name_pre + "_r90.jpg")
-    jpg.rotate(180).save(jpg_name_pre + "_r180.jpg")
-    jpg.rotate(270).save(jpg_name_pre + "_r270.jpg")
+    jpg = Image.open(jpg_name_pre + ".bmp")
+    jpg.rotate(90).save(jpg_name_pre + "_r90.bmp")
+    jpg.rotate(180).save(jpg_name_pre + "_r180.bmp")
+    jpg.rotate(270).save(jpg_name_pre + "_r270.bmp")
     jpg.close()
 
 def gen_xml(xml_name):
@@ -108,7 +108,11 @@ def gen_xml(xml_name):
     with open(xml_name_new, 'w') as newfile:
         DOMTree.writexml(newfile)
     
-
+def batch_rotate(xml_names):
+    for xml_name in xml_names:
+        rotate(xml_name)
+        gen_xml(xml_name)
+    
 def do_rotate(path):
     xml_names = scan_files(path, postfix=".xml")
     executor = ProcessPoolExecutor(max_workers=cpu_count() - 4)

@@ -19,21 +19,27 @@ def scan_files(directory, prefix=None, postfix=None):
     return files_list
 
 
-def copy_by_depth(file_in, path_out, depth):
+def copy_by_depth(file_in, path_out, depth, addon):
     tokens = file_in.rsplit(os.sep, depth+1)
     file_out = os.path.join(path_out, *tokens[1:])
     # parent_dir = os.path.dirname(file_out)
     # os.makedirs(parent_dir, exist_ok=True)
+    
+    file_pre, file_pos = os.path.splitext(file_out)
+    file_out = file_pre + addon + file_pos
+    
     shutil.copy(file_in, file_out)
     
+    # os.remove(file_in)
     
-def batch_copy_by_depth(files_in, path_out, depth):
+    
+def batch_copy_by_depth(files_in, path_out, depth, addon):
     for file_in in files_in:
-        copy_by_depth(file_in, path_out, depth)
+        copy_by_depth(file_in, path_out, depth, addon)
     
     
-def main(path_in, path_out, depth):
-    files_in = scan_files(path_in, postfix=".txt")
+def main(path_in, path_out, depth, postfix, addon):
+    files_in = scan_files(path_in, postfix=postfix)
         
     executor = ProcessPoolExecutor(max_workers=cpu_count())
     tasks = []
@@ -41,7 +47,7 @@ def main(path_in, path_out, depth):
     batch_size = 1000
     for i in range(0, len(files_in), batch_size):
         batch = files_in[i : i+batch_size]
-        tasks.append(executor.submit(batch_copy_by_depth, batch, path_out, depth))
+        tasks.append(executor.submit(batch_copy_by_depth, batch, path_out, depth, addon))
 
     job_count = len(tasks)
     for future in as_completed(tasks):
@@ -51,7 +57,10 @@ def main(path_in, path_out, depth):
         
         
 if __name__ == "__main__":
-    path_in = "/home/ssd0/Develop/liyu/batch6_hls0.9_1216/train"
-    path_out = "/home/ssd0/Develop/liyu/batch6_hls0.9_1216/txt_all_classes"
+    path_in = "/home/ssd0/Develop/liyu/batch6_1216_labels/train"
+    path_out = "/home/ssd0/Develop/liyu/batch6_1216_labels/orig_txts_hls09"
     depth = 0
-    main(path_in, path_out, depth)
+    postfix = ".txt"
+    addon = "_hls09"
+    
+    main(path_in, path_out, depth, postfix, addon)
