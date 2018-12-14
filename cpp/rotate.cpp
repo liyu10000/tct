@@ -150,6 +150,8 @@ void Produce()
     {
         string file_name = cv2_names[i];
 
+        cout << file_name << endl;
+
         if (file_name.find("_hls09") == string::npos)
         {
             g_queue.push(file_name);

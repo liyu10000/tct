@@ -30,6 +30,9 @@ mount and unmount a disk
 make a softlink to file/folder
     ln -s /path/to/fileorfolder /path/to/symlink
 
+batch rename: rename all files in a folder for like aa_h.png to aa_half.png
+    for file in *.png; do mv "$file" "${file/_h.png/_half.png}"; done
+
 search for occurance in a file
 	grep [options] pattern [file]
 	[options] -n: show line numbers
@@ -111,6 +114,9 @@ get process id listening on port
 
 find the working directory of process
     lsof -i :[port] | grep cwd
+
+kill processes by a program
+    sudo kill -9 $(pidof python3)
 
 configure git lfs
     1. install git lfs
