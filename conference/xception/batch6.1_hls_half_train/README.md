@@ -25,6 +25,7 @@
  - _model_: used default Xception model
  - _weights_: used weights trained from train1, epoch 003
  - _init_lr_: 0.005
+ - _best_: epoch 017
 
 <pre>
 Found 456792 images belonging to 20 classes.
@@ -94,6 +95,7 @@ Epoch 00017: saving model to weights_017_0.1281.hdf5
  - _weights_: used weights trained from train4, epoch 017
  - _init_lr_: 0.001 at epochs 1-3, 0.0005 at epochs 4-9, 0.005 at epochs 10-16
  - _lr_decay_: 0.5 at epochs 1-3, 0.6 at epochs 4-9, 0.6 at epochs 10-16
+ - _best_: 010
 
 <pre>
 Found 913584 images belonging to 20 classes.
@@ -175,6 +177,7 @@ Epoch 00016: saving model to weights_016_0.2750.hdf5
  - _weights_: used weights trained from train5, epoch 010
  - _init_lr_: 0.0005 at epochs 1-6
  - _lr_decay_: 0.5 at epochs 1-6
+ - _best_: epoch 004
 
 <pre>
 Found 1370376 images belonging to 20 classes.
@@ -203,4 +206,21 @@ Epoch 6/100
 21413/21413 [==============================] - 12430s 581ms/step - loss: 0.1394 - acc: 0.9486 - val_loss: 0.3171 - val_acc: 0.9389
 
 Epoch 00006: saving model to weights_006_0.3171.hdf5
+</pre>
+
+7. train7
+ - _dataset_: only the part from train1
+ - _model_: used default Xception model
+ - _weights_: used weights trained from batch6, epoch 004
+ - _init_lr_: 0.0001
+ - _lr_decay_: 0.5
+ - _best_: epoch 001, also saved model to batch6.1_finetuned.h5
+ 
+<pre>
+Found 456792 images belonging to 20 classes.
+Found 12681 images belonging to 20 classes.
+Epoch 1/1
+7138/7138 [==============================] - 3987s 559ms/step - loss: 0.1101 - acc: 0.9587 - val_loss: 0.2472 - val_acc: 0.9499
+
+Epoch 00001: saving model to weights_001_0.2472.hdf5
 </pre>
