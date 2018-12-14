@@ -57,10 +57,10 @@ def main(path_in, path_out, depth, postfix, addon):
         
         
 if __name__ == "__main__":
-    path_in = "/home/ssd0/Develop/liyu/batch6_1216_labels/train"
-    path_out = "/home/ssd0/Develop/liyu/batch6_1216_labels/orig_txts_hls09"
+    path_in = "/home/ssd0/Develop/liyu/batch6_1216/new11Clatxts/orig_txts_hls09"
+    path_out = "/home/ssd0/Develop/liyu/batch6_1216/train"
     depth = 0
     postfix = ".txt"
-    addon = "_hls09"
+    addon = ""
     
     main(path_in, path_out, depth, postfix, addon)

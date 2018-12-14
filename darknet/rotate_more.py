@@ -26,7 +26,7 @@ def rotate(xml_name, img_path, img_save_path, postfix, degrees):
     
     img = Image.open(os.path.join(img_path, basename+postfix))
     for degree in degrees:
-        img.rotate(degree).save(img_prefix + "_r" + str(degree) + postfix)
+        img.rotate(degree).save(img_prefix + "_" + str(degree) + postfix)
     img.close()
     
 def rotate_cv2(xml_name, img_path, img_save_path, postfix, degrees):
@@ -36,7 +36,7 @@ def rotate_cv2(xml_name, img_path, img_save_path, postfix, degrees):
     img = cv2.imread(os.path.join(img_path, basename+postfix))
     for degree in degrees:
         img = np.rot90(img)
-        img_out_path = img_prefix + "_r" + str(degree) + postfix
+        img_out_path = img_prefix + "_" + str(degree) + postfix
         cv2.imwrite(img_out_path, img)
 
 def gen_xml(xml_name, xml_save_path, degrees):
@@ -66,7 +66,7 @@ def gen_xml(xml_name, xml_save_path, degrees):
     
     # rotate 90
     if 90 in degrees:
-        xml_name_new = xml_prefix + "_r90.xml"
+        xml_name_new = xml_prefix + "_90.xml"
         filename[0].firstChild.replaceWholeText(os.path.basename(xml_name_new))
         i = 0
         for object in objects:
@@ -87,7 +87,7 @@ def gen_xml(xml_name, xml_save_path, degrees):
         
     # rotate 180
     if 180 in degrees:
-        xml_name_new = xml_prefix + "_r180.xml"
+        xml_name_new = xml_prefix + "_180.xml"
         filename[0].firstChild.replaceWholeText(os.path.basename(xml_name_new))
         i = 0
         for object in objects:
@@ -108,7 +108,7 @@ def gen_xml(xml_name, xml_save_path, degrees):
         
     # rotate 270
     if 270 in degrees:
-        xml_name_new = xml_prefix + "_r270.xml"
+        xml_name_new = xml_prefix + "_270.xml"
         filename[0].firstChild.replaceWholeText(os.path.basename(xml_name_new))
         i = 0
         for object in objects:
@@ -129,17 +129,17 @@ def gen_xml(xml_name, xml_save_path, degrees):
 
 def batch_rotate(xml_names, img_path, img_save_path, xml_save_path, postfix, degrees):
     for xml_name in xml_names:
-        rotate_cv2(xml_name, img_path, img_save_path, postfix, degrees)
+        # rotate_cv2(xml_name, img_path, img_save_path, postfix, degrees)
         gen_xml(xml_name, xml_save_path, degrees)
     
 def do_rotate(xml_path, img_path, img_save_path, xml_save_path, postfix, degrees=[90]):
     xml_names = scan_files(xml_path, postfix=".xml")
     print("# files", len(xml_names))
     
-    executor = ProcessPoolExecutor(max_workers=cpu_count())
+    executor = ProcessPoolExecutor(max_workers=cpu_count()//3)
     tasks = []
     
-    batch_size = 1024
+    batch_size = 100
     for i in range(0, len(xml_names), batch_size):
         batch = xml_names[i : i+batch_size]
         tasks.append(executor.submit(batch_rotate, xml_names, img_path, img_save_path, xml_save_path, postfix, degrees))
@@ -154,8 +154,8 @@ if __name__ == "__main__":
     # @do_rotate
     xml_path = "/home/ssd0/Develop/liyu/batch6_1216_labels/train"
     img_path = "/home/ssd0/Develop/liyu/batch6_1216/train"
-    img_save_path = "/home/hdd_array0/batch_1216_rotate"
-    xml_save_path = "/home/hdd_array0/batch_1216_rotate"
+    img_save_path = "/home/hdd_array0/batch_1216_rotate_c"
+    xml_save_path = "/home/hdd_array0/batch_1216_rotate_c"
     postfix = ".bmp"
     degrees = [90, 180, 270]
     
