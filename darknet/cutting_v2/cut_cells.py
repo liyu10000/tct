@@ -7,7 +7,6 @@ import openslide
 import xml.dom.minidom
 from PIL import Image
 from datetime import datetime
-
 from multiprocessing import cpu_count
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
@@ -16,10 +15,11 @@ from utils import generate_name_path_dict
 
 
 # the scale of background relative to cell box
-scales = {"ACTINO":[1.2, 1.5], "CC":[1.2, 1.5], "VIRUS":[1.2, 1.5], "FUNGI":[1.2, 1.5], "TRI":[1.2, 1.5], 
-          "AGC_A":[1.2, 1.5], "AGC_B":[1.2, 1.5], "EC":[1.2, 1.5], "HSIL_B":[1.2, 1.5], "HSIL_M":[1.2, 1.5], 
-          "HSIL_S":[1.2, 1.5], "SCC_G":[1.2, 1.5], "ASCUS":[1.2, 1.5], "LSIL_F":[1.2, 1.5],
-          "LSIL_E":[1.2, 1.5], "SCC_R":[1.2, 1.5]}
+scales = {"ACTINO":[1.2, 1.5], "CC":[1.2, 1.5], "VIRUS":[1.2, 1.5], "FUNGI":[1.2, 1.5], 
+          "TRI":[1.2, 1.5], "AGC_A":[1.1, 1.2], "AGC_B":[1.2, 1.5], "EC":[1.2, 1.5], 
+          "HSIL_B":[1.05, 1.1], "HSIL_M":[1.1, 1.2], "HSIL_S":[1.2, 1.5], "SCC_G":[1.2, 1.5], 
+          "ASCUS":[1.2, 1.5], "LSIL_F":[1.2, 1.5], "LSIL_E":[1.2, 1.5], "SCC_R":[1.2, 1.5], 
+          "MC":[1.05, 1.1], "SC":[1.05, 1.1], "RC":[1.05, 1.1], "GEC":[1.05, 1.1]}
 
 
 
@@ -43,22 +43,29 @@ def get_labels(xml_file):
             y_coords.append(float(coordinate.getAttribute("Y")))                    
         x_min, x_max = int(min(x_coords)), int(max(x_coords))
         y_min, y_max = int(min(y_coords)), int(max(y_coords))
+        x, y = x_min, y_min
+        w, h = x_max - x_min, y_max - y_min
         cell = annotation.getElementsByTagName("Cell") # note it's a "list"
         class_i = cell[0].getAttribute("Type")
 
+        if not class_i in scales:
+            continue
 
-        # calculate window
+        # random window size
         scale = random.uniform(scales[class_i][0], scales[class_i][1])
-        w_win = int((x_max - x_min) * scale)
-        h_win = int((y_max - y_min) * scale)
-        x_win = int((x_min + x_max) / 2 - w_win / 2)
-        y_win = int((y_min + y_max) / 2 - h_win / 2)
+        w_win = int(w * scale)
+        h_win = int(h * scale)
+        # random cell position
+        dx = random.randint(0, w_win-w)
+        dy = random.randint(0, h_win-h)
+        x_win = x - dx
+        y_win = y - dy
 
         labels.append({"class_i":class_i, 
-                       "x":x_min, 
-                       "y":y_min, 
-                       "w":x_max - x_min, 
-                       "h":y_max - y_min, 
+                       "x":x, 
+                       "y":y, 
+                       "w":w, 
+                       "h":h, 
                        "w_win":w_win, 
                        "h_win":h_win, 
                        "x_win":x_win, 

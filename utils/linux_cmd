@@ -30,6 +30,19 @@ mount and unmount a disk
 make a softlink to file/folder
     ln -s /path/to/fileorfolder /path/to/symlink
 
+yolo data split
+    write all image full path names to a txt file
+        find full/path/ -type f -name "*.bmp" > all.txt
+    shuffle lines of txt file (can repeat multiple times)
+        shuf -o all.txt all.txt
+    split data to 10 equal partitions (if there are 123450 lines in all.txt)
+        split -l 12345 all.txt outfile  (this will create outfileaa, outfilebb, ...)
+    merge the 10 outfiles into train.txt/valid.txt
+        mv outfileaa valid.txt
+        cat outfile* >> train.txt
+    remove outfiles
+        rm outfile*
+
 batch rename: rename all files in a folder for like aa_h.png to aa_half.png
     for file in *.png; do mv "$file" "${file/_h.png/_half.png}"; done
 
