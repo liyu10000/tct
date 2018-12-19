@@ -1,9 +1,9 @@
 import os
 import re
 import cv2
+import math
 import random
 import numpy as np
-from shapely import geometry
 from multiprocessing import cpu_count
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
@@ -16,150 +16,253 @@ yolo_classes = {"ACTINO":9, "CC":8, "VIRUS":10, "FUNGI":6, "TRI":7, "AGC_A":4,
                 "AGC_B":4, "EC":5, "HSIL_B":2, "HSIL_M":2, "HSIL_S":2, "SCC_G":3, 
                 "ASCUS":0, "LSIL_F":0, "LSIL_E":1, "SCC_R":3}
 
-# negative background image path
-neg_background_pool = ""
+# number of times of using each positive cell
+pos_cells_num = {"ACTINO":3, "CC":3, "VIRUS":3, "FUNGI":3, "TRI":3, "AGC_A":4, 
+                "AGC_B":4, "EC":5, "HSIL_B":2, "HSIL_M":2, "HSIL_S":2, "SCC_G":3, 
+                "ASCUS":3, "LSIL_F":3, "LSIL_E":1, "SCC_R":3}
+
+
+# negative background image path, it should contains sub-folders like all/MC/...
+neg_background_pool = "/home/hdd0/Develop/tct/darknet/cutting_v2/back608"
+neg_background_meta = {"ACTINO":["all"], "CC":["all"], "VIRUS":["all"], 
+                  "FUNGI":["all"], "TRI":["all"], "AGC_A":["all"], 
+                  "AGC_B":["all"], "EC":["all"], "HSIL_B":["all"], 
+                  "HSIL_M":["all"], "HSIL_S":["all"], "SCC_G":["all"], 
+                  "ASCUS":["all"], "LSIL_F":["all"], "LSIL_E":["all"], 
+                  "SCC_R":["all"]}
+
+# negative cells image paths, it may has multiple sources
+neg_cells_path = {"path1":"/home/hdd0/Develop/tct/darknet/cutting_v2/neg_cells", "path2":"full/path2"}
 
 # negative cells image path, it should contains sub-folders like all/MC/...
-neg_cells_pool = ""
-neg_cells_meta = {"ACTINO":["ACTINO", "all", 10, 50], "CC":["all", 10, 50], "VIRUS":["all", 10, 50], 
-                  "FUNGI":["FUNGI", "all", 10, 50], "TRI":["all", 10, 50], "AGC_A":["all", 10, 50], 
-                  "AGC_B":["all", 10, 50], "EC":["all", 10, 50], "HSIL_B":["all", 10, 50], 
-                  "HSIL_M":["all", 10, 50], "HSIL_S":["MC", "all", 10, 50], "SCC_G":["all", 10, 50], 
-                  "ASCUS":["all", 10, 50], "LSIL_F":["all", 10, 50], "LSIL_E":["all", 10, 50], 
-                  "SCC_R":["all", 10, 50]}
+neg_cells_path_map = {"ACTINO":[["path1", "ACTINO"]], 
+                      "CC":[["path1", "all"]], 
+                      "VIRUS":[["path1", "all"]], 
+                      "FUNGI":[["path1", "FUNGI"], ["path1", "all"]], 
+                      "TRI":[["path1", "all"]], 
+                      "AGC_A":[["path1", "all"]], 
+                      "AGC_B":[["path1", "all"]], 
+                      "EC":[["path1", "all"]], 
+                      "HSIL_B":[["path1", "all"]], 
+                      "HSIL_M":[["path1", "all"]], 
+                      "HSIL_S":[["path1", "MC"]], 
+                      "SCC_G":[["path1", "all"]], 
+                      "ASCUS":[["path1", "all"]], 
+                      "LSIL_F":[["path1", "all"]], 
+                      "LSIL_E":[["path1", "all"]], 
+                      "SCC_R":[["path1", "all"]]}
+
+# number of negative cells used in one image
+neg_cells_num = 500
 
 
-def is_overlap(label_coords, cell_coords, thres=0.5):
-    label_box = geometry.box(label_coords[0], label_coords[1], label_coords[0]+label_coords[2], label_coords[1]+label_coords[3])
-    cell_box = geometry.box(cell_coords[0], cell_coords[1], cell_coords[0]+cell_coords[2], cell_coords[1]+cell_coords[3])
+def rotate_image(image, degree):
+    if degree == 90:
+        image = cv2.transpose(image)
+        image = cv2.flip(image, flipCode=0)
+    elif degree == 180:
+        image = cv2.flip(image, flipCode=0)
+        image = cv2.flip(image, flipCode=1)
+    elif degree == 270:
+        image = cv2.transpose(image)
+        image = cv2.flip(image, flipCode=1)
+    return image
 
-    return label_box.intersection(cell_box).area / min(label_box.area, cell_box.area) > thres
+
+def rotate_coordinates(cell_coordinates, image_size, degree):
+    dx, dy, cell_w, cell_h = cell_coordinates
+    w, h = image_size
+
+    if degree == 90:
+        dx, dy = dy, w - dx - cell_w
+        cell_w, cell_h = cell_h, cell_w
+    elif degree == 180:
+        dx, dy = w - dx - cell_w, h - dy - cell_h
+    elif degree == 270:
+        dx, dy = h - dy - cell_h, dx
+        cell_w, cell_h = cell_h, cell_w
+
+    return dx, dy, cell_w, cell_h
 
 
-def patch_cells(image, label, label_coords, size=608):
+def read_coordinates(txt_name):
+    with open(txt_name, 'r') as f:
+        line = f.readline()
+        tokens = line.strip().split()
+    return [tokens[0], float(tokens[1]), float(tokens[2]), float(tokens[3]), float(tokens[4])]
+
+
+def get_background(label, useback, size):
+    if useback == "white":
+        background = np.ones((size, size, 3)) * 230
+    elif useback == "black":
+        background = np.zeros((size, size, 3))
+    else:  # use negative cells as background
+        neg_files = []
+        for sub_dir in neg_background_meta[label]:
+            neg_files += scan_files(os.path.join(neg_background_pool, sub_dir), postfix=".jpg")
+        assert len(neg_files) >= 1
+        neg_randf = random.sample(neg_files, 1)[0]
+        background = cv2.imread(neg_randf)
+    return background
+
+
+def py_cpu_nms(dets, thresh):
+    x1 = dets[:, 0]
+    y1 = dets[:, 1]
+    x2 = dets[:, 2]
+    y2 = dets[:, 3]
+    scores = dets[:, 4]
+
+    #每一个检测框的面积
+    areas = (x2 - x1 + 1) * (y2 - y1 + 1)
+    #按照score置信度降序排序
+    order = scores.argsort()[::-1]
+    # order = [i for i in range(scores.shape[0])]
+
+    print(order)
+
+    keep = [] #保留的结果框集合
+    while order.size > 0:
+        i = order[0]
+        keep.append(i) #保留该类剩余box中得分最高的一个
+        #得到相交区域,左上及右下
+        xx1 = np.maximum(x1[i], x1[order[1:]])
+        yy1 = np.maximum(y1[i], y1[order[1:]])
+        xx2 = np.minimum(x2[i], x2[order[1:]])
+        yy2 = np.minimum(y2[i], y2[order[1:]])
+
+        #计算相交的面积,不重叠时面积为0
+        w = np.maximum(0.0, xx2 - xx1 + 1)
+        h = np.maximum(0.0, yy2 - yy1 + 1)
+        inter = w * h
+        #计算IoU：重叠面积 /（面积1+面积2-重叠面积）
+        ovr = inter / (areas[i] + areas[order[1:]] - inter)
+        #保留IoU小于阈值的box
+        inds = np.where(ovr <= thresh)[0]
+        order = order[inds + 1] #因为ovr数组的长度比order数组少一个,所以这里要将所有下标后移一位
+
+    return keep
+
+
+def put_neg_cells(background, label, size, rotate=True):
     # collect all negative cells for specific label
     neg_cells = []
-    for sub_dir in neg_cells_meta[label][:-2]:
-        neg_cells += scan_files(os.path.join(neg_cells_pool, sub_dir), postfix=".bmp")
+    sub_paths = neg_cells_path_map[label]
+    for sub_path in sub_paths:
+        neg_cells += scan_files(os.path.join(neg_cells_path[sub_path[0]], sub_path[1]), postfix=".bmp")
 
     # get number and names of negative cells
-    neg_cells_cnt = random.randint(neg_cells_meta[label][-2], neg_cells_meta[label][-1])
+    neg_cells_cnt = random.randint(neg_cells_num)
     neg_cells_for_patch = random.sample(neg_cells, neg_cells_cnt)
+    # print("total", len(neg_cells), "choose", len(neg_cells_for_patch))
     
-    # get possible cell positions in image
+
+    # get possible cell positions in background
     neg_cells_possible = []
+    dets = []
     for neg_cell in neg_cells_for_patch:
         tokens = re.findall(r"\d+", neg_cell)  # should follow ..._w123_h234.bmp format
-        neg_w, neg_h = int(tokens[-2]), int(tokens[-1])
-        neg_h, neg_w = neg_h//2, neg_w//2  # half the size
-        for i in range(5):  # try five times to put in spare spaces
-            neg_x = random.randint(0, size-neg_w)
-            neg_y = random.randint(0, size-neg_h)
-            if not is_overlap(label_coords, (neg_x, neg_y, neg_w, neg_h), thres=0.01):
-                neg_cells_possible.append([neg_cell, (neg_x, neg_y, neg_w, neg_h)])
-                break
+        neg_w, neg_h = math.ceil(int(tokens[-2])/2), math.ceil(int(tokens[-1])/2)
+        neg_x = random.randint(0, size-neg_w)
+        neg_y = random.randint(0, size-neg_h)
+        neg_cells_possible.append([neg_cell, (neg_x, neg_y, neg_w, neg_h)])
+        dets.append([neg_x, neg_y, neg_x+neg_w, neg_y+neg_h, 1])
 
-    # remove duplicates
-    neg_cells_ready = []
-    for neg_cell_p in neg_cells_possible:
-        if not neg_cells_ready:
-            neg_cells_ready.append(neg_cell_p)
-            continue
-        for neg_cell_r in neg_cells_ready:
-            if not is_overlap(neg_cell_p[1], neg_cell_r[1]):
-                neg_cells_ready.append(neg_cell_p)
 
-    # put cells on image
+    keep = py_cpu_nms(np.array(dets), thresh=0.3)
+    # print(keep)
+
+    neg_cells_ready = [neg_cells_possible[i] for i in keep]
+
+
+    # put cells on background
     for neg_cell in neg_cells_ready:
         neg_img = cv2.imread(neg_cell[0])
         neg_img = cv2.pyrDown(neg_img)
         neg_h, neg_w, _ = neg_img.shape
         neg_x, neg_y = neg_cell[1][0], neg_cell[1][1]
-        image[neg_y:neg_y+neg_h, neg_x:neg_x+neg_w, :] = neg_img
+        background[neg_y:neg_y+neg_h, neg_x:neg_x+neg_w, :] = neg_img
 
-    return image
-
-
-def get_neg_bk(neg_background_pool):
-    neg_files = scan_files(neg_background_pool, postfix=".bmp")
-    assert len(neg_files) >= 1
-    neg_randf = random.sample(neg_files, 1)[0]
-    return cv2.imread(neg_randf)
+    return background
 
 
-def put_cell(cell_name, save_path, size=608, background="white"):
-    image = cv2.imread(cell_name)
-
-    # half-size image
-    image = cv2.pyrDown(image)
+def put_posi_cell(cell_image, cell_coordinates, background, size):
     # get image size
-    h, w, _ = image.shape
+    h, w, _ = cell_image.shape
 
-    # get cell size
-    p = re.compile("w\d+_h\d+_dx\d+_dy\d+")
-    m = p.search(cell_name)
-    if not m:
-        print("incorrect name format", cell_name)
-        return
-    cell_w, cell_h, dx, dy = re.findall(r"\d+", m.group())
-    # need to half dx/dy/cell_w/cell_h since image is halfed
-    cell_w, cell_h = int(cell_w)/2, int(cell_h)/2
-    dx, dy = int(dx)/2, int(dy)/2
-
-    
-    # get sizexsize background
-    if background == "white":
-        background = np.ones((size, size, 3)) * 255
-    elif background == "black":
-        background = np.zeros((size, size, 3))
-    else:  # use negative cells as background
-        background = get_neg_bk()
+    # decode cell coordinates in image
+    dx, dy, cell_w, cell_h = cell_coordinates
 
     # get random position of image and put on background
     if w < size and h < size:
         image_x = random.randint(0, size-w)
         image_y = random.randint(0, size-h)
-        background[image_y:image_y+h, image_x:image_x+w, :] = image
+        background[image_y:image_y+h, image_x:image_x+w, :] = cell_image
     elif w < size:
         image_x = random.randint(0, size-w)
         image_y = int((size-cell_h)/2 - dy)  # non positive value
-        background[:, image_x:image_x+w, :] = image[-image_y:size-image_y, :, :]
+        background[:, image_x:image_x+w, :] = cell_image[-image_y:size-image_y, :, :]
     elif h < size:
         image_x = int((size-cell_w)/2 - dx)  # non positive value
         image_y = random.randint(0, size-h)
-        background[image_y:image_y+h, :, :] = image[:, -image_x:size-image_x, :]
+        background[image_y:image_y+h, :, :] = cell_image[:, -image_x:size-image_x, :]
     else:
         image_x = int((size-cell_w)/2 - dx)  # non positive value
         image_y = int((size-cell_h)/2 - dy)  # non positive value
-        background[:, :, :] = image[-image_y:size-image_y, -image_x:size-image_x, :]
+        background[:, :, :] = cell_image[-image_y:size-image_y, -image_x:size-image_x, :]
 
-    # patch negative cells
-    label = os.path.basename(os.path.dirname(cell_name))
-    # background = patch_cells(background, label, (image_x + dx, image_y + dy, min(cell_w, size), min(cell_h, size)))
+    return background, image_x, image_y
 
-    # save image
-    pre, pos = os.path.splitext(cell_name)
-    basename = os.path.basename(pre)
-    pre_new = os.path.join(save_path, basename + "_rx{}_ry{}".format(image_x, image_y))
-    cell_name_new = pre_new + pos
-    cv2.imwrite(cell_name_new, background)
 
-    # save txt for yolo
-    txt_path = pre_new + ".txt"
-    yolo_x = (image_x + dx + cell_w/2) / size
-    yolo_y = (image_y + dy + cell_h/2) / size
-    yolo_w = min(cell_w, size) / size
-    yolo_h = min(cell_h, size) / size
-    class_i = yolo_classes[label]
-    with open(txt_path, 'w') as f:
-        f.write(' '.join([str(a) for a in [class_i, yolo_x, yolo_y, yolo_w, yolo_h]]) + '\n')
+def put_cell(cell_name, save_path, useback="black", rotate=True, size=608):
+    # read cell coordinates in image
+    txt_name = os.path.splitext(cell_name)[0] + ".txt"
+    label, dx, dy, cell_w, cell_h = read_coordinates(txt_name)
+
+    # read image
+    image = cv2.imread(cell_name)
+    h, w, _ = image.shape
+
+    # prepare saving prefix
+    pre = os.path.splitext(os.path.basename(cell_name))[0]
+    pre_new = os.path.join(save_path, pre)
+    
+    # put positive and negative cells, with rotation
+    degrees = [0, 90, 180, 270] if rotate else [0]
+    for degree in degrees:
+        # get sizexsize background
+        background = get_background(label, useback, size)
+
+        # patch negative cells
+        background = put_neg_cells(background, label, size)
+
+        # patch positive cell
+        image_rotated = rotate_image(image, degree)
+        dx_, dy_, cell_w_, cell_h_ = rotate_coordinates([dx, dy, cell_w, cell_h], [w, h], degree)
+        background, image_x, image_y = put_posi_cell(image_rotated, [dx_, dy_, cell_w_, cell_h_], background, size)
+
+        # save image
+        cell_name_new = pre_new + "_r{}.bmp".format(degree)
+        cv2.imwrite(cell_name_new, background)
+
+        # save txt for yolo
+        txt_name_new = pre_new + "_r{}.txt".format(degree)
+        yolo_x = (image_x + dx_ + cell_w_/2) / size
+        yolo_y = (image_y + dy_ + cell_h_/2) / size
+        yolo_w = min(cell_w_, size) / size
+        yolo_h = min(cell_h_, size) / size
+        class_i = yolo_classes[label]
+        with open(txt_name_new, 'w') as f:
+            f.write(' '.join([str(a) for a in [class_i, yolo_x, yolo_y, yolo_w, yolo_h]]) + '\n')
 
 
 def batch_put_cell(cell_names, save_path):
     for cell_name in cell_names:
-        # put_cell(cell_name, save_path, background="white")
-        put_cell(cell_name, save_path, background="black")
-        # put_cell(cell_name, save_path, background="negative")
+        for i in range(pos_cells_num[label]):
+            put_cell(cell_name, save_path, useback="white")
+            # put_cell(cell_name, save_path, useback="black")
+            # put_cell(cell_name, save_path, useback="negative")
 
 
 def put_cells(cell_dir, save_path, postfix=".bmp"):
@@ -185,7 +288,13 @@ def put_cells(cell_dir, save_path, postfix=".bmp"):
 
 
 if __name__ == "__main__":
-    cell_dir = "/home/data_samba/Code_by_yuli/batch6.1_cells_b"
-    save_path = "/home/data_samba/Code_by_yuli/batch6.1_cells_b_half_in_608"
+    # cell_dir = "/home/data_samba/Code_by_yuli/batch6.1_cells_b"
+    # save_path = "/home/data_samba/Code_by_yuli/batch6.1_cells_b_half_in_608"
 
-    put_cells(cell_dir, save_path)
+    # put_cells(cell_dir, save_path)
+
+
+    # @put_cell
+    cell_name = "/home/hdd0/Develop/tct/darknet/cutting_v2/posi_cells/HSIL_S/2017-09-07-09_24_10_x21529_y26481_w78_h48.bmp"
+    save_path = "./608"
+    put_cell(cell_name, save_path, useback="negative")

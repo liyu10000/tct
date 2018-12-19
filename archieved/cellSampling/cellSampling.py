@@ -33,6 +33,9 @@ def cut_cells(xml_file, save_path):
         slide = openslide.OpenSlide(filename + ".tif")
     except:
         slide = TSlide(filename + ".kfb")
+
+    basename = os.path.basename(filename)
+
     # open .xml file
     DOMTree = xml.dom.minidom.parse(xml_file)
     collection = DOMTree.documentElement
@@ -47,41 +50,37 @@ def cut_cells(xml_file, save_path):
         x_max = max(x_coords)
         y_min = min(y_coords)
         y_max = max(y_coords)
-        # 2 times the size of marked region
-        x = int(1.5 * x_min - 0.5 * x_max)
-        y = int(1.5 * y_min - 0.5 * y_max)
-        x_size = int(2 * (x_max - x_min))
-        y_size = int(2 * (y_max - y_min))
-        # # take out the size as it is
-        # x = int(x_min)
-        # y = int(y_min)
-        # x_size = int(x_max - x_min)
-        # y_size = int(y_max - y_min)
-        if annotation.getAttribute("Color") in colors:
-            cell_path = os.path.join(save_path, os.path.basename(filename), colors[annotation.getAttribute("Color")])
-            os.makedirs(cell_path, exist_ok=True)
-            cell_name = "{}_x{}_y{}_w{}_h{}.jpg".format(os.path.basename(filename), 
-                                                        int(x_min), 
-                                                        int(y_min), 
-                                                        int(x_max-x_min),
-                                                        int(y_max-y_min))
-            cell_path_name = os.path.join(cell_path, cell_name)
-            cell = slide.read_region((x, y), 0, (x_size, y_size)).convert("RGB")
-            cell.save(cell_path_name)
+        # # 2 times the size of marked region
+        # x = int(1.5 * x_min - 0.5 * x_max)
+        # y = int(1.5 * y_min - 0.5 * y_max)
+        # x_size = int(2 * (x_max - x_min))
+        # y_size = int(2 * (y_max - y_min))
+        # take out the size as it is
+        x = int(x_min)
+        y = int(y_min)
+        x_size = int(x_max - x_min)
+        y_size = int(y_max - y_min)
+
+        # if annotation.getAttribute("Color") in colors:
+        cell_path = os.path.join(save_path, basename)
+        os.makedirs(cell_path, exist_ok=True)
+        cell_name = "{}_x{}_y{}_w{}_h{}.jpg".format(basename, 
+                                                    int(x_min), 
+                                                    int(y_min), 
+                                                    int(x_max-x_min),
+                                                    int(y_max-y_min))
+        cell_path_name = os.path.join(cell_path, cell_name)
+        cell = slide.read_region((x, y), 0, (x_size, y_size)).convert("RGB")
+        cell.save(cell_path_name)
     slide.close()
 
 
 def main(path_in, path_out):
-    sub_dirs = os.listdir(path_in)
-    for d in sub_dirs:
-        if not os.path.isdir(os.path.join(path_in, d)):
-            continue
-        xmls = scan_files(os.path.join(path_in, d), postfix=".xml")
-        path_out_d = os.path.join(path_out, d)
-        for x in xmls:
-            cut_cells(x, path_out_d)
-            print("processed", x)
-        print("finished", d)
+    xmls = scan_files(path_in, postfix=".xml")
+    for x in xmls:
+        cut_cells(x, path_out)
+        print("processed", x)
+    print("finished")
 
 
 if __name__ == "__main__":

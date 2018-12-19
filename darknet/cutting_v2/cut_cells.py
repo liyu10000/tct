@@ -15,11 +15,14 @@ from utils import generate_name_path_dict
 
 
 # the scale of background relative to cell box
-scales = {"ACTINO":[1.2, 1.5], "CC":[1.2, 1.5], "VIRUS":[1.2, 1.5], "FUNGI":[1.2, 1.5], 
-          "TRI":[1.2, 1.5], "AGC_A":[1.1, 1.2], "AGC_B":[1.2, 1.5], "EC":[1.2, 1.5], 
-          "HSIL_B":[1.05, 1.1], "HSIL_M":[1.1, 1.2], "HSIL_S":[1.2, 1.5], "SCC_G":[1.2, 1.5], 
-          "ASCUS":[1.2, 1.5], "LSIL_F":[1.2, 1.5], "LSIL_E":[1.2, 1.5], "SCC_R":[1.2, 1.5], 
+scales = {"ACTINO":[2.0, 4.0], "CC":[2.0, 4.0], "VIRUS":[2.0, 4.0], "FUNGI":[2.0, 4.0], 
+          "TRI":[2.0, 4.0], "AGC_A":[1.5, 3.0], "AGC_B":[2.0, 4.0], "EC":[2.0, 4.0], 
+          "HSIL_B":[1.5, 3.0], "HSIL_M":[1.5, 3.0], "HSIL_S":[2.0, 3.0], "SCC_G":[2.0, 4.0], 
+          "ASCUS":[2.0, 4.0], "LSIL_F":[2.0, 4.0], "LSIL_E":[2.0, 4.0], "SCC_R":[2.0, 4.0], 
           "MC":[1.05, 1.1], "SC":[1.05, 1.1], "RC":[1.05, 1.1], "GEC":[1.05, 1.1]}
+
+
+# scales = {"LSIL_E":[5.0, 8.0], "LSIL_F":[5.0, 8.0]}
 
 
 
@@ -56,10 +59,11 @@ def get_labels(xml_file):
         w_win = int(w * scale)
         h_win = int(h * scale)
         # random cell position
-        dx = random.randint(0, w_win-w)
-        dy = random.randint(0, h_win-h)
-        x_win = x - dx
-        y_win = y - dy
+        # dx = random.randint(0, w_win-w)
+        # dy = random.randint(0, h_win-h)
+
+        dx = int((w_win - w)/2)
+        dy = int((h_win - h)/2)
 
         labels.append({"class_i":class_i, 
                        "x":x, 
@@ -68,8 +72,10 @@ def get_labels(xml_file):
                        "h":h, 
                        "w_win":w_win, 
                        "h_win":h_win, 
-                       "x_win":x_win, 
-                       "y_win":y_win})
+                       "x_win":x - dx, 
+                       "y_win":y - dy, 
+                       "dx":dx, 
+                       "dy":dy})
     return labels
 
 
@@ -88,16 +94,22 @@ def cell_sampling(xml_path, tif_path, save_path):
     basename = os.path.splitext(os.path.basename(xml_path))[0]
     for label in labels:
         window = slide.read_region((label["x_win"], label["y_win"]), 0, (label["w_win"], label["h_win"])).convert("RGB")
-        win_name = "{}_x{}_y{}_w{}_h{}_dx{}_dy{}.bmp".format(basename, 
-                                                             label["x"], 
-                                                             label["y"], 
-                                                             label["w"], 
-                                                             label["h"], 
-                                                             label["x"]-label["x_win"], 
-                                                             label["y"]-label["y_win"])
-        win_path = os.path.join(save_path, label["class_i"], win_name)
+        window = np.asarray(window)
+        window = cv2.cvtColor(window, cv2.COLOR_RGB2BGR)
+        window = cv2.pyrDown(window)
+
+        basename_new = "{}_x{}_y{}_w{}_h{}".format(basename, label["x"], label["y"], label["w"], label["h"])
+
+        # save image
+        win_path = os.path.join(save_path, label["class_i"], basename_new+".bmp")
         os.makedirs(os.path.dirname(win_path), exist_ok=True)
-        window.save(win_path)
+        cv2.imwrite(win_path, window)
+
+        # save coordinates info
+        txt_path = os.path.join(save_path, label["class_i"], basename_new+".txt")
+        values = [label["class_i"], label["dx"]/2, label["dy"]/2, label["w"]/2, label["h"]/2]
+        with open(txt_path, 'w') as f:
+            f.write(' '.join([str(a) for a in values]) + '\n')
 
     slide.close()
 
@@ -142,3 +154,11 @@ if __name__ == "__main__":
     save_path = "/home/data_samba/Code_by_yuli/batch6.1_cells_b"
 
     cut_cells(xml_dict, tif_dict, save_path)
+
+
+    # # @test cell_sampling
+    # xml_path = "/home/hdd0/Develop/tct/darknet/cutting_v2/tif-xml/2017-09-07-09_24_10.xml"
+    # tif_path = "/home/hdd0/Develop/tct/darknet/cutting_v2/tif-xml/2017-09-07-09_24_10.kfb"
+    # save_path = "/home/hdd0/Develop/tct/darknet/cutting_v2/cells"
+
+    # cell_sampling(xml_path, tif_path, save_path)

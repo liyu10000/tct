@@ -9,7 +9,7 @@ It contains:
 
 0. Server IP
 <pre>
-8k: inuyasha@192.168.2.195
+8k: inuyasha@192.168.2.195:/home/ssd0/Develop/liyu/    (./raid_set.sh)
 guonan 2k: tsimage@192.168.2.128
 yuli 2k: lukawa@192.168.2.186
 xiongxin 4k: sakulaki@192.168.2.244
