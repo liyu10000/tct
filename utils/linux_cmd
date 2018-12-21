@@ -19,7 +19,7 @@ get the size of a directory
 get the free space in the disk
     df -h
 
-conda vonfig file path:
+conda config file path:
     /home/username/anaconda3/etc/profile.d/conda.sh
 
 mount and unmount a disk
@@ -119,6 +119,9 @@ shutdown os at set time
 find specific file by name or extension
     find /dir/path -name "*.jpg"
 
+find files and sort by modification time
+    find . -printf "%T@ %Tc %p\n" | sort -n
+
 find process using gpu
     sudo fuser -v /dev/nvidia*
 
@@ -170,6 +173,10 @@ find and copy files from src_dir to des_dir
 
 find and randomly copy some files from src_dir to des_dir
     find src_dir/ -type f | shuf -n 5 | xargs cp -t des_dir/
+
+image format convert
+    convert all the .jpg files into .bmp files and save the converted files in place
+        mogrify -format bmp /path/to/*.jpg
 
 grep: find certain str in a file/files
     grep --color -n pattern file

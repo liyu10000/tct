@@ -70,3 +70,15 @@ def worker(path_in, path_out, postfix, depth):
         # result = future.result()  # get the returning result from calling fuction
         job_count -= 1
         print("One Job Done, Remaining Job Count: %s" % (job_count))
+
+
+# save chosen to file
+import pickle
+
+with open("chosen.pkl", 'wb') as f:
+    pickle.dump(chosen, f)
+
+
+# open saved chosen file
+with open("chosen.pkl", 'rb') as f:
+    chosen_ = pickle.load(f)

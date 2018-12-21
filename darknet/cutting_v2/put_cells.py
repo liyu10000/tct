@@ -18,21 +18,17 @@ yolo_classes = {"ACTINO":9, "CC":8, "VIRUS":10, "FUNGI":6, "TRI":7, "AGC_A":4,
 
 # number of times of using each positive cell
 pos_cells_num = {"ACTINO":3, "CC":3, "VIRUS":3, "FUNGI":3, "TRI":3, "AGC_A":4, 
-                "AGC_B":4, "EC":5, "HSIL_B":2, "HSIL_M":2, "HSIL_S":2, "SCC_G":3, 
+                "AGC_B":4, "EC":5, "HSIL_B":1, "HSIL_M":2, "HSIL_S":2, "SCC_G":3, 
                 "ASCUS":3, "LSIL_F":3, "LSIL_E":1, "SCC_R":3}
 
 
 # negative background image path, it should contains sub-folders like all/MC/...
-neg_background_pool = "/home/hdd0/Develop/tct/darknet/cutting_v2/back608"
-neg_background_meta = {"ACTINO":["all"], "CC":["all"], "VIRUS":["all"], 
-                  "FUNGI":["all"], "TRI":["all"], "AGC_A":["all"], 
-                  "AGC_B":["all"], "EC":["all"], "HSIL_B":["all"], 
-                  "HSIL_M":["all"], "HSIL_S":["all"], "SCC_G":["all"], 
-                  "ASCUS":["all"], "LSIL_F":["all"], "LSIL_E":["all"], 
-                  "SCC_R":["all"]}
+neg_background_path = "/home/hdd0/Develop/xxx/back608"
+
 
 # negative cells image paths, it may has multiple sources
-neg_cells_path = {"path1":"/home/hdd0/Develop/tct/darknet/cutting_v2/neg_cells", "path2":"full/path2"}
+neg_cells_paths = {"path1":"/home/hdd0/Develop/tct/darknet/cutting_v2/neg_cells", 
+                   "path2":"full/path2"}
 
 # negative cells image path, it should contains sub-folders like all/MC/...
 neg_cells_path_map = {"ACTINO":[["path1", "ACTINO"]], 
@@ -86,21 +82,25 @@ def rotate_coordinates(cell_coordinates, image_size, degree):
 
 
 def read_coordinates(txt_name):
+    labels_info = []
     with open(txt_name, 'r') as f:
-        line = f.readline()
-        tokens = line.strip().split()
-    return [tokens[0], float(tokens[1]), float(tokens[2]), float(tokens[3]), float(tokens[4])]
+        for line in f.readlines():
+            tokens = line.strip().split()
+            labels_info.append([tokens[0], float(tokens[1]), float(tokens[2]), float(tokens[3]), float(tokens[4])])
+    return labels_info
 
 
-def get_background(label, useback, size):
+def get_background(cell_name, useback, size):
     if useback == "white":
-        background = np.ones((size, size, 3)) * 230
+        background = np.ones((size, size, 3))
     elif useback == "black":
         background = np.zeros((size, size, 3))
     else:  # use negative cells as background
         neg_files = []
-        for sub_dir in neg_background_meta[label]:
-            neg_files += scan_files(os.path.join(neg_background_pool, sub_dir), postfix=".jpg")
+        for sub_dir in os.listdir(neg_background_path):
+            if cell_name.startswith(sub_dir):
+                neg_files = scan_files(os.path.join(neg_background_path, sub_dir), postfix=".bmp")
+                break
         assert len(neg_files) >= 1
         neg_randf = random.sample(neg_files, 1)[0]
         background = cv2.imread(neg_randf)
@@ -119,8 +119,6 @@ def py_cpu_nms(dets, thresh):
     #按照score置信度降序排序
     order = scores.argsort()[::-1]
     # order = [i for i in range(scores.shape[0])]
-
-    print(order)
 
     keep = [] #保留的结果框集合
     while order.size > 0:
@@ -150,7 +148,7 @@ def put_neg_cells(background, label, size, rotate=True):
     neg_cells = []
     sub_paths = neg_cells_path_map[label]
     for sub_path in sub_paths:
-        neg_cells += scan_files(os.path.join(neg_cells_path[sub_path[0]], sub_path[1]), postfix=".bmp")
+        neg_cells += scan_files(os.path.join(neg_cells_paths[sub_path[0]], sub_path[1]), postfix=".bmp")
 
     # get number and names of negative cells
     neg_cells_cnt = random.randint(neg_cells_num)
@@ -218,7 +216,8 @@ def put_posi_cell(cell_image, cell_coordinates, background, size):
 def put_cell(cell_name, save_path, useback="black", rotate=True, size=608):
     # read cell coordinates in image
     txt_name = os.path.splitext(cell_name)[0] + ".txt"
-    label, dx, dy, cell_w, cell_h = read_coordinates(txt_name)
+    labels_info = read_coordinates(txt_name)
+    label, dx, dy, cell_w, cell_h = labels_info[0]
 
     # read image
     image = cv2.imread(cell_name)
@@ -232,10 +231,10 @@ def put_cell(cell_name, save_path, useback="black", rotate=True, size=608):
     degrees = [0, 90, 180, 270] if rotate else [0]
     for degree in degrees:
         # get sizexsize background
-        background = get_background(label, useback, size)
+        background = get_background(cell_name, useback, size)
 
         # patch negative cells
-        background = put_neg_cells(background, label, size)
+        # background = put_neg_cells(background, label, size)
 
         # patch positive cell
         image_rotated = rotate_image(image, degree)
@@ -248,17 +247,38 @@ def put_cell(cell_name, save_path, useback="black", rotate=True, size=608):
 
         # save txt for yolo
         txt_name_new = pre_new + "_r{}.txt".format(degree)
-        yolo_x = (image_x + dx_ + cell_w_/2) / size
-        yolo_y = (image_y + dy_ + cell_h_/2) / size
-        yolo_w = min(cell_w_, size) / size
-        yolo_h = min(cell_h_, size) / size
-        class_i = yolo_classes[label]
+
+        yolo_info = []
+        for i,label_info in enumerate(labels_info):
+            if i > 0:
+                dx_, dy_, cell_w_, cell_h_ = rotate_coordinates(label_info[1:], [w, h], degree)
+            yolo_x_min = max(image_x + dx_, 0)
+            yolo_x_max = min(image_x + dx_ + cell_w_, size)
+            yolo_y_min = max(image_y + dy_, 0)
+            yolo_y_max = min(image_y + dy_ + cell_h_, size)
+            if yolo_x_min > yolo_x_max or yolo_y_min > yolo_y_max:
+                continue
+            yolo_x = (yolo_x_min + yolo_x_max) / 2 / size
+            yolo_y = (yolo_y_min + yolo_y_max) / 2 / size
+            yolo_w = (yolo_x_max - yolo_x_min) / size
+            yolo_h = (yolo_y_max - yolo_y_min) / size
+            # yolo_x = (image_x + dx_ + cell_w_/2) / size
+            # yolo_y = (image_y + dy_ + cell_h_/2) / size
+            # yolo_w = min(cell_w_, size) / size
+            # yolo_h = min(cell_h_, size) / size
+            class_i = yolo_classes[label_info[0]]
+            yolo_info.append([class_i, yolo_x, yolo_y, yolo_w, yolo_h])
+
         with open(txt_name_new, 'w') as f:
-            f.write(' '.join([str(a) for a in [class_i, yolo_x, yolo_y, yolo_w, yolo_h]]) + '\n')
+            for item in yolo_info:
+                f.write(' '.join([str(a) for a in item]) + '\n')
+
+        print(txt_name_new, len(labels_info), len(yolo_info))
 
 
 def batch_put_cell(cell_names, save_path):
     for cell_name in cell_names:
+        label = os.path.basename(os.path.dirname(cell_name))
         for i in range(pos_cells_num[label]):
             put_cell(cell_name, save_path, useback="white")
             # put_cell(cell_name, save_path, useback="black")
@@ -288,13 +308,13 @@ def put_cells(cell_dir, save_path, postfix=".bmp"):
 
 
 if __name__ == "__main__":
-    # cell_dir = "/home/data_samba/Code_by_yuli/batch6.1_cells_b"
-    # save_path = "/home/data_samba/Code_by_yuli/batch6.1_cells_b_half_in_608"
+    cell_dir = "/home/hdd0/Develop/xxx/cells"
+    save_path = "/home/hdd0/Develop/xxx/gen608"
 
-    # put_cells(cell_dir, save_path)
+    put_cells(cell_dir, save_path)
 
 
-    # @put_cell
-    cell_name = "/home/hdd0/Develop/tct/darknet/cutting_v2/posi_cells/HSIL_S/2017-09-07-09_24_10_x21529_y26481_w78_h48.bmp"
-    save_path = "./608"
-    put_cell(cell_name, save_path, useback="negative")
+    # # @put_cell
+    # cell_name = "/home/hdd0/Develop/tct/darknet/cutting_v2/posi_cells/HSIL_S/2017-09-07-09_24_10_x21529_y26481_w78_h48.bmp"
+    # save_path = "./608"
+    # put_cell(cell_name, save_path, useback="negative")

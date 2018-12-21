@@ -40,6 +40,8 @@ logs/
 /hls/test_data
 /point_detect_excess
 
+darknet/cutting_v2/tslide
+
 /frames/tensorflow/models-master
 /frames/tensorflow/TensorFlow-Xception
 
