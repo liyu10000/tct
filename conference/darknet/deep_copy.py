@@ -22,13 +22,14 @@ def scan_files(directory, prefix=None, postfix=None):
 def copy_by_depth(file_in, path_out, depth, addon):
     tokens = file_in.rsplit(os.sep, depth+1)
     file_out = os.path.join(path_out, *tokens[1:])
-    # parent_dir = os.path.dirname(file_out)
-    # os.makedirs(parent_dir, exist_ok=True)
+    parent_dir = os.path.dirname(file_out)
+    os.makedirs(parent_dir, exist_ok=True)
     
     file_pre, file_pos = os.path.splitext(file_out)
     file_out = file_pre + addon + file_pos
     
     shutil.copy(file_in, file_out)
+    #shutil.move(file_in, file_out)
     
     # os.remove(file_in)
     
@@ -57,10 +58,10 @@ def main(path_in, path_out, depth, postfix, addon):
         
         
 if __name__ == "__main__":
-    path_in = "/home/ssd0/Develop/liyu/batch6_1216/new11Clatxts/orig_txts_hls09"
-    path_out = "/home/ssd0/Develop/liyu/batch6_1216/train"
-    depth = 0
-    postfix = ".txt"
+    path_in = "/home/ssd0/Develop/liyu/train4/train4_neg_cells/cells_misleading/NJ"
+    path_out = "/home/ssd0/Develop/liyu/train4/train4_neg_cells/cells_misleading/NJ_"
+    depth = 1
+    postfix = ".bmp"
     addon = ""
     
     main(path_in, path_out, depth, postfix, addon)
