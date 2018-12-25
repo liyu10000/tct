@@ -25,35 +25,33 @@ scales = {"ACTINO":[2.0, 4.0],
           "CC":[2.0, 4.0], 
           "VIRUS":[2.0, 4.0], 
           "FUNGI":[2.0, 4.0], 
-          "TRI":[2.0, 4.0], 
-          "AGC_A":[1.5, 3.0], 
+          "TRI":[3.0, 5.0], 
+          "AGC_A":[2.0, 4.0], 
           "AGC_B":[2.0, 4.0], 
           "EC":[2.0, 4.0], 
-          "HSIL_B":[1.5, 3.0], 
-          "HSIL_M":[1.5, 3.0], 
-          "HSIL_S":[2.0, 3.0], 
+          "HSIL_B":[2.0, 3.0], 
+          "HSIL_M":[2.0, 3.0], 
+          "HSIL_S":[2.0, 4.0], 
           "SCC_G":[2.0, 4.0], 
           "ASCUS":[2.0, 4.0], 
           "LSIL_F":[2.0, 4.0], 
           "LSIL_E":[2.0, 4.0], 
           "SCC_R":[2.0, 4.0], 
-          "MC":[1.05, 1.1], 
-          "SC":[1.05, 1.1], 
-          "RC":[1.05, 1.1], 
-          "GEC":[1.05, 1.1]}
+          "MC":[1.2, 1.5], 
+          "SC":[1.2, 1.5], 
+          "RC":[1.2, 1.5], 
+          "GEC":[1.2, 1.5]}
 
 # when cell size reaches a minimum, use fixed size window, instead of scaling
-fix_size = {"VIRUS":{"mini_thres":20, "fix_size":200}, 
-            "FUNGI":{"mini_thres":20, "fix_size":200}, 
-            "TRI":{"mini_thres":20, "fix_size":200}, 
-            "AGC_A":{"mini_thres":20, "fix_size":200}, 
-            "AGC_B":{"mini_thres":20, "fix_size":200}, 
-            "EC":{"mini_thres":20, "fix_size":200}, 
-            "HSIL_B":{"mini_thres":20, "fix_size":200}, 
-            "HSIL_M":{"mini_thres":20, "fix_size":200}, 
-            "HSIL_S":{"mini_thres":20, "fix_size":200}, 
-            "SCC_G":{"mini_thres":20, "fix_size":200}, 
-            "SCC_R":{"mini_thres":20, "fix_size":200}}
+fix_size = {"VIRUS":{"mini_thres":20, "fix_size":80}, 
+            "FUNGI":{"mini_thres":20, "fix_size":80}, 
+            "TRI":{"mini_thres":20, "fix_size":80}, 
+            "AGC_A":{"mini_thres":20, "fix_size":80}, 
+            "AGC_B":{"mini_thres":20, "fix_size":80}, 
+            "EC":{"mini_thres":20, "fix_size":80}, 
+            "HSIL_B":{"mini_thres":20, "fix_size":80}, 
+            "HSIL_M":{"mini_thres":20, "fix_size":80}, 
+            "HSIL_S":{"mini_thres":20, "fix_size":80}}
 
 
 def is_overlap(cell1_coords, cell2_coords, thres=0.5):
@@ -257,30 +255,30 @@ def cut_cells(xml_dict, tif_dict, save_path):
 
 
 if __name__ == "__main__":
-    # # generate name mapping
-    # xml_files_path = '/home/data_samba/DATA/4TRAIN_DATA/20181216_BATCH_6.1/XMLS_CHECKED'
-    # tif_files_path = '/home/data_samba/DATA/4TRAIN_DATA/20181102/DATA_FOR_TRAIN/TIFFS'
+    # generate name mapping
+    xml_files_path = '/home/data_samba/DATA/4TRAIN_DATA/20181216_BATCH_6.1/XMLS_CHECKED'
+    tif_files_path = '/home/data_samba/DATA/4TRAIN_DATA/20181102/DATA_FOR_TRAIN/TIFFS'
 
-    # xml_dict = generate_name_path_dict(xml_files_path, ['.xml'])
-    # tif_dict = generate_name_path_dict(tif_files_path, ['.tif', '.kfb'])
+    xml_dict = generate_name_path_dict(xml_files_path, ['.xml'])
+    tif_dict = generate_name_path_dict(tif_files_path, ['.tif', '.kfb'])
 
-    # count = 0
-    # for basename in xml_dict:
-    #     if basename not in tif_dict:
-    #         print("xml does not match with tif", basename)
-    #     else:
-    #         count += 1
-    # print("number of matched files", count)
+    count = 0
+    for basename in xml_dict:
+        if basename not in tif_dict:
+            print("xml does not match with tif", basename)
+        else:
+            count += 1
+    print("number of matched files", count)
 
-    # save_path = "/home/data_samba/Code_by_yuli/batch6.1_cells_b"
+    save_path = "/home/data_samba/Code_by_yuli/batch6.1_cells_b"
 
-    # cut_cells(xml_dict, tif_dict, save_path)
+    cut_cells(xml_dict, tif_dict, save_path)
 
 
 
-    # @test cell_sampling
-    xml_path = "/home/hdd0/Develop/xxx/tif-xml/2017-09-07-09_24_10.xml"
-    tif_path = "/home/hdd0/Develop/xxx/tif-xml/2017-09-07-09_24_10.kfb"
-    save_path = "/home/hdd0/Develop/xxx/cells"
+    # # @test cell_sampling
+    # xml_path = "/home/hdd0/Develop/xxx/tif-xml/2017-09-07-09_24_10.xml"
+    # tif_path = "/home/hdd0/Develop/xxx/tif-xml/2017-09-07-09_24_10.kfb"
+    # save_path = "/home/hdd0/Develop/xxx/cells"
 
-    cell_sampling(xml_path, tif_path, save_path)
+    # cell_sampling(xml_path, tif_path, save_path)
