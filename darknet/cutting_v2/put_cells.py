@@ -17,39 +17,49 @@ yolo_classes = {"ACTINO":9, "CC":8, "VIRUS":10, "FUNGI":6, "TRI":7, "AGC_A":4,
                 "ASCUS":0, "LSIL_F":0, "LSIL_E":1, "SCC_R":3}
 
 # number of times of using each positive cell
-pos_cells_num = {"ACTINO":3, "CC":3, "VIRUS":3, "FUNGI":3, "TRI":3, "AGC_A":4, 
-                "AGC_B":4, "EC":5, "HSIL_B":1, "HSIL_M":2, "HSIL_S":2, "SCC_G":3, 
-                "ASCUS":3, "LSIL_F":3, "LSIL_E":1, "SCC_R":3}
+pos_cells_num = {"ACTINO":1, "CC":1, "VIRUS":1, "FUNGI":1, "TRI":1, "AGC_A":1, 
+                "AGC_B":1, "EC":4, "HSIL_B":1, "HSIL_M":1, "HSIL_S":1, "SCC_G":1, 
+                "ASCUS":1, "LSIL_F":1, "LSIL_E":1, "SCC_R":1}
 
 
-# negative background image path, it should contains sub-folders like all/MC/...
-neg_background_path = "/home/hdd0/Develop/xxx/back608"
+# positive cells path
+pos_cells_path = "/home/ssd0/Develop/liyu/train4/train4_posi_cells"
 
+# negative background image path, it should contain sub-folders named by wsi name...
+neg_background_path = "/home/ssd0/Develop/liyu/train4/train4_neg_bg/images_v2"
 
-# negative cells image paths, it may has multiple sources
-neg_cells_paths = {"path1":"/home/hdd0/Develop/tct/darknet/cutting_v2/neg_cells", 
-                   "path2":"full/path2"}
+# negative cells image paths, it may have multiple sources
+neg_cells_paths = {"path1":"/home/ssd0/Develop/liyu/train4/train4_neg_cells/cells_false_posi/NJ", 
+                   "path2":"/home/ssd0/Develop/liyu/train4/train4_neg_cells/cells_false_posi/TC",
+                   "path3":"/home/ssd0/Develop/liyu/train4/train4_neg_cells/cells_misleading/NJ", 
+                   "path4":"/home/ssd0/Develop/liyu/train4/train4_neg_cells/cells_misleading/TC",
+                   "path5":"/home/ssd0/Develop/liyu/train4/train4_neg_cells_from_posi_wsis"}
 
 # negative cells image path, it should contains sub-folders like all/MC/...
-neg_cells_path_map = {"ACTINO":[["path1", "ACTINO"]], 
-                      "CC":[["path1", "all"]], 
-                      "VIRUS":[["path1", "all"]], 
-                      "FUNGI":[["path1", "FUNGI"], ["path1", "all"]], 
-                      "TRI":[["path1", "all"]], 
-                      "AGC_A":[["path1", "all"]], 
-                      "AGC_B":[["path1", "all"]], 
-                      "EC":[["path1", "all"]], 
-                      "HSIL_B":[["path1", "all"]], 
-                      "HSIL_M":[["path1", "all"]], 
-                      "HSIL_S":[["path1", "MC"]], 
-                      "SCC_G":[["path1", "all"]], 
-                      "ASCUS":[["path1", "all"]], 
-                      "LSIL_F":[["path1", "all"]], 
-                      "LSIL_E":[["path1", "all"]], 
-                      "SCC_R":[["path1", "all"]]}
+neg_cells_path_map = {"ACTINO":[["path1", "ACTINO", 2], ["path2", "ACTINO", 2], ["path3", "ACTINO", 2], ["path4", "ACTINO", 2], ["path5", "all", 8]], 
+                      "CC":[["path1", "CC", 2], ["path2", "CC", 2], ["path3", "CC", 2], ["path4", "CC", 2], ["path5", "all", 8]], 
+                      "VIRUS":[["path1", "VIRUS", 2], ["path2", "VIRUS", 2], ["path3", "VIRUS", 2], ["path4", "VIRUS", 2], ["path5", "all", 8]], 
+                      "FUNGI":[["path1", "FUNGI", 2], ["path2", "FUNGI", 2], ["path3", "FUNGI", 2], ["path4", "FUNGI", 2], ["path5", "all", 8]], 
+                      "TRI":[["path1", "TRI", 2], ["path2", "TRI", 2], ["path3", "TRI", 2], ["path4", "TRI", 2], ["path5", "all", 8]], 
+                      "AGC_A":[["path1", "AGC_A", 2], ["path2", "AGC_A", 2], ["path3", "AGC_A", 2], ["path4", "AGC_A", 2], ["path5", "all", 8]], 
+                      "AGC_B":[["path1", "AGC_B", 2], ["path2", "AGC_B", 2], ["path3", "AGC_B", 2], ["path4", "AGC_B", 2], ["path5", "all", 8]], 
+                      "EC":[["path1", "EC", 2], ["path2", "EC", 2], ["path3", "EC", 2], ["path4", "EC", 2], ["path5", "all", 8]], 
+                      "HSIL_B":[["path1", "HSIL_B", 2], ["path2", "HSIL_B", 2], ["path3", "HSIL_B", 2], ["path4", "HSIL_B", 2], ["path5", "all", 8]], 
+                      "HSIL_M":[["path1", "HSIL_M", 2], ["path2", "HSIL_M", 2], ["path3", "HSIL_M", 2], ["path4", "HSIL_M", 2], ["path5", "all", 8]], 
+                      "HSIL_S":[["path1", "HSIL_S", 2], ["path2", "HSIL_S", 2], ["path3", "HSIL_S", 2], ["path4", "HSIL_S", 2], ["path5", "all", 8]], 
+                      "SCC_G":[["path1", "SCC_G", 2], ["path2", "SCC_G", 2], ["path3", "SCC_G", 2], ["path4", "SCC_G", 2], ["path5", "all", 8]], 
+                      "ASCUS":[["path1", "ASCUS", 2], ["path2", "ASCUS", 2], ["path3", "ASCUS", 2], ["path4", "ASCUS", 2], ["path5", "all", 8]], 
+                      "LSIL_F":[["path1", "LSIL_F", 2], ["path2", "LSIL_F", 2], ["path3", "LSIL_F", 2], ["path4", "LSIL_F", 2], ["path5", "all", 8]], 
+                      "LSIL_E":[["path1", "LSIL_E", 2], ["path2", "LSIL_E", 2], ["path3", "LSIL_E", 2], ["path4", "LSIL_E", 2], ["path5", "all", 8]], 
+                      "SCC_R":[["path1", "SCC_R", 2], ["path2", "SCC_R", 2], ["path3", "SCC_R", 2], ["path4", "SCC_R", 2], ["path5", "all", 8]]}
 
 # number of negative cells used in one image
-neg_cells_num = 500
+neg_cells_num = [5, 10]
+
+
+############### patched images saving path
+save_path = "/home/ssd0/Develop/liyu/train4/results608"
+
 
 
 def rotate_image(image, degree):
@@ -98,12 +108,14 @@ def get_background(cell_name, useback, size):
     else:  # use negative cells as background
         neg_files = []
         for sub_dir in os.listdir(neg_background_path):
-            if cell_name.startswith(sub_dir):
+            if os.path.basename(cell_name).startswith(sub_dir):
                 neg_files = scan_files(os.path.join(neg_background_path, sub_dir), postfix=".bmp")
                 break
-        assert len(neg_files) >= 1
-        neg_randf = random.sample(neg_files, 1)[0]
-        background = cv2.imread(neg_randf)
+        if len(neg_files) >= 1:
+            neg_randf = random.sample(neg_files, 1)[0]
+            background = cv2.imread(neg_randf)
+        else:
+            background = np.zeros((size, size, 3))
     return background
 
 
@@ -143,19 +155,23 @@ def py_cpu_nms(dets, thresh):
     return keep
 
 
-def put_neg_cells(background, label, size, rotate=True):
+def put_neg_cells(background, label, size):
     # collect all negative cells for specific label
     neg_cells = []
     sub_paths = neg_cells_path_map[label]
     for sub_path in sub_paths:
-        neg_cells += scan_files(os.path.join(neg_cells_paths[sub_path[0]], sub_path[1]), postfix=".bmp")
+        # neg_cells += scan_files(os.path.join(neg_cells_paths[sub_path[0]], sub_path[1]), postfix=".bmp")
+        if sub_path[1] == "all":
+            sub_neg_cells = scan_files(neg_cells_paths[sub_path[0]], postfix=".bmp")
+        else:
+            sub_neg_cells = scan_files(os.path.join(neg_cells_paths[sub_path[0]], sub_path[1]), postfix=".bmp")
+        neg_cells += random.sample(sub_neg_cells, min(sub_path[2], len(sub_neg_cells)))
 
     # get number and names of negative cells
-    neg_cells_cnt = random.randint(neg_cells_num)
-    neg_cells_for_patch = random.sample(neg_cells, neg_cells_cnt)
+    neg_cells_cnt = random.randint(neg_cells_num[0], neg_cells_num[1])
+    neg_cells_for_patch = random.sample(neg_cells, min(neg_cells_cnt, len(neg_cells)))
     # print("total", len(neg_cells), "choose", len(neg_cells_for_patch))
     
-
     # get possible cell positions in background
     neg_cells_possible = []
     dets = []
@@ -167,17 +183,15 @@ def put_neg_cells(background, label, size, rotate=True):
         neg_cells_possible.append([neg_cell, (neg_x, neg_y, neg_w, neg_h)])
         dets.append([neg_x, neg_y, neg_x+neg_w, neg_y+neg_h, 1])
 
-
-    keep = py_cpu_nms(np.array(dets), thresh=0.3)
-    # print(keep)
+    # remove overlapping cells
+    keep = py_cpu_nms(np.array(dets), thresh=0.1)
 
     neg_cells_ready = [neg_cells_possible[i] for i in keep]
-
 
     # put cells on background
     for neg_cell in neg_cells_ready:
         neg_img = cv2.imread(neg_cell[0])
-        neg_img = cv2.pyrDown(neg_img)
+        # neg_img = cv2.pyrDown(neg_img)
         neg_h, neg_w, _ = neg_img.shape
         neg_x, neg_y = neg_cell[1][0], neg_cell[1][1]
         background[neg_y:neg_y+neg_h, neg_x:neg_x+neg_w, :] = neg_img
@@ -213,7 +227,7 @@ def put_posi_cell(cell_image, cell_coordinates, background, size):
     return background, image_x, image_y
 
 
-def put_cell(cell_name, save_path, useback="black", rotate=True, size=608):
+def put_cell(cell_name, save_path, index, useback, rotate=True, size=608):
     # read cell coordinates in image
     txt_name = os.path.splitext(cell_name)[0] + ".txt"
     labels_info = read_coordinates(txt_name)
@@ -232,9 +246,11 @@ def put_cell(cell_name, save_path, useback="black", rotate=True, size=608):
     for degree in degrees:
         # get sizexsize background
         background = get_background(cell_name, useback, size)
+        # print(cell_name, "got background")
 
         # patch negative cells
-        # background = put_neg_cells(background, label, size)
+        background = put_neg_cells(background, label, size)
+        # print(cell_name, "put negative cells")
 
         # patch positive cell
         image_rotated = rotate_image(image, degree)
@@ -242,11 +258,11 @@ def put_cell(cell_name, save_path, useback="black", rotate=True, size=608):
         background, image_x, image_y = put_posi_cell(image_rotated, [dx_, dy_, cell_w_, cell_h_], background, size)
 
         # save image
-        cell_name_new = pre_new + "_r{}.bmp".format(degree)
+        cell_name_new = pre_new + "_i{}_r{}.bmp".format(index, degree)
         cv2.imwrite(cell_name_new, background)
 
         # save txt for yolo
-        txt_name_new = pre_new + "_r{}.txt".format(degree)
+        txt_name_new = pre_new + "_i{}_r{}.txt".format(index, degree)
 
         yolo_info = []
         for i,label_info in enumerate(labels_info):
@@ -273,22 +289,20 @@ def put_cell(cell_name, save_path, useback="black", rotate=True, size=608):
             for item in yolo_info:
                 f.write(' '.join([str(a) for a in item]) + '\n')
 
-        print(txt_name_new, len(labels_info), len(yolo_info))
-
 
 def batch_put_cell(cell_names, save_path):
     for cell_name in cell_names:
         label = os.path.basename(os.path.dirname(cell_name))
         for i in range(pos_cells_num[label]):
-            put_cell(cell_name, save_path, useback="white")
+            # put_cell(cell_name, save_path, useback="white")
             # put_cell(cell_name, save_path, useback="black")
-            # put_cell(cell_name, save_path, useback="negative")
+            put_cell(cell_name, save_path, index=i, useback="negative")
 
 
-def put_cells(cell_dir, save_path, postfix=".bmp"):
+def put_cells(pos_cells_path, save_path, postfix=".bmp"):
     os.makedirs(save_path, exist_ok=True)
 
-    files = scan_files(cell_dir, postfix=postfix)
+    files = scan_files(pos_cells_path, postfix=postfix)
     print("# files:", len(files))
 
     executor = ProcessPoolExecutor(max_workers=cpu_count())
@@ -305,13 +319,23 @@ def put_cells(cell_dir, save_path, postfix=".bmp"):
         job_count -= 1
         print("One Job Done, Remaining Job Count: %s" % (job_count))
 
+        
+# def put_cells(pos_cells_path, save_path, postfix=".bmp"):
+#     os.makedirs(save_path, exist_ok=True)
+
+#     files = scan_files(pos_cells_path, postfix=postfix)
+#     print("# files:", len(files))
+
+#     for cell_name in files:
+#         label = os.path.basename(os.path.dirname(cell_name))
+#         for i in range(pos_cells_num[label]):
+#             # put_cell(cell_name, save_path, useback="white")
+#             # put_cell(cell_name, save_path, useback="black")
+#             put_cell(cell_name, save_path, index=i, useback="negative")    
 
 
 if __name__ == "__main__":
-    cell_dir = "/home/hdd0/Develop/xxx/cells"
-    save_path = "/home/hdd0/Develop/xxx/gen608"
-
-    put_cells(cell_dir, save_path)
+    put_cells(pos_cells_path, save_path)
 
 
     # # @put_cell
