@@ -36,11 +36,33 @@ Finetune yolov3 training on TCT project: by the means of changing the lightness 
 
 
 4. train4
- - _dataset_: used data batch6.1. The data is newly made: we cut positive cells and negative background images out of training wsis, and cut negative cells out of negative wsis, and then patch cells on background.
+ - _dataset_: used data batch6.1. The data is newly made: we cut positive cells and negative background images out of training wsis, and cut negative cells out of negative wsis; on negative background image, first put a random number (200~500 at most) of negative cells and then put one positive cell, with three more rotations, at random position.
  - _weights_: used weights pretrained on imagenet (darknet53.conv.74)
  - _batch_: 64
  - _subdivisions_: 16
  - _learning_rate_: 0.0005
+
+ - _num_classes_: 11
+ - _final_steps_: 100000
+
+
+5. train5
+ - _dataset_: used data batch6.1. The data is newly made: we cut positive cells and negative background images out of training wsis; on negative background image, we put one positive cell, with three more rotations, at random position.
+ - _weights_: used weights pretrained on imagenet (darknet53.conv.74)
+ - _batch_: 64
+ - _subdivisions_: 16
+ - _learning_rate_: 0.00025
+
+ - _num_classes_: 11
+ - _final_steps_: 100000
+
+
+6. train6
+ - _dataset_: used data batch6.1. The data is newly made: we cut positive cells and negative background images out of training wsis, and cut negative cells out of negative wsis; on negative background image, first put a random number (1~6 at most) of negative cells and then put one positive cell, with three more rotations, at random position.
+ - _weights_: used weights pretrained on imagenet (darknet53.conv.74)
+ - _batch_: 64
+ - _subdivisions_: 16
+ - _learning_rate_: 0.00025
 
  - _num_classes_: 11
  - _final_steps_: 100000
