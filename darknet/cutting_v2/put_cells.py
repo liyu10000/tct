@@ -54,7 +54,7 @@ neg_cells_path_map = {"ACTINO":[["path1", "ACTINO", 2], ["path2", "ACTINO", 2], 
                       "SCC_R":[["path1", "SCC_R", 2], ["path2", "SCC_R", 2], ["path3", "SCC_R", 2], ["path4", "SCC_R", 2], ["path5", "all", 8]]}
 
 # number of negative cells used in one image
-neg_cells_num = [5, 10]
+neg_cells_num = [1, 6]
 
 
 ############### patched images saving path
@@ -105,7 +105,7 @@ def get_background(cell_name, useback, size):
         background = np.ones((size, size, 3))
     elif useback == "black":
         background = np.zeros((size, size, 3))
-    else:  # use negative cells as background
+    elif useback == "positive":  # use negative images from positive wsis
         neg_files = []
         for sub_dir in os.listdir(neg_background_path):
             if os.path.basename(cell_name).startswith(sub_dir):
@@ -116,6 +116,8 @@ def get_background(cell_name, useback, size):
             background = cv2.imread(neg_randf)
         else:
             background = np.zeros((size, size, 3))
+    else:
+        background = np.zeros((size, size, 3))
     return background
 
 
@@ -176,8 +178,10 @@ def put_neg_cells(background, label, size):
     neg_cells_possible = []
     dets = []
     for neg_cell in neg_cells_for_patch:
-        tokens = re.findall(r"\d+", neg_cell)  # should follow ..._w123_h234.bmp format
-        neg_w, neg_h = math.ceil(int(tokens[-2])/2), math.ceil(int(tokens[-1])/2)
+        # tokens = re.findall(r"\d+", neg_cell)  # should follow ..._w123_h234.bmp format
+        # neg_w, neg_h = math.ceil(int(tokens[-2])/2), math.ceil(int(tokens[-1])/2)
+        neg_img = cv2.imread(neg_cell)
+        neg_h, neg_w, _ = neg_img.shape
         neg_x = random.randint(0, size-neg_w)
         neg_y = random.randint(0, size-neg_h)
         neg_cells_possible.append([neg_cell, (neg_x, neg_y, neg_w, neg_h)])
@@ -192,8 +196,7 @@ def put_neg_cells(background, label, size):
     for neg_cell in neg_cells_ready:
         neg_img = cv2.imread(neg_cell[0])
         # neg_img = cv2.pyrDown(neg_img)
-        neg_h, neg_w, _ = neg_img.shape
-        neg_x, neg_y = neg_cell[1][0], neg_cell[1][1]
+        neg_x, neg_y, neg_w, neg_h = neg_cell[1]
         background[neg_y:neg_y+neg_h, neg_x:neg_x+neg_w, :] = neg_img
 
     return background
@@ -246,11 +249,9 @@ def put_cell(cell_name, save_path, index, useback, rotate=True, size=608):
     for degree in degrees:
         # get sizexsize background
         background = get_background(cell_name, useback, size)
-        # print(cell_name, "got background")
 
         # patch negative cells
         background = put_neg_cells(background, label, size)
-        # print(cell_name, "put negative cells")
 
         # patch positive cell
         image_rotated = rotate_image(image, degree)
@@ -294,9 +295,9 @@ def batch_put_cell(cell_names, save_path):
     for cell_name in cell_names:
         label = os.path.basename(os.path.dirname(cell_name))
         for i in range(pos_cells_num[label]):
-            # put_cell(cell_name, save_path, useback="white")
-            # put_cell(cell_name, save_path, useback="black")
-            put_cell(cell_name, save_path, index=i, useback="negative")
+            # put_cell(cell_name, save_path, index=i, useback="white")
+            # put_cell(cell_name, save_path, index=i, useback="black")
+            put_cell(cell_name, save_path, index=i, useback="positive")
 
 
 def put_cells(pos_cells_path, save_path, postfix=".bmp"):
@@ -329,9 +330,9 @@ def put_cells(pos_cells_path, save_path, postfix=".bmp"):
 #     for cell_name in files:
 #         label = os.path.basename(os.path.dirname(cell_name))
 #         for i in range(pos_cells_num[label]):
-#             # put_cell(cell_name, save_path, useback="white")
-#             # put_cell(cell_name, save_path, useback="black")
-#             put_cell(cell_name, save_path, index=i, useback="negative")    
+#             # put_cell(cell_name, save_path, index=i, useback="white")
+#             # put_cell(cell_name, save_path, index=i, useback="black")
+#             put_cell(cell_name, save_path, index=i, useback="positive")    
 
 
 if __name__ == "__main__":
