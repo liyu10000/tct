@@ -96,31 +96,16 @@ void rotate_90_180_270(string inname, string out_dir)
     size_t dot = name.find_last_of(".");
     string name_pre = name.substr(0, dot);
     string name_ext = name.substr(dot, name.size()-dot);
-
-    // clock_t time1, time2, time3, time4;
-
-    // time1 = clock();
     
     Mat img = imread(f);
     Mat timg, img_90, img_180, img_270;
-
-    // time2 = clock();
     
     // rotate 90
     string name_90 = out_dir + name_pre + "_90" + name_ext;
     transpose(img, timg);
-    flip(timg, img_90, 0);
-    
-    // time3 = clock();
-    
+    flip(timg, img_90, 0);  
     imwrite(name_90, img_90);
 
-    // time4 = clock();
-    // cout << "image reading time: " << time2 - time1 << endl;
-    // cout << "image process time: " << time3 - time2 << endl;
-    // cout << "image saving time: " << time4 - time3 << endl;
-    // cout << "total time: " << time4 - time1 << endl;
-    
     // rotate 180
     string name_180 = out_dir + name_pre + "_180" + name_ext;
     flip(img, timg, 0);
