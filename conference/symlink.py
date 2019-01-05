@@ -1,4 +1,5 @@
 import os
+import random
 
 
 def scan_files(directory, prefix=None, postfix=None):
@@ -19,7 +20,15 @@ def scan_files(directory, prefix=None, postfix=None):
 def make_symlink(src_dir, dst_dir, postfix, depth=0, makedir=False):
     src_files = scan_files(src_dir, postfix=postfix)
 
-    for src_file in src_files:
+    random.shufle(src_files)
+    random.shufle(src_files)
+    random.shufle(src_files)
+    random.shufle(src_files)
+    random.shufle(src_files)
+
+    src_files_ = random.sample(src_files, int(len(src_files)/10))
+
+    for src_file in src_files_:
         tokens = src_file.rsplit(os.sep, depth+1)
         dst_file = os.path.join(dst_dir, *tokens[1:])
         if makedir:
