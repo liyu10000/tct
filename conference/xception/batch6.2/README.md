@@ -43,4 +43,6 @@ Epoch 5/100
 25028/25028 [==============================] - 25823s 1s/step - loss: 0.0749 - acc: 0.9733 - val_loss: 0.0885 - val_acc: 0.9684
 
 Epoch 00005: saving model to weights_005_0.0885.hdf5
+
+(log of epoch 6 to 8 is lost)
 </pre>
