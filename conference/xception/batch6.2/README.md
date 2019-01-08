@@ -1,7 +1,7 @@
 ## Finetune Xception
 
 ### folders
- - batch6.1_bmp_hls_half_train: use cells from batch6.1, half-size pad with *black* borders, aligned to size 299x299, saved in bmp format. 
+ - batch6.2: use cells from batch6.2, half-size pad with *black* borders, aligned to size 299x299, saved in bmp format. 
 
 ### training
 1. train1
