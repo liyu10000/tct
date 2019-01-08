@@ -20,6 +20,7 @@
 #include "openslide.h"
 // #include "openslide-common.h"
 
+using namespace cv;
 using namespace std;
 
 
@@ -34,20 +35,13 @@ static void print_downsamples(openslide_t *osr) {
 
 static void test_read_region(openslide_t *osr) {
 	int32_t level = 0;
-	int64_t x = 10000, y = 10000, w = 512, h = 512;
+	int64_t x = 10000, y = 10000, w = 608, h = 608;
 	uint32_t *buf = (uint32_t *) g_slice_alloc(w * h * 4);
 	openslide_read_region(osr, buf, x, y, level, w, h);
 
-	// CvSize mSize;
-	// mSize.height = h;
-	// mSize.width = w;
-
-	// IplImage* image1 = cvCreateImage(mSize, 8, 1);
-	// memcpy( image1->imageData, buf, w * h * 4);
-	// cvNamedWindow("corners1", 1);
-	// cvShowImage("corners1", image1);
-
-	cout << buf << endl;
+	Mat img(h, w, CV_8UC4, buf);
+	cvtColor(img, img, CV_RGBA2RGB);
+	imwrite("./test.bmp", img);
 
 	g_slice_free1(w * h * 4, buf);
 }
@@ -57,7 +51,6 @@ int main(int argc, char** argv) {
 
 	cout << "openslide version: " << openslide_get_version() << endl;
 
-
 	const char* wsi_name = "/home/hdd0/Develop/xxx/workflow/1.tif";
 	openslide_t* osr = openslide_open(wsi_name);
 
@@ -65,7 +58,7 @@ int main(int argc, char** argv) {
 
 	int64_t w, h;
 	openslide_get_level0_dimensions(osr, &w, &h);
-	printf("level 0 dimensions: %"PRId64" x %"PRId64"\n", w, h);
+	printf("level 0 dimensions: %" PRId64 " x %" PRId64 "\n", w, h);
 
 	test_read_region(osr);
 

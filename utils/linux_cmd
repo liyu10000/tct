@@ -61,6 +61,8 @@ tar data
 	extract .tgz file: tar -zxvf des.tgz
     fast archive: tar --use-compress-program="pigz --best --keep --recursive --verbose" -cf des.tar.gz src_dir/
     fast extract: pigz -dc des.tar.gz | tar xf -
+    display content in archieve: tar -tf des.tar
+    display content by directory depth in archieve: tar --exclude="*/*/*" -tf des.tar
 
 unrar
     extract in current directory

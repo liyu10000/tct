@@ -41,13 +41,13 @@ def find_bar(boxes, size=608, bar_size=200):
     if len(boxes) == 0:
         return -1
 
-    d1s, d2s, d3s, d4s = [], [], [], []
+    d1, d2, d3, d4 = [], [], [], []
     for box in boxes:
-        d1s.append(size - bar_size - box[3])
-        d2s.append(size - bar_size - box[2])
-        d3s.append(box[1] - bar_size)
-        d4s.append(box[0] - bar_size)
-    distance = [max(d1s), max(d2s), max(d3s), max(d4s)]
+        d1.append(size - bar_size - box[3])
+        d2.append(size - bar_size - box[2])
+        d3.append(box[1] - bar_size)
+        d4.append(box[0] - bar_size)
+    distance = [max(d1), max(d2), max(d3), max(d4)]
     bar_i = distance.index(max(distance))
 
     # print(distance)
@@ -69,6 +69,8 @@ def place_bar(img_name, save_path, size=608, bar_size=200):
         img[:bar_size, :, :] = 255
     elif bar_i == 3:
         img[:, :bar_size, :] = 255
+    else:
+        return
 
     img_name_new = os.path.join(save_path, os.path.basename(img_name))
     os.makedirs(os.path.dirname(img_name_new), exist_ok=True)
