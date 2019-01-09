@@ -36,7 +36,7 @@ def main(file_path, save_path):
 
 
 if __name__ == "__main__":
-    file_path = "/home/nvme/CELLS/ASCUS"
-    save_path = "/home/nvme/CELLS/ASCUS-half"
+    file_path = "/home/nvme/CELLS/ASCUS_file"
+    save_path = "/home/nvme/CELLS/ASCUS_file"
 
     main(file_path, save_path)

@@ -29,7 +29,7 @@ ctx = [mx.gpu(0)]
 
 def get_segmentation_mod():
 
-    sym, arg_params, aux_params = mx.model.load_checkpoint('./segnet_bb', 0)
+    sym, arg_params, aux_params = mx.model.load_checkpoint('./segnet_bb4_final', 0)
     mod = mx.mod.Module(symbol=sym, context=ctx, data_names=['data'], label_names=None)
     mod.bind(for_training=False, data_shapes=[('data', (1,3,512,512))], label_shapes=None)
     mod.set_params(arg_params=arg_params, aux_params=aux_params)
@@ -49,9 +49,7 @@ def seg_img(img, mod):
     return pred
 
 
-if __name__ == "__main__":
-    testdir = r'/home/nvme/CELLS/ASCUS-half'
-    savedir = r'/home/nvme/CELLS/ASCUS-half-unet'
+def seg_img_and_save(testdir, savedir):
     os.makedirs(savedir, exist_ok=True)
 
     imgfiles = [i for i in os.listdir(testdir) if i.endswith('.bmp')]
@@ -62,13 +60,50 @@ if __name__ == "__main__":
     for i,fn in enumerate(imgfiles):
         if i % 1000 == 0:
             print(i)
-        fn_path = testdir+'/'+fn
+        fn_path = os.path.join(testdir, fn)
         raw_img = cv2.imread(fn_path)
-        pred = seg_img(raw_img, seg_mod)
+        pred = seg_img(raw_img, seg_mod).astype(np.uint8)
 
-        plt.subplot(121)
-        plt.imshow(raw_img)
-        plt.subplot(122)
-        plt.imshow(pred)
-        plt.savefig(savedir+'/'+os.path.splitext(fn)[0]+'.jpg')
-        #plt.waitforbuttonpress()
+        img3, contours, hierarchy = cv2.findContours(pred, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+        contours = sorted(contours, key=cv2.contourArea, reverse=True)
+
+        mask_contour = np.zeros_like(pred)
+        cv2.drawContours(mask_contour, contours, 0, color=255, thickness=-1)
+
+        cv2.imwrite(os.path.join(savedir , os.path.splitext(fn)[0]+'.bmp'), raw_img)
+        cv2.imwrite(os.path.join(savedir , os.path.splitext(fn)[0]+'.png'), mask_contour)
+
+
+
+if __name__ == "__main__":
+    testdir = r'/media/lukawa/two_disk/cells_dna_test/TC18049508 HSIL/HSIL_S'
+    savedir = r'/media/lukawa/two_disk/cells_dna_test/TC18049508 HSIL/HSIL_S-unet'
+    os.makedirs(savedir, exist_ok=True)
+
+    imgfiles = [i for i in os.listdir(testdir) if i.endswith('.jpg')]
+
+    seg_mod = get_segmentation_mod()
+    
+
+    for i,fn in enumerate(imgfiles):
+        if i % 1000 == 0:
+            print(i)
+        fn_path = os.path.join(testdir, fn)
+        raw_img = cv2.imread(fn_path)
+        pred = seg_img(raw_img, seg_mod).astype(np.uint8)
+
+        img3, contours, hierarchy = cv2.findContours(pred, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+        contours = sorted(contours, key=cv2.contourArea, reverse=True)
+
+        mask_contour = np.zeros_like(pred)
+        cv2.drawContours(mask_contour, contours, 0, color=255, thickness=-1)
+
+        cv2.imwrite(os.path.join(savedir , os.path.splitext(fn)[0]+'.bmp'), raw_img)
+        cv2.imwrite(os.path.join(savedir , os.path.splitext(fn)[0]+'.png'), mask_contour)
+
+        # plt.subplot(121)
+        # plt.imshow(raw_img)
+        # plt.subplot(122)
+        # plt.imshow(pred)
+        # plt.savefig(savedir+'/'+os.path.splitext(fn)[0]+'.jpg')
+        # #plt.waitforbuttonpress()
