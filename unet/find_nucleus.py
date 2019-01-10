@@ -1,6 +1,7 @@
 # coding: utf-8
 
 import os
+import sys
 import cv2
 import numpy as np
 from skimage.filters import threshold_otsu
@@ -158,6 +159,8 @@ def calc_main(file_path, mask_path, file_postfix=".bmp", mask_postfix=".png"):
     areas = []
     gray_amounts = []
 
+    f = open(os.path.join(file_path, "result.txt"), 'w')
+
     for file_name in file_names:
         mask_name = os.path.join(mask_path, os.path.splitext(os.path.basename(file_name))[0] + mask_postfix)
         if not os.path.isfile(mask_name):
@@ -166,6 +169,11 @@ def calc_main(file_path, mask_path, file_postfix=".bmp", mask_postfix=".png"):
         areas.append(area)
         gray_amounts.append(gray_amount)
 
+        f.write("{}: area {}, gray {}\n".format(os.path.basename(file_name), area, gray_amount))
+
+    f.write("\narea {}, gray {}".format(sum(areas)/len(areas), sum(gray_amounts)/len(gray_amounts)))
+
+    f.close()
     print("area", sum(areas)/len(areas), "gray", sum(gray_amounts)/len(gray_amounts))  
 
 
@@ -180,10 +188,13 @@ if __name__ == "__main__":
 
 
     # @test seg_img_and_save
-    testdir = "/media/lukawa/two_disk/cells_dna_test/NJ18044903 假ASCUS/ASCUS"
-    savedir = "/media/lukawa/two_disk/cells_dna_test/NJ18044903 假ASCUS/ASCUS-unet"
+    # testdir = "/media/lukawa/two_disk/cells_dna_test/NJ18044903 假ASCUS/ASCUS"
+    # savedir = "/media/lukawa/two_disk/cells_dna_test/NJ18044903 假ASCUS/ASCUS-unet"
 
-    # seg_img_and_save(testdir, savedir)
+    testdir = sys.argv[1]
+    savedir = sys.argv[2]
+
+    seg_img_and_save(testdir, savedir)
 
     # @test calc_main
     file_path = savedir

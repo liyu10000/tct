@@ -29,7 +29,7 @@ ctx = [mx.gpu(0)]
 
 def get_segmentation_mod():
 
-    sym, arg_params, aux_params = mx.model.load_checkpoint('./segnet_bb4_final', 0)
+    sym, arg_params, aux_params = mx.model.load_checkpoint('./segnet_bb5_final', 0)
     mod = mx.mod.Module(symbol=sym, context=ctx, data_names=['data'], label_names=None)
     mod.bind(for_training=False, data_shapes=[('data', (1,3,512,512))], label_shapes=None)
     mod.set_params(arg_params=arg_params, aux_params=aux_params)
@@ -52,7 +52,7 @@ def seg_img(img, mod):
 def seg_img_and_save(testdir, savedir):
     os.makedirs(savedir, exist_ok=True)
 
-    imgfiles = [i for i in os.listdir(testdir) if i.endswith('.bmp')]
+    imgfiles = [i for i in os.listdir(testdir) if i.endswith('.bmp') or i.endswith('.jpg')]
 
     seg_mod = get_segmentation_mod()
     
