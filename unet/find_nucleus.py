@@ -89,14 +89,6 @@ def find_contour(file_name, save_path):
     gray_amount = 0.0
 
     try:
-        # find convex hull of contour
-        hull = cv2.convexHull(contours[1], False)
-
-        # draw contour and save image
-        cv2.drawContours(img0, [hull], 0, (0,0,255), 1)
-        file_name_new = os.path.join(save_path, os.path.basename(file_name))
-        cv2.imwrite(file_name_new, img0)
-
         # calculate area of contour region
         area = cv2.contourArea(contours[1])
 
@@ -107,6 +99,14 @@ def find_contour(file_name, save_path):
         pts = np.where(mask_contour == 255)
         gray_contour = gray[pts[0], pts[1]]
         gray_amount = 255*len(gray_contour) - sum(gray_contour)
+
+        # find convex hull of contour
+        hull = cv2.convexHull(contours[1], False)
+
+        # draw contour and save image
+        cv2.drawContours(img0, [hull], 0, (0,0,255), 1)
+        file_name_new = os.path.join(save_path, str(int(gray_amount)) + '_' + os.path.basename(file_name))
+        cv2.imwrite(file_name_new, img0)
 
     except:
         print(file_name) # don't find more than one contour
@@ -124,6 +124,10 @@ def find_main(src_path, dst_path, postfix):
     areas = []
     gray_amounts = []
 
+    csv_name = os.path.abspath(src_path) + ".csv"
+    f = open(csv_name, 'w')
+    print(csv_name)
+
     for i,file_name in enumerate(files):
         if i % 1000 == 0:
             print(i)
@@ -131,6 +135,11 @@ def find_main(src_path, dst_path, postfix):
         if gray_amount > 0.0:
             areas.append(area)
             gray_amounts.append(gray_amount)
+
+        f.write("{}, area, {}, gray, {}\n".format(os.path.basename(file_name), area, gray_amount))
+
+    f.write("\n'', area, {}, gray, {}\n".format(sum(areas)/len(areas), sum(gray_amounts)/len(gray_amounts)))
+    f.close()
 
     print("area", sum(areas)/len(areas), "gray", sum(gray_amounts)/len(gray_amounts))
 
@@ -159,7 +168,9 @@ def calc_main(file_path, mask_path, file_postfix=".bmp", mask_postfix=".png"):
     areas = []
     gray_amounts = []
 
-    f = open(os.path.join(file_path, "result.txt"), 'w')
+    csv_name = os.path.dirname(file_path) + ".csv"
+    f = open(os.path.join(os.path.dirname(file_path), csv_name), 'w')
+    print(os.path.join(os.path.dirname(file_path), csv_name))
 
     for file_name in file_names:
         mask_name = os.path.join(mask_path, os.path.splitext(os.path.basename(file_name))[0] + mask_postfix)
@@ -169,35 +180,35 @@ def calc_main(file_path, mask_path, file_postfix=".bmp", mask_postfix=".png"):
         areas.append(area)
         gray_amounts.append(gray_amount)
 
-        f.write("{}: area {}, gray {}\n".format(os.path.basename(file_name), area, gray_amount))
+        f.write("{}, area, {}, gray, {}\n".format(os.path.basename(file_name), area, gray_amount))
 
-    f.write("\narea {}, gray {}".format(sum(areas)/len(areas), sum(gray_amounts)/len(gray_amounts)))
-
+    f.write("\n'', area, {}, gray, {}\n".format(sum(areas)/len(areas), sum(gray_amounts)/len(gray_amounts)))
     f.close()
+
     print("area", sum(areas)/len(areas), "gray", sum(gray_amounts)/len(gray_amounts))  
 
 
 
 if __name__ == "__main__":
-    # # @test find_main
-    # src_path = "/media/lukawa/two_disk/SC_test/TC18008922/SC"
-    # dst_path = "/media/lukawa/two_disk/SC_test/TC18008922/SC-2"
-    # postfix = ".jpg"
+    # @test find_main
+    src_path = "/home/nvme/CELLS/SC"
+    dst_path = "/home/nvme/CELLS/SC-2"
+    postfix = ".bmp"
 
-    # find_main(src_path, dst_path, postfix)
+    find_main(src_path, dst_path, postfix)
 
 
-    # @test seg_img_and_save
-    # testdir = "/media/lukawa/two_disk/cells_dna_test/NJ18044903 假ASCUS/ASCUS"
-    # savedir = "/media/lukawa/two_disk/cells_dna_test/NJ18044903 假ASCUS/ASCUS-unet"
+    # # @test seg_img_and_save
+    # # testdir = "/media/lukawa/two_disk/cells_dna_test/NJ18044903 假ASCUS/ASCUS"
+    # # savedir = "/media/lukawa/two_disk/cells_dna_test/NJ18044903 假ASCUS/ASCUS-unet"
 
-    testdir = sys.argv[1]
-    savedir = sys.argv[2]
+    # testdir = sys.argv[1]
+    # savedir = sys.argv[2]
 
-    seg_img_and_save(testdir, savedir)
+    # seg_img_and_save(testdir, savedir)
 
-    # @test calc_main
-    file_path = savedir
-    mask_path = savedir
+    # # @test calc_main
+    # file_path = savedir
+    # mask_path = savedir
     
-    calc_main(file_path, mask_path)
+    # calc_main(file_path, mask_path)

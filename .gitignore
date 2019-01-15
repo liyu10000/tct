@@ -3,6 +3,10 @@ __pycache__/
 *.ipynb_checkpoints/
 *.class
 
+*.a
+*.so
+*.dll
+
 *.kfb
 *.tif
 *.DCM
