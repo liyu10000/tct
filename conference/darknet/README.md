@@ -76,3 +76,13 @@ Finetune yolov3 training on TCT project: by the means of changing the lightness 
 
  - _num_classes_: 11
  - _final_steps_: 680000
+
+8. train8
+ - _dataset_: used data batch6. The data is the same with train2, except that HSIL 608s are placed a 200 white bar on top, in the purpose of avoiding omitted positive cells.
+ - _weights_: used weights trained in train3 (train3.backup)
+ - _batch_: 64
+ - _subdivisions_: 16
+ - _learning_rate_: 0.0001
+
+ - _num_classes_: 11
+ - _final_steps_: 900000
