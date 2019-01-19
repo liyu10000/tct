@@ -1,3 +1,5 @@
+// g++ add.cpp -o add
+
 #include <iostream>
 #include <math.h>
 

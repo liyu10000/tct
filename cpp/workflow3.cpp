@@ -301,7 +301,7 @@ void cut_producer(vector<const char*> slide_names) {
     int64_t w, h;
     openslide_get_level0_dimensions(osr, &w, &h);
     openslide_close(osr);
-    cout << slide_name << " " << w << " / " << h << endl;
+    cout << slide_name << " " << w << " x " << h << endl;
 
     int64_t patch_size = 1216, step_size = 1216;
     // int64_t total = ((int64_t) (ceil(w*0.8/step_size) * ceil(h*0.8/step_size) / 4)) * 4;
@@ -381,7 +381,7 @@ void cut_consumer() {
 }
 
 
-void yolo_predictor(char *cfgfile, char *weightfile, char *metafile, int gpu) {
+void yolo_predictor(char *cfgfile, char *weightfile, char *metafile, int gpu, char* image_name) {
     // specify which gpu to use
     cuda_set_device(gpu);
 
@@ -416,7 +416,7 @@ void yolo_predictor(char *cfgfile, char *weightfile, char *metafile, int gpu) {
     //     result_queue.push(runit);
     // } 
 
-    char* image_name = "/home/hdd0/Develop/tct/cpp/2017-09-07-08_50_02_34297_31735.bmp";
+    // char* image_name = (char*) "/home/hdd0/Develop/xxx/gen608/2017-09-07-09_24_10_x18891_y23547_r0.bmp";
     image im = load_image_color(image_name, 0, 0);
 
     for (int i = 0; i < 100; i++) {
@@ -426,6 +426,8 @@ void yolo_predictor(char *cfgfile, char *weightfile, char *metafile, int gpu) {
         // runit.insert(pair<const char*, int64_t>(yunit.slide_name, yunit.total));
         // result_queue.push(runit);
     }
+
+    printf("finished %s\n", image_name);
 }
 
 
@@ -514,14 +516,14 @@ int main(int argc, char** argv) {
 
     pid_t pid1 = fork();
     if (pid1 == (pid_t) 0) {  // child process1
-        yolo_predictor(cfgfile, weightfile, metafile, 0);
+        yolo_predictor(cfgfile, weightfile, metafile, 0, "/home/hdd0/Develop/xxx/gen608/2017-09-07-09_24_10_x18891_y23547_r0.bmp");
     } else {  // parent process
 
     }
 
     pid_t pid2 = fork();
     if (pid2 == (pid_t) 0) {  // child process2
-        yolo_predictor(cfgfile, weightfile, metafile, 1);
+        yolo_predictor(cfgfile, weightfile, metafile, 1, "/home/hdd0/Develop/xxx/gen608/2017-09-07-09_24_10_x18891_y23547_r90.bmp");
     } else {  // parent process
 
     }

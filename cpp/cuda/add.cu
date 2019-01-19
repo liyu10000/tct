@@ -1,3 +1,6 @@
+// nvcc add.cu -o add_cuda
+// nvprof --unified-memory-profiling off ./add_cuda 
+
 #include <iostream>
 #include <math.h>
 

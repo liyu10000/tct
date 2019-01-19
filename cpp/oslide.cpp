@@ -62,7 +62,7 @@ public:
     PopResult pop(T& out)
     {
         std::unique_lock<decltype(m_lock)> lock(m_lock);
-        if (m_stopFlag) // åœæ­¢
+        if (m_stopFlag)
         {
             return POP_STOP;
         }        
@@ -70,7 +70,7 @@ public:
         {
             m_cond.wait(lock);
         }
-        if (m_stopFlag) // åœæ­¢
+        if (m_stopFlag)
         {    
             return POP_STOP;
         }
