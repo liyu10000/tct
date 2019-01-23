@@ -20,18 +20,20 @@ def scan_files(directory, prefix=None, postfix=None):
 
 
 def copy_by_depth(file_in, path_out, depth, addon):
-    tokens = file_in.rsplit(os.sep, depth+1)
-    file_out = os.path.join(path_out, *tokens[1:])
-    parent_dir = os.path.dirname(file_out)
-    os.makedirs(parent_dir, exist_ok=True)
+#     tokens = file_in.rsplit(os.sep, depth+1)
+#     file_out = os.path.join(path_out, *tokens[1:])
+#     parent_dir = os.path.dirname(file_out)
+#     os.makedirs(parent_dir, exist_ok=True)
     
-    file_pre, file_pos = os.path.splitext(file_out)
-    file_out = file_pre + addon + file_pos
+#     file_pre, file_pos = os.path.splitext(file_out)
+#     file_out = file_pre + addon + file_pos
     
-    shutil.copy(file_in, file_out)
-    #shutil.move(file_in, file_out)
+#     shutil.copy(file_in, file_out)
+    # shutil.move(file_in, file_out)
     
-    # os.remove(file_in)
+#     # os.remove(file_in)
+    
+    shutil.move(file_in, path_out)
     
     
 def batch_copy_by_depth(files_in, path_out, depth, addon):
@@ -41,8 +43,11 @@ def batch_copy_by_depth(files_in, path_out, depth, addon):
     
 def main(path_in, path_out, depth, postfix, addon):
     files_in = scan_files(path_in, postfix=postfix)
+    print("# files", len(files_in))
+    
+    os.makedirs(path_out, exist_ok=True)
         
-    executor = ProcessPoolExecutor(max_workers=cpu_count())
+    executor = ProcessPoolExecutor(max_workers=cpu_count()//2)
     tasks = []
     
     batch_size = 1000
@@ -58,10 +63,10 @@ def main(path_in, path_out, depth, postfix, addon):
         
         
 if __name__ == "__main__":
-    path_in = "/home/ssd0/Develop/liyu/train4/train4_neg_cells/cells_misleading/NJ"
-    path_out = "/home/ssd0/Develop/liyu/train4/train4_neg_cells/cells_misleading/NJ_"
-    depth = 1
-    postfix = ".bmp"
+    path_in = "/home/hdd0/Develop/liyu/batch6.3_1216/train"
+    path_out = "/home/hdd0/Develop/liyu/batch6.3_1216/cla18txts"
+    depth = 0
+    postfix = ".txt"
     addon = ""
     
     main(path_in, path_out, depth, postfix, addon)

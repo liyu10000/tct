@@ -95,4 +95,14 @@ Finetune yolov3 training on TCT project: by the means of changing the lightness 
  - _learning_rate_: 0.0002
 
  - _num_classes_: 18
- - _final_steps_: 900000
+ - _final_steps_: 770000
+
+10. train10
+ - _dataset_: used data batch6.3, 18 classes. Dataset contains two parts: part one is the same with train9, originally cut data; part two is part-one-highlighted, with HLS_L=[0.9], HLS_S=[0.4, 0.5].
+ - _weights_: used weights trained in train9 (train9.backup)
+ - _batch_: 64
+ - _subdivisions_: 16
+ - _learning_rate_: 0.0005
+
+ - _num_classes_: 18
+ - _final_steps: 880000
