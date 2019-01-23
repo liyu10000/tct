@@ -1,4 +1,4 @@
-//g++ -o rotate rotate.cpp -I/usr/local/include -I/usr/local/include/opencv -L/usr/local/lib/ -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_imgcodecs -lpthread -std=c++11
+// g++ -o rotate rotate.cpp -I/usr/local/include -I/usr/local/include/opencv -L/usr/local/lib/ -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_imgcodecs -lpthread -std=c++11
 
 #include <stdio.h>
 #include <string.h>
@@ -46,7 +46,7 @@ public:
     PopResult pop(T& out)
     {
         std::unique_lock<decltype(m_lock)> lock(m_lock);
-        if (m_stopFlag) // åœæ­¢
+        if (m_stopFlag) 
         {
             return POP_STOP;
         }        
@@ -54,7 +54,7 @@ public:
         {
             m_cond.wait(lock);
         }
-        if (m_stopFlag) // åœæ­¢
+        if (m_stopFlag)
         {    
             return POP_STOP;
         }
@@ -77,13 +77,14 @@ public:
 };
 
 
-BlockingQueue<string> g_queue;
+BlockingQueue<string> cut_queue;
+BlockingQueue<int> res_queue;
+
 
 
 
 void rotate_90_180_270(string inname, string out_dir)
 {
-    // cout << "---------enter func: " << inname << endl;
     char* f = new char[inname.length() + 1];
     strcpy(f, inname.c_str());
 
@@ -103,7 +104,8 @@ void rotate_90_180_270(string inname, string out_dir)
     // rotate 90
     string name_90 = out_dir + name_pre + "_90" + name_ext;
     transpose(img, timg);
-    flip(timg, img_90, 0);  
+    flip(timg, img_90, 0);
+    
     imwrite(name_90, img_90);
 
     // rotate 180
@@ -125,7 +127,7 @@ void rotate_90_180_270(string inname, string out_dir)
 
 void Produce()
 {
-    String pattern = "/home/ssd0/Develop/liyu/batch6_1216/train/*.bmp";
+    String pattern = "/home/hdd0/Develop/liyu/batch6.3_1216/train/*.bmp";
     vector<String> cv2_names;
     glob(pattern, cv2_names, false);
     
@@ -135,48 +137,73 @@ void Produce()
     {
         string file_name = cv2_names[i];
 
-        cout << file_name << endl;
+        // cout << file_name << endl;
 
-        if (file_name.find("_hls09") == string::npos)
-        {
-            g_queue.push(file_name);
-        }     
-        
+        // if (file_name.find("_hls09") == string::npos)
+        // {
+        //     cut_queue.push(file_name);
+        // }     
+
+        cut_queue.push(file_name);
     }
 }
 
 
 void Consume()
 {
-    string out_dir = "/home/hdd_array0/batch_1216_rotate_c3/";
-    // string out_dir = "/home/ssd0/Develop/liyu/batch6_1216/test/result/";
+    string out_dir = "/home/hdd0/Develop/liyu/batch6.3_1216/rotate/";
 
     string data;
     while (true)
     {        
-        // å–æ•°æ®
-        PopResult res = g_queue.pop(data);
-        if (res == POP_STOP) // çº¿ç¨‹åº”è¯¥åœæ­¢
+        PopResult res = cut_queue.pop(data);
+        if (res == POP_STOP) 
         {    
             // cout << "pop stop" << endl;
             break;
         }
-        if (res == POP_UNEXPECTED) // æ„å¤–å”¤é†’
+        if (res == POP_UNEXPECTED) 
         {
             // cout << "pop POP_UNEXPECTED" << endl;
             continue;
         }
 
-        // // å¤„ç†æ•°æ®
         
-        // int q_size = g_queue.size();
+        // int q_size = cut_queue.size();
         // if (q_size % 1000 == 0)
         //     cout << "queue size " << q_size << endl;
         rotate_90_180_270(data, out_dir);
+
+        res_queue.push(1);
     }
 }
 
 
+void Collect() {
+    int data;
+    int count = 0;
+
+    while (true)
+    {        
+        PopResult res = res_queue.pop(data);
+        if (res == POP_STOP) 
+        {    
+            // cout << "pop stop" << endl;
+            break;
+        }
+        if (res == POP_UNEXPECTED) 
+        {
+            // cout << "pop POP_UNEXPECTED" << endl;
+            continue;
+        }
+
+        
+        count++;
+
+        if (count % 1000 == 0)
+            cout << "finished " << count << endl;
+    }
+}
 
 
 
@@ -188,44 +215,45 @@ int main(int argc, char** argv)
 
     //rotate_90_180_270(inname, out_dir);    
 
- // // å¯åŠ¨ç”Ÿäº§è€…çº¿ç¨‹å’Œæ¶ˆè´¹è€…çº¿ç¨‹ï¼ˆä¹Ÿå¯ä»¥å¯åŠ¨å¤šä¸ªçº¿ç¨‹ï¼‰
-    // thread produceThread(Produce);
-    Produce();
-    
-    Consume();
+    // Produce();
+    // Consume();
+    // Collect();
 
 
-//  vector<thread> ts;
-//     int thread_count = thread::hardware_concurrency();
-//     cout << "thread count " << thread_count << endl;
-//     if (thread_count == 0)
-//         thread_count = 16;
-//  for (int i = 0; i < thread_count; i++)
-//  {
-//         thread consumerThread(Consume);
-//         ts.push_back(move(consumerThread));
+    thread produceThread(Produce);
+
+
+    vector<thread> ts;
+    int thread_count = thread::hardware_concurrency();
+    cout << "thread count " << thread_count << endl;
+    if (thread_count > 4)
+        thread_count = 4;
+    for (int i = 0; i < thread_count; i++)
+    {
+        thread consumerThread(Consume);
+        ts.push_back(move(consumerThread));
         
-//         // ts.push_back(thread(Consume));
-//         // ts.emplace_back(Consume);
-//  }
+        // ts.push_back(thread(Consume));
+        // ts.emplace_back(Consume);
+    }
+
+    thread collectThread(Collect);
 
 
-//     produceThread.join();
+    produceThread.join();
 
-    
+    for (auto & t : ts)
+    {
+        if (t.joinable())
+            t.join();
+    }
 
-//     for (auto & t : ts)
-//     {
-//         if (t.joinable())
-//             t.join();
-//     }
-
-
-//     g_queue.Stop();
+    collectThread.join();
 
 
- //    // åœæ­¢çº¿ç¨‹
-    
+    cut_queue.Stop();
+    res_queue.Stop();
+
     
     return 0;
 }   
