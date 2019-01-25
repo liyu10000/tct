@@ -21,7 +21,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 # 18 classes (separate all sub classes and add SC & PH
 classes = {"ACTINO":0, "AGC_A":1, "AGC_B":2, "ASCUS":3, "CC":4, "EC":5, "FUNGI":6, "HSIL_B":7, "HSIL_M":8, "HSIL_S":9, "LSIL_E":10, "LSIL_F":11, "PH":12, "SC":13, "SCC_G":14, "SCC_R":15, "TRI":16, "VIRUS":17}
 # target classes to change to
-targets = {0:9, 1:0, 2:0, 3:4, 4:6, 5:3, 6:8, 7:1, 8:1, 9:1, 10:5, 11:4, 12:11, 13:12, 14:1, 15:2, 16:10, 17:7}
+targets = {0:9, 1:0, 2:0, 3:4, 4:6, 5:3, 6:8, 7:1, 8:1, 9:1, 10:5, 11:5, 12:11, 13:12, 14:1, 15:2, 16:10, 17:7}
 
 count = {value:0 for key,value in classes.items()}
 
@@ -65,7 +65,7 @@ def main(txt_path, save_path):
     txt_names = scan_files(txt_path, postfix=".txt")
     print("# of files: {}".format(len(txt_names)))
                       
-    executor = ProcessPoolExecutor(max_workers=cpu_count())
+    executor = ProcessPoolExecutor(max_workers=8)
     tasks = []
                       
     batch_size = 1000
@@ -81,8 +81,8 @@ def main(txt_path, save_path):
 
 
 if __name__ == "__main__":
-    txt_path = "/home/hdd0/Develop/liyu/batch6.3_1216/cla18txts"
-    save_path = "/home/hdd0/Develop/liyu/batch6.3_1216/train"
+    txt_path = "/home/nvme0/liyu/batch6.3_1216-hls09/cla18txts"
+    save_path = "/home/nvme0/liyu/batch6.3_1216-hls09/train"
     main(txt_path, save_path)
     print(count)
 

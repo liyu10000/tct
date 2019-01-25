@@ -47,7 +47,7 @@ def main(path_in, path_out, depth, postfix, addon):
     
     os.makedirs(path_out, exist_ok=True)
         
-    executor = ProcessPoolExecutor(max_workers=cpu_count()//2)
+    executor = ProcessPoolExecutor(max_workers=8)
     tasks = []
     
     batch_size = 1000
@@ -63,8 +63,8 @@ def main(path_in, path_out, depth, postfix, addon):
         
         
 if __name__ == "__main__":
-    path_in = "/home/hdd0/Develop/liyu/batch6.3_1216/train"
-    path_out = "/home/hdd0/Develop/liyu/batch6.3_1216/cla18txts"
+    path_in = "/home/nvme0/liyu/batch6.3_1216-hls09/train"
+    path_out = "/home/nvme0/liyu/batch6.3_1216-hls09/cla18txts"
     depth = 0
     postfix = ".txt"
     addon = ""
