@@ -80,7 +80,7 @@ def process(data_path, save_path):
     
     os.makedirs(save_path, exist_ok=True)
     
-    executor = ProcessPoolExecutor(max_workers=cpu_count()//2)
+    executor = ProcessPoolExecutor(max_workers=8)
     tasks = []
     
     batch_size = 1000
@@ -96,7 +96,7 @@ def process(data_path, save_path):
         
         
 if __name__ == "__main__":
-    data_path = "/home/hdd0/Develop/liyu/batch6.3_1216"
-    save_path = "/home/hdd0/Develop/liyu/batch6.3_1216-hls09"
+    data_path = "/home/ssd0/Develop/liyu/batch6.3_1216/train"
+    save_path = "/home/hdd_array0/batch6.3_1216-hls09/train"
 
     process(data_path, save_path)

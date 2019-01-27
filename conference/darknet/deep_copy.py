@@ -33,7 +33,7 @@ def copy_by_depth(file_in, path_out, depth, addon):
     
 #     # os.remove(file_in)
     
-    shutil.move(file_in, path_out)
+    shutil.copy(file_in, path_out)
     
     
 def batch_copy_by_depth(files_in, path_out, depth, addon):
@@ -50,7 +50,7 @@ def main(path_in, path_out, depth, postfix, addon):
     executor = ProcessPoolExecutor(max_workers=8)
     tasks = []
     
-    batch_size = 1000
+    batch_size = 10000
     for i in range(0, len(files_in), batch_size):
         batch = files_in[i : i+batch_size]
         tasks.append(executor.submit(batch_copy_by_depth, batch, path_out, depth, addon))
@@ -63,8 +63,8 @@ def main(path_in, path_out, depth, postfix, addon):
         
         
 if __name__ == "__main__":
-    path_in = "/home/nvme0/liyu/batch6.3_1216-hls09/train"
-    path_out = "/home/nvme0/liyu/batch6.3_1216-hls09/cla18txts"
+    path_in = "/home/ssd0/Develop/liyu/batch6.3_1216/train"
+    path_out = "/home/hdd_array0/batch6.3_1216-hls09/train"
     depth = 0
     postfix = ".txt"
     addon = ""

@@ -6,7 +6,7 @@ from multiprocessing import cpu_count
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 
-classes_to_place_bar = [2]
+classes_to_place_bar = [1,]
 
 
 def scan_files(directory, prefix=None, postfix=None):
@@ -59,11 +59,14 @@ def find_bar(boxes, size=608, bar_size=200):
     return bar_i if distance[bar_i] > 0 else -1
 
 
-def place_bar(img_name, save_path, size=608, bar_size=200):
+def place_bar(img_name, ori_path, bar_path, size=608, bar_size=200):
     txt_name = os.path.splitext(img_name)[0] + ".txt"
     boxes = read_labels(txt_name)
     bar_i = find_bar(boxes)
 
+    if bar_i == -1:
+        return
+    
     img = cv2.imread(img_name)
     if bar_i == 0:
         img[size-bar_size:, :, :] = 255
@@ -76,27 +79,29 @@ def place_bar(img_name, save_path, size=608, bar_size=200):
     # else:
     #     return
 
-    img_name_new = os.path.join(save_path, os.path.basename(img_name))
-    os.makedirs(os.path.dirname(img_name_new), exist_ok=True)
+    shutil.move(img_name, ori_path)
+    
+    img_name_new = os.path.join(bar_path, os.path.basename(img_name))
+    # os.makedirs(os.path.dirname(img_name_new), exist_ok=True)
     cv2.imwrite(img_name_new, img)
 
     
-def batch_place_bar(img_names, dst_path):
+def batch_place_bar(img_names, ori_path, bar_path):
     for img_name in img_names:
-        place_bar(img_name, dst_path)
+        place_bar(img_name, ori_path, bar_path)
     
 
-def main(src_path, postfix, dst_path):
+def main(src_path, postfix, ori_path, bar_path):
     files = scan_files(src_path, postfix=postfix)
     print("# files", len(files))
 
-    executor = ProcessPoolExecutor(max_workers=cpu_count())
+    executor = ProcessPoolExecutor(max_workers=8)
     tasks = []
 
-    batch_size = 1000
+    batch_size = 10000
     for i in range(0, len(files), batch_size):
         batch = files[i : i+batch_size]
-        tasks.append(executor.submit(batch_place_bar, batch, dst_path))
+        tasks.append(executor.submit(batch_place_bar, batch, ori_path, bar_path))
     
     job_count = len(tasks)
     for future in as_completed(tasks):
@@ -106,8 +111,9 @@ def main(src_path, postfix, dst_path):
 
 
 if __name__ == "__main__":
-    src_path = "/home/hdd_array0/batch6_1216/VOC2012/images-HSIL"
-    dst_path = "/home/hdd_array0/batch6_1216/VOC2012/images-HSIL-bar"
+    src_path = "/home/TMP4T/batch6.3-1216-yearend/hls09"  # source image path
+    ori_path = "/home/TMP4T/batch6.3-1216-yearend/hls09_HSIL"  # path to place original images
+    bar_path = src_path  # path to place bar-images
     postfix = ".bmp"
 
-    main(src_path, postfix, dst_path)
+    main(src_path, postfix, ori_path, bar_path)
