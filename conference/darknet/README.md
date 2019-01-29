@@ -116,3 +116,24 @@ Finetune yolov3 training on TCT project: by the means of changing the lightness 
 
  - _num_classes_: 13
  - _final_steps: 850000
+
+12. train12
+ - _dataset_: used data batch6.3, 13 classes. Dataset contains two parts: part one is newly made (with some data corrections) originally cut data; part two is part-one-highlighted, with HLS_L=[0.9], HLS_S=[0.4, 0.5]. Class 1 (HSIL) data are placed a 200 bar, if plausible.
+ - _weights_: used weights pretrained on imagenet (darknet53.conv.74)
+ - _batch_: 64
+ - _subdivisions_: 16
+ - _learning_rate_: 0.00025
+
+ - _num_classes_: 13
+ - _final_steps: 260000
+
+13. train13
+ - _dataset_: used data batch6.3, 13 classes. Dataset contains three parts: the first two parts are the same with train12; the third part is augmented (rotated) from part1 of train12. HSIL data are placed with a 200 bar.
+ - _weights_: used weights trained in train12 (train12.backup)
+ - _batch_: 64
+ - _subdivisions_: 16
+ - _learning_rate_: 0.00025
+
+ - _num_classes_: 13
+ - _final_steps: 
+

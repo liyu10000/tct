@@ -95,7 +95,7 @@ def main(src_path, postfix, ori_path, bar_path):
     files = scan_files(src_path, postfix=postfix)
     print("# files", len(files))
 
-    executor = ProcessPoolExecutor(max_workers=8)
+    executor = ProcessPoolExecutor(max_workers=4)
     tasks = []
 
     batch_size = 10000
@@ -111,8 +111,8 @@ def main(src_path, postfix, ori_path, bar_path):
 
 
 if __name__ == "__main__":
-    src_path = "/home/TMP4T/batch6.3-1216-yearend/hls09"  # source image path
-    ori_path = "/home/TMP4T/batch6.3-1216-yearend/hls09_HSIL"  # path to place original images
+    src_path = "/home/hdd_array0/batch6.3-1216-yearend/rotate"  # source image path
+    ori_path = "/home/hdd_array0/batch6.3-1216-yearend/rotate_HSIL"  # path to place original images
     bar_path = src_path  # path to place bar-images
     postfix = ".bmp"
 

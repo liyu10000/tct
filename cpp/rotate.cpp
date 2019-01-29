@@ -5,6 +5,10 @@
 #include <vector>
 #include <time.h>
 #include <iostream>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <string>
+#include <fstream>
 #include <thread>
 #include <opencv2/opencv.hpp>
 #include <mutex>
@@ -81,7 +85,10 @@ BlockingQueue<string> cut_queue;
 BlockingQueue<int> res_queue;
 
 
-
+inline bool exists(string &name) {
+    struct stat buffer;
+    return (stat (name.c_str(), &buffer) == 0);
+}
 
 void rotate_90_180_270(string inname, string out_dir)
 {
@@ -103,22 +110,28 @@ void rotate_90_180_270(string inname, string out_dir)
     
     // rotate 90
     string name_90 = out_dir + name_pre + "_90" + name_ext;
-    transpose(img, timg);
-    flip(timg, img_90, 0);
+    if (! exists(name_90)) {
+    	transpose(img, timg);
+    	flip(timg, img_90, 0);
     
-    imwrite(name_90, img_90);
+    	imwrite(name_90, img_90);
+    }
 
     // rotate 180
     string name_180 = out_dir + name_pre + "_180" + name_ext;
-    flip(img, timg, 0);
-    flip(timg, img_180, 1);
-    imwrite(name_180, img_180);
+    if (! exists(name_180)) {
+    	flip(img, timg, 0);
+    	flip(timg, img_180, 1);
+    	imwrite(name_180, img_180);
+    }
 
     // rotate 270
     string name_270 = out_dir + name_pre + "_270" + name_ext;
-    transpose(img, timg);
-    flip(timg, img_270, 1);
-    imwrite(name_270, img_270);
+    if (! exists(name_270)) {
+    	transpose(img, timg);
+    	flip(timg, img_270, 1);
+    	imwrite(name_270, img_270);
+    }
 
     delete []f;
 
@@ -127,7 +140,7 @@ void rotate_90_180_270(string inname, string out_dir)
 
 void Produce()
 {
-    String pattern = "/home/hdd0/Develop/liyu/batch6.3_1216/train/*.bmp";
+    String pattern = "/home/TMP4T/batch6.3-1216-yearend/original/*.bmp";
     vector<String> cv2_names;
     glob(pattern, cv2_names, false);
     
@@ -151,7 +164,7 @@ void Produce()
 
 void Consume()
 {
-    string out_dir = "/home/hdd0/Develop/liyu/batch6.3_1216/rotate/";
+    string out_dir = "/home/hdd_array0/batch6.3-1216-yearend/rotate/";
 
     string data;
     while (true)

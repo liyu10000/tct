@@ -17,9 +17,12 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 # classes = {"ASCUS":0, "LSIL":1, "ASCH":2, "HSIL":3, "SCC":4, "AGC":5, 
 #            "EC":6, "FUNGI":7, "TRI":8, "CC":9, "ACTINO":10, "VIRUS":11}
 
-# 11 classes merge agc1 agc2 adc as agc
-classes = {"ASCUS":0, "LSIL":1, "HSIL":2, "SCC":3, "AGC":4, 
-           "EC":5, "FUNGI":6, "TRI":7, "CC":8, "ACTINO":9, "VIRUS":10}
+# # 11 classes merge agc1 agc2 adc as agc
+# classes = {"ASCUS":0, "LSIL":1, "HSIL":2, "SCC":3, "AGC":4, 
+#            "EC":5, "FUNGI":6, "TRI":7, "CC":8, "ACTINO":9, "VIRUS":10}
+
+# 13 classes, add SC and PH
+classes = {"ACTINO":9, "AGC_A":0, "AGC_B":0, "ASCUS":4, "CC":6, "EC":3, "FUNGI":8, "HSIL_B":1, "HSIL_M":1, "HSIL_S":1, "LSIL_E":5, "LSIL_F":5, "PH":11, "SC":12, "SCC_G":1, "SCC_R":2, "TRI":10, "VIRUS":7}
 
 # # 4 classes
 # classes = {"MC":0, "SC":1, "RC":2, "GEC":3}
@@ -107,10 +110,10 @@ def worker(path_in, path_out, postfix):
     files = scan_files(path_in, postfix=postfix)
     print("# files:", len(files))
 
-    executor = ProcessPoolExecutor(max_workers=cpu_count())
+    executor = ProcessPoolExecutor(max_workers=2)
     tasks = []
 
-    batch_size = 1000
+    batch_size = 10000
     for i in range(0, len(files), batch_size):
         batch = files[i : i+batch_size]
         tasks.append(executor.submit(batch_gen_txt_90_180_270, batch, path_out))
@@ -123,8 +126,8 @@ def worker(path_in, path_out, postfix):
 
     
 if __name__ == "__main__":
-    path_in = "/home/ssd0/Develop/liyu/batch6_1216_labels/train"
-    path_out = "/home/hdd_array0/batch_1216_rotate_c"
+    path_in = "/home/TMP4T/batch6.3-1216-yearend/original"
+    path_out = "/home/hdd_array0/batch6.3-1216-yearend/rotate"
     postfix = ".xml"
 
     worker(path_in, path_out, postfix)
