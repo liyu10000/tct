@@ -126,8 +126,8 @@ def worker(path_in, path_out, postfix):
 
     
 if __name__ == "__main__":
-    path_in = "/home/TMP4T/batch6.3-1216-yearend/original"
-    path_out = "/home/hdd_array0/batch6.3-1216-yearend/rotate"
+    path_in = "/home/hdd_array0/batch6.4/batch6.4-added-original"
+    path_out = "/home/hdd_array0/batch6.4/batch6.4-added-rotate"
     postfix = ".xml"
 
     worker(path_in, path_out, postfix)
