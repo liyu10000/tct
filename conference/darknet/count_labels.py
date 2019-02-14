@@ -1,7 +1,7 @@
 import os
 
 
-classes = [i for i in range(11)]
+classes = [i for i in range(13)]
 count = {key:0 for key in classes}
 
 
@@ -39,6 +39,6 @@ def main(txt_path):
     
     
 if __name__ == "__main__":
-    txt_path = "/home/hdd_array0/batch6_1216/VOC2012/images"
+    txt_path = "/home/TMP4T/batch6.3-1216-yearend/original"
     main(txt_path)
     print(count)

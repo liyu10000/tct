@@ -33,7 +33,8 @@ def copy_by_depth(file_in, path_out, depth, addon):
     
 #     # os.remove(file_in)
     
-    shutil.copy(file_in, path_out)
+    if not os.path.isfile(os.path.join(path_out, os.path.basename(file_in))):
+        shutil.move(file_in, path_out)
     
     
 def batch_copy_by_depth(files_in, path_out, depth, addon):
@@ -63,10 +64,10 @@ def main(path_in, path_out, depth, postfix, addon):
         
         
 if __name__ == "__main__":
-    path_in = "/home/hdd_array0/batch6.4/batch6.4-added-original"
-    path_out = "/home/hdd_array0/batch6.4/batch6.4-added-hls09"
+    path_in = "/home/TMP4T/batch6.3-1216-yearend/rotate-xmls"
+    path_out = "/home/hdd_array0/batch6.3-1216-yearend/rotate"
     depth = 0
-    postfix = ".txt"
+    postfix = ".xml"
     addon = ""
     
     main(path_in, path_out, depth, postfix, addon)
