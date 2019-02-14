@@ -53,8 +53,8 @@ def move_by_depth(file_in, path_out, depth):
     shutil.move(file_in, file_out)
 
 
-def worker(path_in, path_out, postfix, depth):
-    files = scan_files(path_in, postfix=postfix)
+def worker(data_path, save_path, postfix, depth):
+    files = scan_files(data_path, postfix=postfix)
     print("# files:", len(files))
 
     executor = ProcessPoolExecutor(max_workers=cpu_count())
