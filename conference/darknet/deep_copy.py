@@ -33,8 +33,8 @@ def copy_by_depth(file_in, path_out, depth, addon):
     
 #     # os.remove(file_in)
     
-    if not os.path.isfile(os.path.join(path_out, os.path.basename(file_in))):
-        shutil.move(file_in, path_out)
+    # if not os.path.isfile(os.path.join(path_out, os.path.basename(file_in))):
+    shutil.move(file_in, path_out)
     
     
 def batch_copy_by_depth(files_in, path_out, depth, addon):
