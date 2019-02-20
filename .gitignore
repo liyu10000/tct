@@ -10,6 +10,7 @@ __pycache__/
 *.kfb
 *.tif
 *.DCM
+*.TMAP
 
 *.pkl
 *.tar
@@ -27,10 +28,16 @@ __pycache__/
 *.txt
 *.xml
 
+*.out
+*.log
+
 *.pb
 *.lst
 *.params
 *.tfrecord
+
+*.caffemodel
+*.solverstate
 
 ~$*.doc*
 ~$*.docx*

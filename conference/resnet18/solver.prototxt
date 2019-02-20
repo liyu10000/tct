@@ -1,0 +1,16 @@
+net: "train.prototxt"
+test_iter: 20
+test_interval: 1000
+base_lr: 0.001
+display: 10
+average_loss:1000
+lr_policy: "step"
+gamma:0.1
+stepsize: 20000
+max_iter:150000
+momentum:0.9
+weight_decay: 0.00051
+snapshot: 1000
+snapshot_prefix: "models/resnet18"
+solver_mode: GPU
+

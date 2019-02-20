@@ -155,4 +155,4 @@ Finetune yolov3 training on TCT project: by the means of changing the lightness 
  - _learning_rate_: 0.00025
 
  - _num_classes_: 13
- - _final_steps:  
+ - _final_steps: 230000

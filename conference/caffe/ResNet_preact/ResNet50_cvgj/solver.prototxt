@@ -1,0 +1,16 @@
+net: "testrun.prototxt"
+test_iter: 3200
+test_interval: 20000
+test_initialization: false
+display: 1
+average_loss: 1
+base_lr: 0.001
+lr_policy: "step"
+stepsize: 40000
+gamma: 0.5
+max_iter: 400000
+momentum: 0.9
+weight_decay: 0.0001
+snapshot: 10000
+snapshot_prefix: "models/resnet50"
+solver_mode: GPU
