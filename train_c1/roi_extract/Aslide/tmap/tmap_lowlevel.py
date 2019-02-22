@@ -82,11 +82,13 @@ def _func(name, restype, argtypes, errcheck=_check_error):
 def _handle_func(puc_list, W, H):
     length = W * H * 3
     try:
-        data = ctypes.string_at(puc_list, length)
-        data = np.fromstring(data, np.uint8).reshape((W, H, 3))
+        content = ctypes.string_at(puc_list, length)
+        data = np.fromstring(content, np.uint8).reshape((W, H, 3))
         data= data[:, :, ::-1]
 
-        return Image.fromarray(np.asarray(data, dtype=np.uint8))
+        image = Image.fromarray(np.asarray(data, dtype=np.uint8))
+
+        return image
     except Exception as e:
         raise e
 
@@ -145,23 +147,73 @@ def get_dimensions(slide):
     img = get_image_info_ex(slide, 6)
     return (img.width, img.height)
 
-def get_level_dimensions(slide):
-    dimensions = get_dimensions(slide)
-    z_size = dimensions
-    level_dimensions = [z_size]
+def get_level_count(slide):
+    return len(get_level_layer(slide))
 
-    while z_size[0] > 1 or z_size[1] > 1:
-        z_size = tuple(max(1, int(math.ceil(z / 2))) for z in z_size)
+# def get_level_dimensions_count(slide):
+#     dimensions = get_dimensions(slide)
+#     z_size = dimensions
+#     level_dimensions = [z_size]
+
+#     while z_size[0] > 1024 or z_size[1] > 1024:
+#         z_size = tuple(max(1, int(math.ceil(z / 2))) for z in z_size)
+#         level_dimensions.append(z_size)
+
+#     return len(level_dimensions)
+
+# def get_level_layer(slide):
+#     max_fScale = get_scan_scale(slide)
+#     level_dimension_count = get_level_dimensions_count(slide)
+
+#     layers = list(range(1, max_fScale, max_fScale // level_dimension_count))
+#     if layers[-1] != max_fScale:
+#         layers.append(max_fScale)
+
+#     return layers
+
+def get_level_layer(slide):
+    max_fScale = get_scan_scale(slide)
+
+    layers = [max_fScale]
+    while max_fScale > 2:
+        max_fScale = max_fScale / 2
+        layers.append(max_fScale)
+
+    return layers
+
+# def get_level_dimensions(slide):
+#     max_fScale = get_scan_scale(slide)
+#     dimensions = get_dimensions(slide)
+#     layers = get_level_layer(slide)
+#     level_dimensions = []
+#     for layer in layers:
+#         level_dimensions.append(tuple((z * layer) // max_fScale for z in dimensions))
+
+#     return tuple(reversed(level_dimensions))
+
+def get_level_dimensions(slide):
+    layer_count = len(get_level_layer(slide))
+
+    z_size = get_dimensions(slide)
+
+    level_dimensions = [z_size]
+    for i in range(layer_count - 1):
+        z_size = tuple(z // 2 for z in z_size)
         level_dimensions.append(z_size)
 
-    return level_dimensions
+    return tuple(level_dimensions)
 
-def get_level_count(slide):
-    return len(get_level_dimensions(slide))
+# def get_level_downsamples(slide):
+#     layers = get_level_layer(slide)
+#     # print(get_level_dimensions(slide))
+#     length = len(layers)
+#     # return tuple(reversed([np.power(2, i) for i in range(length)]))
+#     return tuple([np.power(2, i) for i in range(length)])
 
 def get_level_downsamples(slide):
-    length = get_level_count(slide)
-    return tuple(reversed([np.power(2, i) for i in range(length)]))
+    layer_count = len(get_level_layer(slide))
+    # return tuple(reversed([np.power(2, i) for i in range(length)]))
+    return tuple([np.power(2, i) for i in range(layer_count)])
 
 # 获取Tmap格式文件的整体图片信息
 get_pixel_size = _func('GetPixelSize', c_int, [c_void_p])
@@ -195,11 +247,40 @@ _get_crop_image_data_ex = _func('GetCropImageDataEx', POINTER(c_ubyte),
                                 [c_void_p, c_int, c_int, c_int, c_int, c_int, c_float])
 
 
-def get_crop_image_data_ex(slide, nIndex, nLeft, nTop, nRight, nBottom):
-    fScale = get_scan_scale(slide)
-    img_size = _get_image_size_ex(slide, nLeft, nTop, nRight, nBottom, fScale)
+def restore_location_in_level_0(nLeft, nTop, nRight, nBottom, level, max_fscale):
+    if level == 0:
+        pass
+    else: 
+        n = max_fscale / level
+        # print("==>n = ", n)
+
+        nLeft = n * nLeft
+        nTop = n * nTop
+        nRight = n * nRight
+        nBottom = n * nBottom
+
+    return int(nLeft), int(nTop), int(nRight), int(nBottom)
+
+
+def get_crop_image_data_ex(slide, nIndex, nLeft, nTop, nRight, nBottom, level):
+    max_fScale = get_scan_scale(slide)
+
+    layers = tuple(get_level_layer(slide))
+
+    fScale = layers[level]
+    fScale_ = math.ceil(fScale)
+
+    nLeft, nTop, nRight, nBottom = int(nLeft * fScale_ / fScale), int(nTop * fScale_ / fScale), int(nRight * fScale_ / fScale), int(nBottom * fScale_ / fScale)
+
+    # ratio = fScale_ / fScale
+
+    
+    nLeft, nTop, nRight, nBottom = restore_location_in_level_0(nLeft, nTop, nRight, nBottom, fScale_, max_fScale)
+
+    img_size = _get_image_size_ex(slide, nLeft, nTop, nRight, nBottom, fScale_)
     nBufferLength = img_size.imgsize
-    crop_image_data = _get_crop_image_data_ex(slide, c_int(nIndex), nLeft, nTop, nRight, nBottom, fScale, nBufferLength)
+    
+    crop_image_data = _get_crop_image_data_ex(slide, c_int(nIndex), nLeft, nTop, nRight, nBottom, fScale_, nBufferLength)
 
     return _handle_func(crop_image_data, img_size.height, img_size.width)
 

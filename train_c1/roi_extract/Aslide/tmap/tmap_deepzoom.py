@@ -22,8 +22,8 @@ class DeepZoomGenerator(object):
         address:   the address of the tile within the level as a (col, row)
                    tuple."""
 
-        level = self.slide.level_downsamples[level]
-        return tmap_lowlevel.get_tile_data(self._osr._osr, level, address[1], address[2])
+        level = reversed(self.slide.level_downsamples)[level]
+        return tmap_lowlevel.get_tile_data(self._osr._osr, level, address[1], address[0])
 
     def get_dzi(self, format):
         """Return a string containing the XML metadata for the .dzi file.

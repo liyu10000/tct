@@ -5,6 +5,15 @@ from openslide import AbstractSlide, _OpenSlideMap
 from Aslide.tmap import tmap_lowlevel
 
 
+Tags = {
+    'thumbail': 0,
+    'navigate': 1,
+    'macro': 2,
+    'label': 3,
+}
+
+
+
 class TmapSlide(AbstractSlide):
     def __init__(self, filename):
         AbstractSlide.__init__(self)
@@ -78,9 +87,12 @@ class TmapSlide(AbstractSlide):
         nBottom = nTop + size[1]
         return tmap_lowlevel.get_image_size_ex(self._osr, nLeft, nTop, nRight, nBottom, fScale)
 
-    @property
-    def associated_images(self):
-        return tmap_lowlevel.get_image_data(self._osr, 3)
+    def associated_images(self, tag):
+        if tag in Tags:
+            return tmap_lowlevel.get_image_data(self._osr, Tags[tag])
+        else:
+            # raise Exception("Unrecgnized associated_images type [{}], avaliable tags are [{}]".format(tag, ",".join(Tags)))
+            return None
 
     # 获取Tmap格式文件的切片数字图像
     def read_region(self, location, level, size, nIndex=0):
@@ -88,7 +100,8 @@ class TmapSlide(AbstractSlide):
         nTop = location[1]
         nRight = nLeft + size[0]
         nBottom = nTop + size[1]
-        return tmap_lowlevel.get_crop_image_data_ex(self._osr, nIndex, nLeft, nTop, nRight, nBottom)
+        
+        return tmap_lowlevel.get_crop_image_data_ex(self._osr, nIndex, nLeft, nTop, nRight, nBottom, level)
 
     def get_thumbnail(self, size=None):
         image = tmap_lowlevel.get_image_data(self._osr, 0)
@@ -100,7 +113,7 @@ class TmapSlide(AbstractSlide):
 
 def main():
     slide = TmapSlide(
-        '/media/wqf/4adb4c9e-80d5-43fd-8bf8-c4d8f353091f/tsimage/tiffs_tmap/SZH00098.TMAP')
+        '/media/wqf/4adb4c9e-80d5-43fd-8bf8-c4d8f353091f/tsimage/tiffs_un/SZH1513139_N_4_20181220132441.TMAP')
 
     img = slide.read_region((20000, 6000), 0, (1216, 1216))
     img.save('./read_region.jpg')
@@ -113,11 +126,10 @@ def main():
     # img = slide.get_thumbnail()
     # img.save('./get_thumbnail.jpg')
     #
-    # print(slide.dimensions)
-    print(slide)
-    slide.close()
     print(slide.dimensions)
-    import time
-    time.sleep(10)
+
+    slide.close()
+
+
 if __name__ == '__main__':
     main()

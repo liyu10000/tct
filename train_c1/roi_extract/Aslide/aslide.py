@@ -45,6 +45,16 @@ class Aslide(object):
 		if not read_success:
 			raise Exception("UnsupportedFormat or Missing File => %s" % filepath)
 
+	def __enter__(self):
+		return self
+
+	def __exit__(self, exc_type, exc_value, exc_tb):
+		self._osr.close()
+		if exc_tb:
+			return False
+
+		return True
+
 	@property
 	def mpp(self):
 		if hasattr(self._osr, 'get_scan_scale'):
@@ -78,9 +88,16 @@ class Aslide(object):
 	def properties(self):
 		return self._osr.properties
 
+	# @property
+	# def associated_images(self):
+	# 	return self._osr.associated_images
+
 	@property
-	def associated_images(self):
-		return self._osr.associated_images
+	def label_image(self):
+		if self.format in ['.tmap', '.TMAP']:
+			return self._osr.associated_images('label')
+		else:
+			return self._osr.associated_images.get('label', None)
 
 	def get_best_level_for_downsample(self, downsample):
 		return self._osr.get_best_level_for_downsample(downsample)
@@ -120,18 +137,18 @@ class Aslide(object):
 if __name__ == '__main__':
 	filepath = '/home/stimage/Development/DATA/TEST_DATA/test001.kfb'
 	slide = Aslide(filepath)
-	# print("Format : ", slide.detect_format(filepath))
-	# print("level_count : ", slide.level_count)
-	# print("level_dimensions : ", slide.level_dimensions)
-	# print("level_downsamples : ", slide.level_downsamples)
-	# print("properties : ", slide.properties)
-	# print("Associated Images : ")
-	# for key, val in slide.associated_images.items():
-	# 	print(key, " --> ", val)
-	#
-	# print("best level for downsample 20 : ", slide.get_best_level_for_downsample(20))
+	print("Format : ", slide.detect_format(filepath))
+	print("level_count : ", slide.level_count)
+	print("level_dimensions : ", slide.level_dimensions)
+	print("level_downsamples : ", slide.level_downsamples)
+	print("properties : ", slide.properties)
+	print("Associated Images : ")
+	for key, val in slide.associated_images.items():
+		print(key, " --> ", val)
+
+	print("best level for downsample 20 : ", slide.get_best_level_for_downsample(20))
 	im = slide.read_region((1000, 1000), 4, (1000, 1000))
 	print(im.mode)
 
 	im.show()
-	slide.close()
+	im.close()
