@@ -205,49 +205,49 @@ def delete_from_lmdb(lmdb_name, keys, size=224):
 
 
 if __name__ == "__main__":
-    data_src = "/home/hdd0/Data/caffe-testdata/dataset_kaggledogvscat/valid"
-    lmdb_name = "/home/hdd0/Data/caffe-testdata/dataset_kaggledogvscat/valid-lmdb-mp"
-    append = True
+    data_src = "/home/hdd0/Data/batch6.4-cells/CELLS-half/train"
+    lmdb_name = "/home/nvme/batch6.4-cells-lmdb/train"
+    append = False
 
 
-    # @test make_lmdb
-    make_lmdb(data_src, lmdb_name, append=append)
+#     # @test make_lmdb
+#     make_lmdb(data_src, lmdb_name, append=append)
 
 
-    # # @test multiprocessed make_lmdb
-    # queue_in = Queue(maxsize=10240)
-    # queue_out = Queue()
+    # @test multiprocessed make_lmdb
+    queue_in = Queue(maxsize=10240)
+    queue_out = Queue()
 
-    # image_names_generators = []
-    # image_readers = []
-    # lmdb_makers = []
+    image_names_generators = []
+    image_readers = []
+    lmdb_makers = []
 
-    # # create processes
-    # image_names_generators.append(Process(target=image_names_generator, args=(queue_in, queue_out, data_src)))
+    # create processes
+    image_names_generators.append(Process(target=image_names_generator, args=(queue_in, queue_out, data_src)))
     
-    # num_workers = 4
-    # for i in range(num_workers):
-    #     image_readers.append(Process(target=image_reader, args=(queue_in, queue_out), daemon=False))
+    num_workers = 4
+    for i in range(num_workers):
+        image_readers.append(Process(target=image_reader, args=(queue_in, queue_out), daemon=False))
 
-    # lmdb_makers.append(Process(target=lmdb_maker, args=(queue_out, lmdb_name, append), daemon=False))
-    # # lmdb_maker(queue_out, lmdb_name, append=append)
+    lmdb_makers.append(Process(target=lmdb_maker, args=(queue_out, lmdb_name, append), daemon=False))
+    # lmdb_maker(queue_out, lmdb_name, append=append)
 
-    # # start processes
-    # for p in image_names_generators:
-    #     p.start()
+    # start processes
+    for p in image_names_generators:
+        p.start()
 
-    # for p in image_readers:
-    #     p.start()
+    for p in image_readers:
+        p.start()
 
-    # for p in lmdb_makers:
-    #     p.start()
+    for p in lmdb_makers:
+        p.start()
 
-    # # synchronize processes
-    # for p in image_names_generators:
-    #     p.join()
+    # synchronize processes
+    for p in image_names_generators:
+        p.join()
 
-    # for p in image_readers:
-    #     p.join()
+    for p in image_readers:
+        p.join()
 
-    # for p in lmdb_makers:
-    #     p.join()
+    for p in lmdb_makers:
+        p.join()

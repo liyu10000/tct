@@ -246,3 +246,14 @@ configure vim settings on ubuntu
 
 configure jupyter version in anaconda:
     https://stackoverflow.com/questions/30492623/using-both-python-2-x-and-python-3-x-in-ipython-notebook
+
+save your nvidia and save your life:
+    Deleted all nvidia packages via synaptic (maybe it's enough to sudo apt purge nvidia*)
+    Restarted PC
+    Installed nvidia-drivers-396 (in your case nvidia-driver-390)
+    Restarted PC
+    Executed:
+        sudo prime-select nvidia
+        sudo prime-select intel
+        sudo prime-select nvidia
+    Logged out (restart should do same thing) and it was working.

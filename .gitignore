@@ -49,8 +49,8 @@ __pycache__/
 logs/
 
 /ImgHub
-/hls/test_data
-/point_detect_excess
+/archived/hls/test_data
+/archived/point_detect_excess
 
 darknet/cutting_v2/tslide
 
