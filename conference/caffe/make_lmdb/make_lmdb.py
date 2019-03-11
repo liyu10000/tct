@@ -114,7 +114,7 @@ def lmdb_maker(queue_out, lmdb_name, append=False, size=224):
             datum.width = size
             datum.data = img.tobytes()  # or .tostring() if numpy < 1.9
             datum.label = label
-            str_id = '{:08}'.format(i + max_key)
+            str_id = '{:08}_{}'.format(i + max_key, name)
 
             # The encode is only essential in Python 3
             txn.put(str_id.encode('ascii'), datum.SerializeToString())
@@ -175,7 +175,7 @@ def make_lmdb(data_src, lmdb_name, append=False, size=224):
             datum.width = size
             datum.data = img.tobytes()  # or .tostring() if numpy < 1.9
             datum.label = label
-            str_id = '{:08}'.format(i + max_key)
+            str_id = '{:08}_{}'.format(i + max_key, name)
 
             # The encode is only essential in Python 3
             txn.put(str_id.encode('ascii'), datum.SerializeToString())

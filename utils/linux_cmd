@@ -257,3 +257,6 @@ save your nvidia and save your life:
         sudo prime-select intel
         sudo prime-select nvidia
     Logged out (restart should do same thing) and it was working.
+
+pip install using package source from China:
+    pip install pkgname -i https://pypi.tuna.tsinghua.edu.cn/simple
