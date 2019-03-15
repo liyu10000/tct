@@ -105,7 +105,7 @@ Finetune yolov3 training on TCT project: by the means of changing the lightness 
  - _learning_rate_: 0.0005
 
  - _num_classes_: 18
- - _final_steps: 880000
+ - _final_steps_: 880000
 
 11. train11
  - _dataset_: used data batch6.3, 13 classes. Dataset contains two parts: part one is the same with train9, originally cut data; part two is part-one-highlighted, with HLS_L=[0.9], HLS_S=[0.4, 0.5].
@@ -115,7 +115,7 @@ Finetune yolov3 training on TCT project: by the means of changing the lightness 
  - _learning_rate_: 0.0002
 
  - _num_classes_: 13
- - _final_steps: 850000
+ - _final_steps_: 850000
 
 12. train12
  - _dataset_: used data batch6.3, 13 classes. Dataset contains two parts: part one is newly made (with some data corrections) originally cut data; part two is part-one-highlighted, with HLS_L=[0.9], HLS_S=[0.4, 0.5]. Class 1 (HSIL) data are placed a 200 bar, if plausible.
@@ -125,7 +125,7 @@ Finetune yolov3 training on TCT project: by the means of changing the lightness 
  - _learning_rate_: 0.00025
 
  - _num_classes_: 13
- - _final_steps: 260000
+ - _final_steps_: 260000
 
 13. train13
  - _dataset_: used data batch6.3, 13 classes. Dataset contains three parts: the first two parts are the same with train12; the third part is augmented (rotated) from part1 of train12. HSIL data are placed with a 200 bar.
@@ -135,7 +135,7 @@ Finetune yolov3 training on TCT project: by the means of changing the lightness 
  - _learning_rate_: 0.00025
 
  - _num_classes_: 13
- - _final_steps: 765000
+ - _final_steps_: 765000
 
 14. train14 
  - _dataset_: used data batch6.4 (partly deleted batch6.3 and new data), 13 classes. Dataset contains three parts: part one is newly made originally cut data; part two is part-one-highlighted, with HLS_L=[0.9], HLS_S=[0.4, 0.5]; part three is augmented (rotated) from part one. HSIL data are placed with a 200 bar.
@@ -145,7 +145,7 @@ Finetune yolov3 training on TCT project: by the means of changing the lightness 
  - _learning_rate_: 0.00025
 
  - _num_classes_: 13
- - _final_steps: 440000
+ - _final_steps_: 440000
  
 15. train15 
  - _dataset_: used data batch6.4 (complete batch6.3 and new data), 13 classes. Dataset contains two parts: part one is newly made originally cut data; part two is part-one-highlighted, with HLS_L=[0.9], HLS_S=[0.4, 0.5]. HSIL data are placed with a 200 bar.
@@ -155,4 +155,14 @@ Finetune yolov3 training on TCT project: by the means of changing the lightness 
  - _learning_rate_: 0.00025
 
  - _num_classes_: 13
- - _final_steps: 230000
+ - _final_steps_: 230000
+
+16. train16 
+ - _dataset_: used data batch6.4 (complete batch6.3 and new data), 13 classes. Dataset contains three parts: part one is newly made originally cut data; part two is part-one-highlighted, with HLS_L=[0.9], HLS_S=[0.4, 0.5]; part three is augmented (rotated) from part one. Autolabeled data are added.
+ - _weights_: used weights pretrained on imagenet (darknet53.conv.74)
+ - _batch_: 64
+ - _subdivisions_: 16
+ - _learning_rate_: 0.00025
+
+ - _num_classes_: 13
+ - _final_steps_: 

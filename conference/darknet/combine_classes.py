@@ -68,7 +68,7 @@ def main(txt_path, save_path):
     executor = ProcessPoolExecutor(max_workers=8)
     tasks = []
                       
-    batch_size = 1000
+    batch_size = 10000
     for i in range(0, len(txt_names), batch_size):
         batch = txt_names[i : i+batch_size]
         tasks.append(executor.submit(batch_change_txt, batch, save_path))    
@@ -81,8 +81,8 @@ def main(txt_path, save_path):
 
 
 if __name__ == "__main__":
-    txt_path = "/home/nvme0/liyu/batch6.3_1216-hls09/cla18txts"
-    save_path = "/home/nvme0/liyu/batch6.3_1216-hls09/train"
+    txt_path = "/home/ssd_array0/Data/batch6.4_1216/original"
+    save_path = "/home/ssd_array0/Data/batch6.4_1216/ori-txts"
     main(txt_path, save_path)
     print(count)
 

@@ -96,7 +96,7 @@ def process(data_path, save_path):
         
         
 if __name__ == "__main__":
-    data_path = "/home/hdd_array0/batch6.4/batch6.4-added-original"
-    save_path = "/home/hdd_array0/batch6.4/batch6.4-added-hls09"
+    data_path = "/home/ssd_array0/Data/batch6.4_1216/original-added"
+    save_path = "/home/ssd_array0/Data/batch6.4_1216/hls09-added"
 
     process(data_path, save_path)

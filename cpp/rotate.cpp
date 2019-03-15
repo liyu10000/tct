@@ -140,7 +140,7 @@ void rotate_90_180_270(string inname, string out_dir)
 
 void Produce()
 {
-    String pattern = "/home/nvme0/liyu/batch6.4/original/*.bmp";
+    String pattern = "/home/ssd_array0/Data/batch6.4_1216/original-added/*.bmp";
     vector<String> cv2_names;
     glob(pattern, cv2_names, false);
     
@@ -164,7 +164,7 @@ void Produce()
 
 void Consume()
 {
-    string out_dir = "/home/hdd0/Develop/liyu/batch6.4/rotate/";
+    string out_dir = "/home/ssd_array0/Data/batch6.4_1216/rotate-added/";
 
     string data;
     while (true)
