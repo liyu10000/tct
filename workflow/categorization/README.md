@@ -18,3 +18,9 @@ This CNN model serves to classify and clarify which category the input image bel
  - _dataset_: The same lmdb as with train2
  - _weights_: resnet50_cvgj_iter_320000.caffemodel
  - _crop_size_: removed
+
+4. train4
+ - _cnnmodel_: caffe/resnet50
+ - _dataset_: Same lmdb database from train2, set aside SC from NORMAL, added some more NORMAL data.
+ - _weights_: resnet50_cvgj_iter_320000.caffemodel
+ - _crop_size_: removed
