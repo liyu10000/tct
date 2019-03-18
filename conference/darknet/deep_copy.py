@@ -20,8 +20,8 @@ def scan_files(directory, prefix=None, postfix=None):
 
 
 def copy_by_depth(file_in, path_out, depth, addon):
-#     tokens = file_in.rsplit(os.sep, depth+1)
-#     file_out = os.path.join(path_out, *tokens[1:])
+    tokens = file_in.rsplit(os.sep, depth+1)
+    file_out = os.path.join(path_out, *tokens[1:])
 #     parent_dir = os.path.dirname(file_out)
 #     os.makedirs(parent_dir, exist_ok=True)
     
@@ -29,12 +29,12 @@ def copy_by_depth(file_in, path_out, depth, addon):
 #     file_out = file_pre + addon + file_pos
     
 #     shutil.copy(file_in, file_out)
-    # shutil.move(file_in, file_out)
+    shutil.move(file_in, file_out)
     
 #     # os.remove(file_in)
     
     # if not os.path.isfile(os.path.join(path_out, os.path.basename(file_in))):
-    shutil.copy(file_in, path_out)
+    # shutil.move(file_in, path_out)
     
     
 def batch_copy_by_depth(files_in, path_out, depth, addon):
@@ -54,6 +54,7 @@ def main(path_in, path_out, depth, postfix, addon):
     batch_size = 10000
     for i in range(0, len(files_in), batch_size):
         batch = files_in[i : i+batch_size]
+        # batch_copy_by_depth(batch, path_out, depth, addon)
         tasks.append(executor.submit(batch_copy_by_depth, batch, path_out, depth, addon))
 
     job_count = len(tasks)
@@ -64,10 +65,10 @@ def main(path_in, path_out, depth, postfix, addon):
         
         
 if __name__ == "__main__":
-    path_in = "/home/ssd_array0/Data/batch6.4_1216/original-added"
-    path_out = "/home/ssd_array0/Data/batch6.4_1216/hls09-added"
+    path_in = "/home/ssd_array/data/batch6.4_1216/original"
+    path_out = "/home/ssd_array/data/batch6.4_1216/all-xmls"
     depth = 0
-    postfix = ".txt"
+    postfix = ".xml"
     addon = ""
     
     main(path_in, path_out, depth, postfix, addon)

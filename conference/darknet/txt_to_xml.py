@@ -103,7 +103,7 @@ def worker(data_path, save_path):
     batch_size = 10000
     for i in range(0, len(files), batch_size):
         batch = files[i : i+batch_size]
-        # batch_txt_to_xml(batch)
+        # batch_txt_to_xml(batch, save_path)
         tasks.append(executor.submit(batch_txt_to_xml, batch, save_path))
     
     job_count = len(tasks)
@@ -114,6 +114,6 @@ def worker(data_path, save_path):
 
 
 if __name__ == "__main__":
-    data_path = "/home/TMP4T/batch6.3-1216-yearend/original"
-    save_path = data_path
+    data_path = "/home/ssd_array/data/batch6.4_1216/rotate"
+    save_path = "/home/ssd_array/data/batch6.4_1216/rotate-xmls"
     worker(data_path, save_path)

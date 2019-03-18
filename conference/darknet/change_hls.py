@@ -83,7 +83,7 @@ def process(data_path, save_path):
     executor = ProcessPoolExecutor(max_workers=8)
     tasks = []
     
-    batch_size = 1000
+    batch_size = 10000
     for i in range(0, len(image_names), batch_size):
         batch = image_names[i : i+batch_size]
         tasks.append(executor.submit(batch_change_hls, batch, save_path))
@@ -96,7 +96,7 @@ def process(data_path, save_path):
         
         
 if __name__ == "__main__":
-    data_path = "/home/ssd_array0/Data/batch6.4_1216/original-added"
-    save_path = "/home/ssd_array0/Data/batch6.4_1216/hls09-added"
+    data_path = "/home/ssd_array/data/batch6.4_1216/original"
+    save_path = "/home/ssd_array/data/batch6.4_1216/hls09"
 
     process(data_path, save_path)

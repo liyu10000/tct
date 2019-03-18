@@ -39,6 +39,6 @@ def main(txt_path):
     
     
 if __name__ == "__main__":
-    txt_path = "/home/nvme0/liyu/batch6.4/original"
+    txt_path = "/home/ssd_array/data/batch6.4_1216/original"
     main(txt_path)
     print(count)
