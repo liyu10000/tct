@@ -106,7 +106,7 @@ def process_half_image(cells_dir, cells_dir_half, depth=1, size=299, hls=True):
     image_names = scan_files(cells_dir, postfix=".bmp")
     print("# images", len(image_names))
     
-    executor = ProcessPoolExecutor(max_workers=cpu_count()//2)
+    executor = ProcessPoolExecutor(max_workers=4)
     tasks = []
     
     batch_size = 1000
@@ -209,7 +209,7 @@ def process_rotate(cells_dir):
     image_names = scan_files(cells_dir, postfix=".bmp")
     print("# images", len(image_names))
     
-    executor = ProcessPoolExecutor(max_workers=cpu_count())
+    executor = ProcessPoolExecutor(max_workers=4)
     tasks = []
     
     batch_size = 1000
@@ -247,17 +247,17 @@ def move_and_addon(src_folder, dst_folder, addon, postfix):
         
         
 if __name__ == "__main__":
-    cells_dir = "/home/nvme/liyu/xcp-batch6.4/CELLS"
+    cells_dir = "/home/nvme0/liyu/batch6.4-cells/CELLS-0318"
     
     # process original images
-    cells_dir_half = "/home/nvme/liyu/xcp-batch6.4/CELLS-half"
+    cells_dir_half = "/home/nvme0/liyu/batch6.4-cells/CELLS-half"
     
     process_half_image(cells_dir, cells_dir_half, depth=1, size=299, hls=False)
     split_train_and_valid(cells_dir_half, cells_dir_half)
     process_rotate(os.path.join(cells_dir_half, "train"))
     
     # process original images with HLS_L=0.5
-    cells_dir_half_hls05 = "/home/nvme/liyu/xcp-batch6.4/CELLS-half-hls05"
+    cells_dir_half_hls05 = "/home/nvme0/liyu/batch6.4-cells/CELLS-half-hls05"
     
     HLS_L = [0.5]
     HLS_S = [0.4, 0.5]
@@ -268,7 +268,7 @@ if __name__ == "__main__":
     move_and_addon(cells_dir_half_hls05, cells_dir_half, "_hls05", ".bmp")
     
     # process original images with HLS_L=0.7
-    cells_dir_half_hls07 = "/home/nvme/liyu/xcp-batch6.4/CELLS-half-hls07"
+    cells_dir_half_hls07 = "/home/nvme0/liyu/batch6.4-cells/CELLS-half-hls07"
     
     HLS_L = [0.7]
     HLS_S = [0.4, 0.5]

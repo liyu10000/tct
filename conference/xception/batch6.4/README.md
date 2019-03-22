@@ -105,3 +105,15 @@ Epoch 00007: saving model to batch6.4_007_0.0655.hdf5
 Epoch 8/100
   791/24544 [..............................] - ETA: 3:08:06 - loss: 0.0540 - acc: 0.9819
  </pre>
+ 
+3. train3
+ - _dataset_: batch6.4 (new data), half-sized and pad with black border, all cells aligned to 299x299. Training data are quadrupled by rotating at 90, 180, 270 degrees. Dataset contains three parts: A) original data. B) data with HLS_L = [0.7], HLS_S = [0.4, 0.5]. C) data with HLS_L = [0.5], HLS_S = [0.4, 0.5].
+ - _model_: used default Xception model
+ - _weights_: used weights trained on train2, epoch007
+ - _init_lr_: 0.002
+ - _lr_decay_: 0.5
+ - _best_: epoch 
+ 
+<pre>
+
+</pre>
