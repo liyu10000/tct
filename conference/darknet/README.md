@@ -165,4 +165,14 @@ Finetune yolov3 training on TCT project: by the means of changing the lightness 
  - _learning_rate_: 0.00025
 
  - _num_classes_: 13
+ - _final_steps_: 800000
+ 
+17. train17
+ - _dataset_: used data batch6.4 (complete batch6.3 and new data), 13 classes. Dataset contains two parts prior to iterations 173000: part one is newly made originally cut data; part two is augmented (rotated) from part one. Autolabeled data are added. Additional data (for ASCUS/LSIL) are half-way incorporated.
+ - _weights_: used weights pretrained on imagenet (darknet53.conv.74)
+ - _batch_: 64
+ - _subdivisions_: 16
+ - _learning_rate_: 0.00025
+
+ - _num_classes_: 13
  - _final_steps_: 
