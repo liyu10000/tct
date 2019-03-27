@@ -3,7 +3,8 @@ from multiprocessing import cpu_count
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 
-classes = [4, 5]  # ASCUS, LSIL
+# classes = [4, 5]  # ASCUS, LSIL
+classes = [3,] # EC
 
 
 def scan_files(directory, prefix=None, postfix=None):
@@ -89,7 +90,15 @@ def worker(path_in, path_out):
 
     
 if __name__ == "__main__":
-    path_in = "/home/ssd_array0/Data/batch6.4_1216/rotate-added"
-    path_out = "/home/ssd_array0/Data/batch6.4_1216/flip"
+#     path_in = "/home/ssd_array0/Data/batch6.4_1216/rotate-added"
+#     path_out = "/home/ssd_array0/Data/batch6.4_1216/flip"
 
-    worker(path_in, path_out)
+#     worker(path_in, path_out)
+
+    data_path = ["/home/ssd_array0/Data/batch6.4_1216/original", 
+                 "/home/ssd_array0/Data/batch6.4_1216/original-added", 
+                 "/home/ssd_array0/Data/batch6.4_1216/rotate", 
+                 "/home/ssd_array0/Data/batch6.4_1216/rotate-added"]
+    path_out = "/home/ssd_array0/Data/batch6.4_1216/flip"
+    for path_in in data_path:
+        worker(path_in, path_out)
