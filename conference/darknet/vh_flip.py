@@ -66,8 +66,8 @@ def worker(data_path, save_path):
         
         
 if __name__ == "__main__":
-    data_path = ["/home/ssd_array0/Data/batch6.4_1216/fungi"]
-    save_path = "/home/ssd_array0/Data/batch6.4_1216/fungi-flip"
+    data_path = ["/home/ssd_array0/Data/batch6.4_1216/ascus"]
+    save_path = "/home/ssd_array0/Data/batch6.4_1216/ascus-flip"
 
     worker(data_path, save_path)
     

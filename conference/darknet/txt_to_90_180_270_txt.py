@@ -92,7 +92,7 @@ def worker(path_in, path_out):
 
     
 if __name__ == "__main__":
-    path_in = "/home/ssd_array0/Data/batch6.4_1216/tri"
-    path_out = "/home/ssd_array0/Data/batch6.4_1216/tri"
+    path_in = "/home/ssd_array0/Data/batch6.4_1216/ascus"
+    path_out = "/home/ssd_array0/Data/batch6.4_1216/ascus"
 
     worker(path_in, path_out)

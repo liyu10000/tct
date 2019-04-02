@@ -18,12 +18,16 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 # # target classes to change to 
 # targets = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0}
 
-# 18 classes (separate all sub classes and add SC & PH
-classes = {"ACTINO":0, "AGC_A":1, "AGC_B":2, "ASCUS":3, "CC":4, "EC":5, "FUNGI":6, "HSIL_B":7, "HSIL_M":8, "HSIL_S":9, "LSIL_E":10, "LSIL_F":11, "PH":12, "SC":13, "SCC_G":14, "SCC_R":15, "TRI":16, "VIRUS":17}
-# target classes to change to
-targets = {0:9, 1:0, 2:0, 3:4, 4:6, 5:3, 6:8, 7:1, 8:1, 9:1, 10:5, 11:5, 12:11, 13:12, 14:1, 15:2, 16:10, 17:7}
+# # 18 classes (separate all sub classes and add SC & PH
+# classes = {"ACTINO":0, "AGC_A":1, "AGC_B":2, "ASCUS":3, "CC":4, "EC":5, "FUNGI":6, "HSIL_B":7, "HSIL_M":8, "HSIL_S":9, "LSIL_E":10, "LSIL_F":11, "PH":12, "SC":13, "SCC_G":14, "SCC_R":15, "TRI":16, "VIRUS":17}
+# # target classes to change to
+# targets = {0:9, 1:0, 2:0, 3:4, 4:6, 5:3, 6:8, 7:1, 8:1, 9:1, 10:5, 11:5, 12:11, 13:12, 14:1, 15:2, 16:10, 17:7}
 
-
+# 11 classes merge agc1 agc2 adc as agc
+classes = {"ASCUS":0, "LSIL":1, "HSIL":2, "SCC":3, "AGC":4, 
+           "EC":5, "FUNGI":6, "TRI":7, "CC":8, "ACTINO":9, "VIRUS":10}
+# target classes to change to 
+targets = {8:8}
 
 def scan_files(directory, prefix=None, postfix=None):
     files_list = []
@@ -50,8 +54,10 @@ def change_txt(txt_name, save_path):
     txt_name_new = os.path.join(save_path, os.path.basename(txt_name))
     with open(txt_name_new, 'w') as f:
         for tokens in labels:
-            tokens[0] = str(targets[int(tokens[0])])
-            f.write(' '.join(tokens) + '\n')
+            label = int(tokens[0])
+            if label in targets:
+                tokens[0] = str(targets[int(tokens[0])])
+                f.write(' '.join(tokens) + '\n')
 
                       
 def batch_change_txt(txt_names, save_path):
@@ -79,7 +85,7 @@ def main(txt_path, save_path):
 
 
 if __name__ == "__main__":
-    txt_path = "/home/ssd_array0/Data/batch6.4_1216/fungi"
-    save_path = "/home/ssd_array0/Data/batch6.4_1216/fungi"
+    txt_path = "/home/ssd_array0/Data/batch6.4_1216/fungi-flip"
+    save_path = "/home/ssd_array0/Data/batch6.4_1216/fungi-flip"
     
     main(txt_path, save_path)

@@ -94,8 +94,8 @@ def worker(path_in, path_out):
 
     
 if __name__ == "__main__":
-    path_in = "/home/ssd_array0/Data/batch6.4_1216/fungi"
-    path_out = "/home/ssd_array0/Data/batch6.4_1216/fungi-flip"
+    path_in = "/home/ssd_array0/Data/batch6.4_1216/ascus"
+    path_out = "/home/ssd_array0/Data/batch6.4_1216/ascus-flip"
 
     worker(path_in, path_out)
 
