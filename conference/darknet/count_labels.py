@@ -39,15 +39,15 @@ def main(txt_path):
     
     
 if __name__ == "__main__":
-#     txt_path = "/home/ssd_array0/Data/batch6.4_1216/tri-delete"
-#     main(txt_path)
-#     print(count)
-    
-    data_path = ["/home/ssd_array0/Data/batch6.4_1216/original", 
-                 "/home/ssd_array0/Data/batch6.4_1216/original-added", 
-                 "/home/ssd_array0/Data/batch6.4_1216/rotate", 
-                 "/home/ssd_array0/Data/batch6.4_1216/rotate-added", 
-                 "/home/ssd_array0/Data/batch6.4_1216/flip"]
-    for path in data_path:
-        main(path)
+    txt_path = "/home/ssd_array0/Data/batch6.4_1216/fungi"
+    main(txt_path)
     print(count)
+    
+#     data_path = ["/home/ssd_array0/Data/batch6.4_1216/original", 
+#                  "/home/ssd_array0/Data/batch6.4_1216/original-added", 
+#                  "/home/ssd_array0/Data/batch6.4_1216/rotate", 
+#                  "/home/ssd_array0/Data/batch6.4_1216/rotate-added", 
+#                  "/home/ssd_array0/Data/batch6.4_1216/flip"]
+#     for path in data_path:
+#         main(path)
+#     print(count)

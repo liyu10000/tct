@@ -76,19 +76,19 @@ def main(data_path, save_path):
 
 
 if __name__ == "__main__":
-    data_path = "/home/ssd_array0/Data/batch6.4_1216/original"
-    save_path = "/home/ssd_array0/Data/batch6.4_1216/original"
+    data_path = "/home/ssd_array0/Data/batch6.4_1216/fungi"
+    save_path = "/home/ssd_array0/Data/batch6.4_1216/fungi"
 
     main(data_path, save_path)
 
 
-    data_path = "/home/ssd_array0/Data/batch6.4_1216/rotate"
-    save_path = "/home/ssd_array0/Data/batch6.4_1216/rotate"
+#     data_path = "/home/ssd_array0/Data/batch6.4_1216/rotate"
+#     save_path = "/home/ssd_array0/Data/batch6.4_1216/rotate"
 
-    main(data_path, save_path)
+#     main(data_path, save_path)
 
 
-    data_path = "/home/ssd_array0/Data/batch6.4_1216/rotate-added"
-    save_path = "/home/ssd_array0/Data/batch6.4_1216/rotate-added"
+#     data_path = "/home/ssd_array0/Data/batch6.4_1216/rotate-added"
+#     save_path = "/home/ssd_array0/Data/batch6.4_1216/rotate-added"
 
-    main(data_path, save_path)
+#     main(data_path, save_path)

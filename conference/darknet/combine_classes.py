@@ -23,7 +23,6 @@ classes = {"ACTINO":0, "AGC_A":1, "AGC_B":2, "ASCUS":3, "CC":4, "EC":5, "FUNGI":
 # target classes to change to
 targets = {0:9, 1:0, 2:0, 3:4, 4:6, 5:3, 6:8, 7:1, 8:1, 9:1, 10:5, 11:5, 12:11, 13:12, 14:1, 15:2, 16:10, 17:7}
 
-count = {value:0 for key,value in classes.items()}
 
 
 def scan_files(directory, prefix=None, postfix=None):
@@ -46,7 +45,6 @@ def change_txt(txt_name, save_path):
     with open(txt_name, 'r') as f:
         for line in f.readlines():
             tokens = line.strip().split()
-            count[int(tokens[0])] += 1
             labels.append(tokens)
                       
     txt_name_new = os.path.join(save_path, os.path.basename(txt_name))
@@ -81,8 +79,7 @@ def main(txt_path, save_path):
 
 
 if __name__ == "__main__":
-    txt_path = "/home/ssd_array0/Data/batch6.4_1216/original"
-    save_path = "/home/ssd_array0/Data/batch6.4_1216/ori-txts"
+    txt_path = "/home/ssd_array0/Data/batch6.4_1216/fungi"
+    save_path = "/home/ssd_array0/Data/batch6.4_1216/fungi"
+    
     main(txt_path, save_path)
-    print(count)
-

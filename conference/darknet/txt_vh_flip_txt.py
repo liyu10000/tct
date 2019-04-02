@@ -4,7 +4,8 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 
 
 # classes = [4, 5]  # ASCUS, LSIL
-classes = [3,] # EC
+# classes = [3,] # EC
+# classes = [8,] # FUNGI
 
 
 def scan_files(directory, prefix=None, postfix=None):
@@ -27,8 +28,8 @@ def gen_txt_vh_flip(txt_name, txt_save_path, size=608):
         for line in f.readlines():
             tokens = line.strip().split()
             index = int(tokens[0])
-            if not index in classes:
-                return
+#             if not index in classes:
+#                 return
             cx, cy = float(tokens[1])*size, float(tokens[2])*size
             w, h = float(tokens[3])*size, float(tokens[4])*size
             xmin, ymin = cx - w/2, cy - h/2
@@ -74,12 +75,15 @@ def worker(path_in, path_out):
     files = scan_files(path_in, postfix=".txt")
     print("# files:", len(files))
 
+    os.makedirs(path_out, exist_ok=True)
+    
     executor = ProcessPoolExecutor(max_workers=2)
     tasks = []
 
     batch_size = 10000
     for i in range(0, len(files), batch_size):
         batch = files[i : i+batch_size]
+#         batch_gen_txt_vh_flip(batch, path_out)
         tasks.append(executor.submit(batch_gen_txt_vh_flip, batch, path_out))
     
     job_count = len(tasks)
@@ -90,15 +94,15 @@ def worker(path_in, path_out):
 
     
 if __name__ == "__main__":
-#     path_in = "/home/ssd_array0/Data/batch6.4_1216/rotate-added"
+    path_in = "/home/ssd_array0/Data/batch6.4_1216/fungi"
+    path_out = "/home/ssd_array0/Data/batch6.4_1216/fungi-flip"
+
+    worker(path_in, path_out)
+
+#     data_path = ["/home/ssd_array0/Data/batch6.4_1216/original", 
+#                  "/home/ssd_array0/Data/batch6.4_1216/original-added", 
+#                  "/home/ssd_array0/Data/batch6.4_1216/rotate", 
+#                  "/home/ssd_array0/Data/batch6.4_1216/rotate-added"]
 #     path_out = "/home/ssd_array0/Data/batch6.4_1216/flip"
-
-#     worker(path_in, path_out)
-
-    data_path = ["/home/ssd_array0/Data/batch6.4_1216/original", 
-                 "/home/ssd_array0/Data/batch6.4_1216/original-added", 
-                 "/home/ssd_array0/Data/batch6.4_1216/rotate", 
-                 "/home/ssd_array0/Data/batch6.4_1216/rotate-added"]
-    path_out = "/home/ssd_array0/Data/batch6.4_1216/flip"
-    for path_in in data_path:
-        worker(path_in, path_out)
+#     for path_in in data_path:
+#         worker(path_in, path_out)
