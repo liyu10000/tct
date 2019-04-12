@@ -7,10 +7,14 @@ from darknet.darknet import load_net, load_meta, detect, detect_numpy
 
 
 img_list_file = "/home/ssd_array0/Data/batch6.4_1216/valid-gnet2.txt"
-evaluation_file = "/home/ssd_array0/Develop/liyu/darknet/backup/gnet2/gnet2_300000.evaluation"
+evaluation_file = "/home/ssd_array0/Develop/liyu/darknet/backup/gnet2/gnet2.evaluation"
 watch_num = 40000 # number of patches to watch
 
 gpus = '01234567'
+
+config_file = "/home/ssd_array0/Develop/liyu/darknet/cfg/gnet2.net".encode('utf-8')
+weights_file = "/home/ssd_array0/Develop/liyu/darknet/backup/gnet2/gnet2.backup".encode('utf-8')
+datacfg_file = "/home/ssd_array0/Develop/liyu/darknet/cfg/gnet2.data".encode('utf-8')
 
 
 classes = ["AGC", "HSIL-SCC_G", "SCC_R", "EC", "ASCUS", "LSIL", "CC", "VIRUS", "FUNGI", "ACTINO", "TRI", "PH", "SC"]
@@ -26,7 +30,8 @@ def read_img_list(img_list_file):
         for line in f.readlines():
             img = line.strip()
             txt = os.path.splitext(img)[0] + '.txt'
-            names.append([img, txt])
+            if os.path.isfile(img) and os.path.isfile(txt):
+                names.append([img, txt])
     return names
 
 
@@ -71,24 +76,30 @@ def process_one_txt(txt_name, predictions, results):
     :results: {"ASCUS":{"TP":3, "FP":2, "FN":4, "TP_b":1, "FP_b":1, "FN_b":1}, "LSIL":{...}, ...}
     """
     labels = read_label(txt_name)  # [(label, (x, y, w, h))]
-    predicted = set()
-    predicted_b = set()
-    for pred in predictions:
-        for i,label in enumerate(labels):
+    predicted = set()  # label level true-positive predictions
+    predicted_b = set()  # bbox level true-positive predictions, store for labels
+    ppredicted_b = set()  # bbox level true-positive predictions, store for predictions
+    for i,label in enumerate(labels):
+        for p,pred in enumerate(predictions):
             # if pred[0] == label[0] and pred[1] > thres_pred[pred[0]] and calc_iou(pred[2], label[1]) > thres_iou:
             if calc_iou(pred[2], label[1]) > thres_iou:
                 if pred[0] == label[0]:
-                    results[pred[0]]["TP"] += 1
+                    results[label[0]]["TP"] += 1
                     predicted.add(i)
                 else:
-                    results[pred[0]]["FP"] += 1
-                results[pred[0]]["TP_b"] += 1
+                    results[label[0]]["FP"] += 1
+                results[label[0]]["TP_b"] += 1
                 predicted_b.add(i)
-            else:
-                results[pred[0]]["FP_b"] += 1
+                ppredicted_b.add(p)
+    # label level FN
     unpredicted = set(range(len(labels))) - predicted
     for i in unpredicted:
         results[labels[i][0]]["FN"] += 1
+    # bbox level FP
+    flpredicted_b = set(range(len(predictions))) - ppredicted_b
+    for i in flpredicted_b:
+        results[predictions[i][0]]["FP_b"] += 1
+    # bbox level FN
     unpredicted_b = set(range(len(labels))) - predicted_b
     for i in unpredicted_b:
         results[labels[i][0]]["FN_b"] += 1
@@ -121,6 +132,7 @@ def patch_loader(i_queue, o_queue):
         item = i_queue.get()
         img = cv2.imread(item[0])
         # img = process(img)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         o_queue.put((item[1], img, item[2]))  # (txt_name, img, N)
 
 
@@ -133,9 +145,9 @@ def patch_predictor(gpu, i_queue, o_queue):
     hier_thresh = 0.5
     nms = 0.45
 
-    config_file = "/home/ssd_array0/Develop/liyu/darknet/cfg/gnet2.net".encode('utf-8')
-    weights_file = "/home/ssd_array0/Develop/liyu/darknet/backup/gnet2/gnet2_300000.weights".encode('utf-8')
-    datacfg_file = "/home/ssd_array0/Develop/liyu/darknet/cfg/gnet2.data".encode('utf-8')
+#     config_file = "/home/ssd_array0/Develop/liyu/darknet/cfg/gnet2.net".encode('utf-8')
+#     weights_file = "/home/ssd_array0/Develop/liyu/darknet/backup/gnet2/gnet2_200000.weights".encode('utf-8')
+#     datacfg_file = "/home/ssd_array0/Develop/liyu/darknet/cfg/gnet2.data".encode('utf-8')
 
     try:
         net = load_net(config_file, weights_file, 0)
