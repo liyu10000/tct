@@ -1,5 +1,6 @@
 import h5py
 import random
+import numpy as np
 from keras.utils import Sequence, to_categorical
 from keras.utils.io_utils import HDF5Matrix
 # from keras.preprocessing.image import ImageDataGenerator
@@ -31,13 +32,11 @@ class DataGenerator(Sequence):
 
 
     def __getitem__(self, index):
-        index -= 1
         slice_ = [index*self.batch_size, (index+1)*self.batch_size]
-        # print(index)
 
-        X = self.image[slice_]
-        X = self.augmentor.random_transform(X, seed=index)  # data augmentation
-        y = self.label[slice_]
+        X = self.image[slice_[0]:slice_[1]]
+        X = np.asarray([self.augmentor.random_transform(x, seed=index) for x in X])  # data augmentation
+        y = self.label[slice_[0]:slice_[1]]
 
         return X, y
 
