@@ -1,6 +1,5 @@
 import os
 import cv2
-import pickle
 import numpy as np
 from datetime import datetime
 from multiprocessing import Process, Queue
@@ -8,7 +7,8 @@ from darknet.darknet import load_net, load_meta, detect, detect_numpy
 
 
 img_list_file = "/home/ssd_array0/Data/batch6.4_1216/valid-gnet2.txt"
-pkl_file = "/home/ssd_array0/Develop/liyu/gnet2-final.pkl"
+evaluation_file = "/home/ssd_array0/Develop/liyu/darknet/backup/gnet2/gnet2_300000.evaluation"
+watch_num = 40000 # number of patches to watch
 
 gpus = '01234567'
 
@@ -68,23 +68,30 @@ def process_one_txt(txt_name, predictions, results):
     """ process one sample, calculate TP, FP, FN of each class
     :param txt_name: full path name of label txt
     :predictions: [[label, probability, (x, y, w, h)],]
-    :results: {"ASCUS":{"TP":3, "FP":2, "FN":4, "TP-b":1, "FP-b":1, "FN-b":1}, "LSIL":{...}, ...}
+    :results: {"ASCUS":{"TP":3, "FP":2, "FN":4, "TP_b":1, "FP_b":1, "FN_b":1}, "LSIL":{...}, ...}
     """
-    labels = read_label(txt_name)
+    labels = read_label(txt_name)  # [(label, (x, y, w, h))]
     predicted = set()
+    predicted_b = set()
     for pred in predictions:
         for i,label in enumerate(labels):
             # if pred[0] == label[0] and pred[1] > thres_pred[pred[0]] and calc_iou(pred[2], label[1]) > thres_iou:
-            if pred[1] > thres_pred[pred[0]] and calc_iou(pred[2], label[1]) > thres_iou:
+            if calc_iou(pred[2], label[1]) > thres_iou:
                 if pred[0] == label[0]:
                     results[pred[0]]["TP"] += 1
                     predicted.add(i)
                 else:
                     results[pred[0]]["FP"] += 1
-                results[pred[0]]
+                results[pred[0]]["TP_b"] += 1
+                predicted_b.add(i)
+            else:
+                results[pred[0]]["FP_b"] += 1
     unpredicted = set(range(len(labels))) - predicted
     for i in unpredicted:
         results[labels[i][0]]["FN"] += 1
+    unpredicted_b = set(range(len(labels))) - predicted_b
+    for i in unpredicted_b:
+        results[labels[i][0]]["FN_b"] += 1
 
 
 def process(image):
@@ -105,8 +112,8 @@ def process(image):
 
 def patch_allocator(names, o_queue):
     N = len(names)
-    for name in names:
-        o_queue.put(name+[N])  # (img_name, txt_name, N)
+    for i in range(watch_num):
+        o_queue.put(names[i]+[N])  # (img_name, txt_name, N)
 
 
 def patch_loader(i_queue, o_queue):
@@ -127,7 +134,7 @@ def patch_predictor(gpu, i_queue, o_queue):
     nms = 0.45
 
     config_file = "/home/ssd_array0/Develop/liyu/darknet/cfg/gnet2.net".encode('utf-8')
-    weights_file = "/home/ssd_array0/Develop/liyu/darknet/backup/gnet2/gnet2.backup".encode('utf-8')
+    weights_file = "/home/ssd_array0/Develop/liyu/darknet/backup/gnet2/gnet2_300000.weights".encode('utf-8')
     datacfg_file = "/home/ssd_array0/Develop/liyu/darknet/cfg/gnet2.data".encode('utf-8')
 
     try:
@@ -160,11 +167,9 @@ def patch_predictor(gpu, i_queue, o_queue):
 
 
 def finalizer(i_queue):
-    results_raw = {key:{"TP":0, "FP":0, "FN":0} for key in classes}
-    results_ref = {key:{"recall":0.0, "precision":0.0} for key in classes}
-
-    f = open(pkl_file, 'wb')
-    
+    results_raw = {key:{"TP":0, "FP":0, "FN":0, "TP_b":0, "FP_b":0, "FN_b":0} for key in classes}
+    results_ref = {key:{"recall":0.0, "precision":0.0, "recall_b":0.0, "precision_b":0.0} for key in classes}
+   
     count = 0
     while True:
         item = i_queue.get()
@@ -172,21 +177,38 @@ def finalizer(i_queue):
         process_one_txt(item[0], item[1], results_raw)
 
         count += 1
-        if count % 800 == 0:
-            print(datetime.now(), "  -->  ", "processed ", count, " / ", N, results_raw)
-        if count % 10000 == 0 or count == 20000:
+        if count % 5000 == 0:
+            print(datetime.now(), "  -->  ", "processed ", count, " / ", N)
+            for key,value in results_raw.items():
+                print("    {} = {}".format(key, value))
+        if count % 10000 == 0 or count == watch_num:
             for key in results_raw:
+                # pinpoint matching
                 TP = results_raw[key]["TP"]
                 FP = results_raw[key]["FP"]
                 FN = results_raw[key]["FN"]
                 results_ref[key]["recall"] = TP / (TP + FN) if TP+FN != 0 else None
                 results_ref[key]["precision"] = TP / (TP + FP) if TP+FP != 0 else None
+                # bbox matching
+                TP_b = results_raw[key]["TP_b"]
+                FP_b = results_raw[key]["FP_b"]
+                FN_b = results_raw[key]["FN_b"]
+                results_ref[key]["recall_b"] = TP_b / (TP_b + FN_b) if TP_b+FN_b != 0 else None
+                results_ref[key]["precision_b"] = TP_b / (TP_b + FP_b) if TP_b+FP_b != 0 else None
             
-            pickle.dump(results_ref, f)
-            print("\n", datetime.now(), "  -->  ", "processed ", count, " / ", N, results_ref, "\n")
-            if count == 20000:
-                f.close()
+            print("\n", datetime.now(), "  -->  ", "processed ", count, " / ", N)
+            for key,value in results_ref.items():
+                print("    {} = {}".format(key, value))
+            
+            if count == watch_num:
+                with open(evaluation_file, 'w') as f:
+                    for key,value in results_raw.items():
+                        f.write("{} = {}\n".format(key, value))
+                    f.write("\n\n")
+                    for key,value in results_ref.items():
+                        f.write("{} = {}\n".format(key, value))
                 print("\n", datetime.now(), "  -->  ", "program finished.")
+                break
 
 
 def start_processes(all_processes):
