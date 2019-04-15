@@ -198,3 +198,14 @@ Finetune yolov3 training on TCT project: by the means of changing the lightness 
 
  - _num_classes_: 13
  - _final_steps_: 374048, 820000
+
+
+2. gnet2
+ - _dataset_: used almost the same data as with gnet1, except that HSIL/TRI data are truncated. Switched to gnet-4l.
+ - _weights_: train from scratch
+ - _batch_: 64
+ - _subdivisions_: 16
+ - _learning_rate_: 0.001
+
+ - _num_classes_: 13
+ - _final_steps_: 620000

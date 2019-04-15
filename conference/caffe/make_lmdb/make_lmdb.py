@@ -205,8 +205,8 @@ def delete_from_lmdb(lmdb_name, keys, size=224):
 
 
 if __name__ == "__main__":
-    data_src = "/home/hdd0/Data/batch6.4-cells/CELLS-half/train"
-    lmdb_name = "/home/nvme/batch6.4-cells-lmdb/train"
+    data_src = "/home/ssd_array0/Data/batch6.4_1216/train-gnet2.txt"
+    lmdb_name = "/home/hdd_array0/Data/lmdb/train"
     append = False
 
 
@@ -225,7 +225,7 @@ if __name__ == "__main__":
     # create processes
     image_names_generators.append(Process(target=image_names_generator, args=(queue_in, queue_out, data_src)))
     
-    num_workers = 4
+    num_workers = 8
     for i in range(num_workers):
         image_readers.append(Process(target=image_reader, args=(queue_in, queue_out), daemon=False))
 
