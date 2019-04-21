@@ -27,6 +27,7 @@ __pycache__/
 *.csv
 *.txt
 *.xml
+*.xlsx
 
 *.out
 *.log
