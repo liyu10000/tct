@@ -39,7 +39,7 @@ def main(txt_path):
     
     
 if __name__ == "__main__":
-    txt_path = "/home/ssd_array/data/batch6.4_1216/fungi-flip"
+    txt_path = "/home/ssd_array0/Data/batch6.5_1216/flip"
     main(txt_path)
     print(count)
     

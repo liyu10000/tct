@@ -140,7 +140,7 @@ void rotate_90_180_270(string inname, string out_dir)
 
 void Produce()
 {
-    String pattern = "/home/ssd_array0/Data/batch6.4_1216/ascus/*.bmp";
+    String pattern = "/home/ssd_array0/Data/batch6.5_1216/original/*.bmp";
     vector<String> cv2_names;
     glob(pattern, cv2_names, false);
     
@@ -164,7 +164,7 @@ void Produce()
 
 void Consume()
 {
-    string out_dir = "/home/ssd_array0/Data/batch6.4_1216/ascus/";
+    string out_dir = "/home/ssd_array0/Data/batch6.5_1216/rotate/";
 
     string data;
     while (true)
@@ -238,9 +238,9 @@ int main(int argc, char** argv)
 
     vector<thread> ts;
     int thread_count = thread::hardware_concurrency();
+    if (thread_count > 8)
+        thread_count = 8;
     cout << "thread count " << thread_count << endl;
-    if (thread_count > 4)
-        thread_count = 4;
     for (int i = 0; i < thread_count; i++)
     {
         thread consumerThread(Consume);

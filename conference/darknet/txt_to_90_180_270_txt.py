@@ -76,7 +76,7 @@ def worker(path_in, path_out):
     files = scan_files(path_in, postfix=".txt")
     print("# files:", len(files))
 
-    executor = ProcessPoolExecutor(max_workers=2)
+    executor = ProcessPoolExecutor(max_workers=8)
     tasks = []
 
     batch_size = 10000
@@ -92,7 +92,7 @@ def worker(path_in, path_out):
 
     
 if __name__ == "__main__":
-    path_in = "/home/ssd_array0/Data/batch6.4_1216/ascus"
-    path_out = "/home/ssd_array0/Data/batch6.4_1216/ascus"
+    path_in = "/home/ssd_array0/Data/batch6.5_1216/original"
+    path_out = "/home/ssd_array0/Data/batch6.5_1216/rotate"
 
     worker(path_in, path_out)

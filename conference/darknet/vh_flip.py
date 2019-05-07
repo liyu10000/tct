@@ -50,7 +50,7 @@ def worker(data_path, save_path):
     files = list(set(files))
     print("# files:", len(files))
 
-    executor = ProcessPoolExecutor(max_workers=4)
+    executor = ProcessPoolExecutor(max_workers=8)
     tasks = []
 
     batch_size = 10000
@@ -66,14 +66,13 @@ def worker(data_path, save_path):
         
         
 if __name__ == "__main__":
-    data_path = ["/home/ssd_array0/Data/batch6.4_1216/ascus"]
-    save_path = "/home/ssd_array0/Data/batch6.4_1216/ascus-flip"
+#     data_path = ["/home/ssd_array0/Data/batch6.4_1216/ascus"]
+#     save_path = "/home/ssd_array0/Data/batch6.4_1216/ascus-flip"
 
-    worker(data_path, save_path)
-    
-#     data_path = ["/home/ssd_array0/Data/batch6.4_1216/original", 
-#                  "/home/ssd_array0/Data/batch6.4_1216/original-added", 
-#                  "/home/ssd_array0/Data/batch6.4_1216/rotate", 
-#                  "/home/ssd_array0/Data/batch6.4_1216/rotate-added"]
-#     save_path = "/home/ssd_array0/Data/batch6.4_1216/flip"
 #     worker(data_path, save_path)
+    
+    data_path = ["/home/ssd_array0/Data/batch6.5_1216/original", 
+                 "/home/ssd_array0/Data/batch6.5_1216/ascus", 
+                 "/home/ssd_array0/Data/batch6.5_1216/fungi"]
+    save_path = "/home/ssd_array0/Data/batch6.5_1216/flip"
+    worker(data_path, save_path)

@@ -27,7 +27,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 classes = {"ASCUS":0, "LSIL":1, "HSIL":2, "SCC":3, "AGC":4, 
            "EC":5, "FUNGI":6, "TRI":7, "CC":8, "ACTINO":9, "VIRUS":10}
 # target classes to change to 
-targets = {8:8}
+targets = {0:4, 1:5, 2:1, 3:2, 6:8, 8:6}
 
 def scan_files(directory, prefix=None, postfix=None):
     files_list = []
@@ -85,7 +85,7 @@ def main(txt_path, save_path):
 
 
 if __name__ == "__main__":
-    txt_path = "/home/ssd_array0/Data/batch6.4_1216/fungi-flip"
-    save_path = "/home/ssd_array0/Data/batch6.4_1216/fungi-flip"
+    txt_path = "/home/ssd_array0/Data/batch6.5_1216/fungi"
+    save_path = "/home/ssd_array0/Data/batch6.5_1216/fungi"
     
     main(txt_path, save_path)

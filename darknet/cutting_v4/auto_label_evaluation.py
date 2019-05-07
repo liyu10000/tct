@@ -5,10 +5,10 @@ from multiprocessing import cpu_count
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 
-classes = ["AGC", "HSIL-SCC_G", "SCC_R", "EC", "ASCUS", "LSIL", "CC", "VIRUS", "FUNGI", "ACTINO", "TRI", "PH", "SC"]
+classes = ["AGC", "HSIL", "SCC", "EC", "ASCUS", "LSIL", "CC", "VIRUS", "FUNGI", "ACTINO", "TRI", "PH", "SC"]
 tolerate = {"AGC":["AGC"], 
-            "HSIL-SCC_G":["HSIL-SCC_G", "SCC_R"], 
-            "SCC_R":["HSIL-SCC_G", "SCC_R"], 
+            "HSIL":["HSIL"], 
+            "SCC":["SCC"], 
             "EC":["EC"], 
             "ASCUS":["ASCUS", "LSIL"], 
             "LSIL":["ASCUS", "LSIL"], 
@@ -19,10 +19,10 @@ tolerate = {"AGC":["AGC"],
             "TRI":["TRI"], 
             "PH":["PH"], 
             "SC":["SC"]}
-categorize = {'HSIL_M': 'HSIL-SCC_G', 'EC': 'EC', 'AGC_B': 'AGC', 'PH': 'PH', 'FUNGI': 'FUNGI', 'AGC_A': 'AGC', 'SCC_R': 'SCC_R', 'ASCUS': 'ASCUS', 'VIRUS': 'VIRUS', 'TRI': 'TRI', 'HSIL_S': 'HSIL-SCC_G', 'SC': 'SC', 'SCC_G': 'HSIL-SCC_G', 'LSIL_F': 'LSIL', 'HSIL_B': 'HSIL-SCC_G', 'ACTINO': 'ACTINO', 'LSIL_E': 'LSIL', 'CC': 'CC'}
+categorize = {'HSIL_M': 'HSIL', 'EC': 'EC', 'AGC_B': 'AGC', 'PH': 'PH', 'FUNGI': 'FUNGI', 'AGC_A': 'AGC', 'SCC_R': 'SCC', 'ASCUS': 'ASCUS', 'VIRUS': 'VIRUS', 'TRI': 'TRI', 'HSIL_S': 'HSIL', 'SC': 'SC', 'SCC_G': 'SCC', 'LSIL_F': 'LSIL', 'HSIL_B': 'HSIL', 'ACTINO': 'ACTINO', 'LSIL_E': 'LSIL', 'CC': 'CC'}
 use_thres = {"AGC":0.9, 
-            "HSIL-SCC_G":0.9, 
-            "SCC_R":0.9, 
+            "HSIL":0.95, 
+            "SCC":0.9, 
             "EC":0.9, 
             "ASCUS":0.0, 
             "LSIL":0.0, 
@@ -30,7 +30,7 @@ use_thres = {"AGC":0.9,
             "VIRUS":0.9, 
             "FUNGI":0.9, 
             "ACTINO":0.9, 
-            "TRI":0.95, 
+            "TRI":0.99, 
             "PH":0.9, 
             "SC":0.9}
 
@@ -213,6 +213,8 @@ def collect_all_labels(patch_info_map, cell_info_map, iou_thres=0.5):
     """
     all_labels = copy.deepcopy(patch_info_map)
     for name in cell_info_map:
+        if not name in patch_info_map:
+            continue
         label_boxes = patch_info_map[name]
         patch_labels = [label_box[0] for label_box in label_boxes]
         patch_tolerate = set()
@@ -229,7 +231,7 @@ def collect_all_labels(patch_info_map, cell_info_map, iou_thres=0.5):
                 continue
             
             label_p = categorize[label_clas]
-            if not label_p in patch_tolerate or pred < use_thres[label_p]:
+            if (not label_p in patch_tolerate) or (pred < use_thres[label_p]):
                 continue
                 
             overlapped = False

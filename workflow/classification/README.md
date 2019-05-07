@@ -86,5 +86,14 @@ Epoch 14/100
  - _excess_: use aug-on-fly
  
 <pre>
+Found 1787040 images belonging to 21 classes.
+Found 49608 images belonging to 21 classes.
+Epoch 1/100
+13962/13962 [==============================] - 10010s 717ms/step - loss: 0.1772 - acc: 0.9378 - val_loss: 0.1619 - val_acc: 0.9474
+
+Epoch 00001: saving model to batch6.4_001_0.1619.hdf5
+Epoch 2/100
+ 3208/13962 [=====>........................] - ETA: 2:07:38 - loss: 0.1165 - acc: 0.9580
+ 
 
 </pre>

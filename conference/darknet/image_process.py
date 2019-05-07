@@ -1,7 +1,6 @@
 import os
 import cv2
 import numpy as np
-
 from multiprocessing import cpu_count
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
@@ -22,20 +21,14 @@ def scan_files(directory, prefix=None, postfix=None):
 
 
 def hls_trans(image):
-
     hlsImg = image.astype(np.float32)
     hlsImg = hlsImg / 255.0
-
     hlsImg = cv2.cvtColor(hlsImg, cv2.COLOR_BGR2HLS)
-
     hlsImg[:, :, 2] = 1.5 * hlsImg[:, :, 2]
     hlsImg[:, :, 2][hlsImg[:, :, 2] > 1] = 1
-
     hlsImg = cv2.cvtColor(hlsImg, cv2.COLOR_HLS2BGR)
-
     hlsImg = hlsImg * 255
     image = hlsImg.astype(np.uint8)
-    
     return image
 
 
@@ -43,7 +36,7 @@ def process(image_name, save_path):
     image = cv2.imread(image_name)
     image = hls_trans(image)
     image = cv2.medianBlur(image, 5)
-    image = cv2.GaussianBlur(image, (3,3), 1)
+    # image = cv2.GaussianBlur(image, (3,3), 1)
     
     basename = os.path.basename(image_name)
     image_name_new = os.path.join(save_path, basename)
@@ -76,8 +69,8 @@ def main(data_path, save_path):
 
 
 if __name__ == "__main__":
-    data_path = "/home/ssd_array0/Data/batch6.4_1216/ascus"
-    save_path = "/home/ssd_array0/Data/batch6.4_1216/ascus"
+    data_path = "/home/ssd_array0/Data/batch6.5_1216/fungi"
+    save_path = "/home/ssd_array0/Data/batch6.5_1216/fungi"
 
     main(data_path, save_path)
 

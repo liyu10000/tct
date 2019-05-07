@@ -38,7 +38,7 @@ def rewrite(txt_name, save_path, size=608):
                 if w < thres[0] or h < thres[0] or w > thres[1] or h > thres[1]:
                     changed = True
                     delete = True
-            if delete is False:
+            if not delete:
                 lines_new.append(line)
     
     if changed:
@@ -47,10 +47,12 @@ def rewrite(txt_name, save_path, size=608):
                 for line in lines_new:
                     f.write(line)
         else:
+#             # remove empty txt/bmp
 #             os.remove(txt_name)
 #             img_name = os.path.splitext(txt_name)[0] + '.bmp'
 #             if os.path.isfile(img_name):
 #                 os.remove(img_name)
+            # move empty txt/bmp to new dir
             shutil.move(txt_name, save_path)
             img_name = os.path.splitext(txt_name)[0] + '.bmp'
             shutil.move(img_name, save_path)
@@ -115,8 +117,8 @@ def worker(data_path, save_path):
             
             
 if __name__ == "__main__":
-    data_path = "/home/ssd_array0/Data/batch6.4_1216/tri"
-    save_path = "/home/ssd_array0/Data/batch6.4_1216/tri-delete"
+    data_path = "/home/ssd_array0/Data/batch6.5_1216/original"
+    save_path = "/home/ssd_array0/Data/batch6.5_1216/original-del"
     
     worker(data_path, save_path)
 
