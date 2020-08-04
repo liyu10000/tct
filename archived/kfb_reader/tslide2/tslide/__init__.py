@@ -1,2 +1,0 @@
-from tslide.Tslide import TSlide
-from tslide.TslideDeepZoomGenerator import DeepZoomGenerator

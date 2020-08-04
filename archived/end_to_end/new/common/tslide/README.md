@@ -1,3 +1,0 @@
-Work like OpenSlide itself.
-===========================
-
